@@ -1,16 +1,9 @@
 import { useState } from "react";
-
+import UserForm from "./screens/UserRegistration";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <h1 class="Create_user">Create User</h1>
-     
-    </>
-  );
+  return <UserForm />;
 }
 
 export default App;
