@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+.Create_user {
+  height: 50px;
+  font-family: "Open Sans", sans-serif;
+  align-self: center;
+  vertical-align: center;
+  text-align: center;
+  padding: 10px;
+  color: blue;
+}
