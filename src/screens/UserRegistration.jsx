@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "../cssFiles/UserRegistration.css";
 
 function UserForm() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
-    username: "",
+    userName: "",
     phone: "",
     email: "",
     password: "",
@@ -25,6 +28,7 @@ function UserForm() {
       );
       console.log("User created:", response.data);
       alert("User registered successfully!");
+      navigate("/home", { state: user });
     } catch (error) {
       console.error("Error creating user:", error);
       alert("Something went wrong. Check console.");
@@ -32,69 +36,73 @@ function UserForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "400px", margin: "auto" }}>
-      <h2>Register User</h2>
-
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={user.name}
-        onChange={handleChange}
-        required
-      />
-      <br />
-
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={user.username}
-        onChange={handleChange}
-        required
-      />
-      <br />
-
-      <input
-        type="tel"
-        name="phone"
-        placeholder="Phone"
-        value={user.phone}
-        onChange={handleChange}
-      />
-      <br />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={user.email}
-        onChange={handleChange}
-        required
-      />
-      <br />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={user.password}
-        onChange={handleChange}
-        required
-      />
-      <br />
-
-      <textarea
-        name="bio"
-        placeholder="Short Bio"
-        value={user.bio}
-        onChange={handleChange}
-        rows="4"
-      />
-      <br />
-
-      <button type="submit">Register</button>
-    </form>
+    <div class="page-wrapper">
+      <div className="grp1">
+        <div className="heading">Sign in</div>
+        <div className="field">
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={user.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <input
+            type="text"
+            name="userName"
+            placeholder="Username"
+            value={user.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone"
+            value={user.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={user.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={user.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <textarea
+            name="bio"
+            placeholder="Short Bio"
+            value={user.bio}
+            onChange={handleChange}
+            rows="4"
+          />
+        </div>
+        <button onClick={handleSubmit} className="register-btn">
+          Register
+        </button>
+      </div>
+    </div>
   );
 }
 
