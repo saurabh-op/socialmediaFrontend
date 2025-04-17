@@ -1,0 +1,78 @@
+/* Full screen container */
+.user-profile-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Card layout like Instagram */
+.user-profile-card {
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 10px;
+  width: 70%;
+  max-width: 900px;
+  padding: 40px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  gap: 40px;
+}
+
+/* Profile image section */
+.profile-picture-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+/* User info section */
+.user-info-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.user-username {
+  font-size: 18px;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.user-email {
+  font-size: 16px;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.user-bio {
+  font-size: 16px;
+  color: black;
+}
+
+.loading-indicator,
+.error-message {
+  font-size: 24px;
+  color: #555;
+  text-align: center;
+}

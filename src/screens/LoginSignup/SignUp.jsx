@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../cssFiles/UserRegistration.css";
+import "./SignUp.css";
 
-function UserForm() {
+// TODO : 3 :Attach a mobile OTP verification service
+
+function SignUp() {
   const navigate = useNavigate();
+  const [isLoading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
     userName: "",
@@ -19,16 +22,12 @@ function UserForm() {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  function saveUserToLocal() {
-    localStorage.setItem("userId", userId);
-    localStorage.setItem("authToken", token);
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/create",
+        "http://localhost:8080/api/users/signup",
         user
       );
       const data = response.data;
@@ -40,12 +39,16 @@ function UserForm() {
       }
       if (data.message === "userCreated") {
         console.log("User created:", response.data);
+        console.log(response.data.user);
+
         alert("User registered successfully!");
+
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.userName);
-        var uuu = localStorage.getItem("username");
-        console.log("username is set to", uuu);
+        localStorage.setItem("id", data.user.id);
+        localStorage.setItem("name", data.user.name);
 
+        setLoading(false);
         navigate("/home", { state: user });
       }
       if (data.message === "error") {
@@ -55,13 +58,15 @@ function UserForm() {
     } catch (error) {
       console.error("Error creating user:", error);
       alert("Something went wrong. Check console.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="page-wrapper">
       <div className="grp1">
-        <div className="heading">Sign in</div>
+        <div className="heading">Sign Up</div>
         <div className="field">
           <input
             type="text"
@@ -112,21 +117,19 @@ function UserForm() {
             required
           />
         </div>
-        <div className="field">
-          <textarea
-            name="bio"
-            placeholder="Short Bio"
-            value={user.bio}
-            onChange={handleChange}
-            rows="4"
-          />
-        </div>
         <button onClick={handleSubmit} className="register-btn">
-          Register
+          {isLoading ? "Processing..." : "Register"}
+        </button>
+        <button
+          onClick={() => navigate("/")}
+          className="register-btn"
+          disabled={isLoading}
+        >
+          Back to Login
         </button>
       </div>
     </div>
   );
 }
 
-export default UserForm;
+export default SignUp;
