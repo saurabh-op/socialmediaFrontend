@@ -8,6 +8,7 @@ import profile from "../../assets/Profile.png";
 import chat from "../../assets/message.png";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Feed from "./Feed/Feed";
 
 const Home = () => {
   // const fetchRequests = async () => {
@@ -65,7 +66,9 @@ const Home = () => {
           Profile
         </div>
       </div>
-      <div>Feed</div>
+      <div className="rightPart">
+        <Feed />
+      </div>
     </div>
   );
 };

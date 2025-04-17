@@ -1,13 +1,22 @@
 /* Full screen layout */
 .mainPage {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: start;
   flex-direction: row;
-  background: red;
+  overflow: hidden;
   font-family: Arial, sans-serif;
 }
 
+.rightPart {
+  background: rgb(246, 198, 198);
+  width: 80%;
+  height: 100%;
+  padding: 20px;
+  overflow: auto;
+}
 /* Top bar */
 .navbar {
   height: 50px;
@@ -21,14 +30,17 @@
 
 /* Sidebar */
 .sideBar {
+  flex-shrink: 0;
   align-items: start;
-  width: 200px;
+  width: 20%;
+  height: 100vh;
   background: white;
   display: flex;
   flex-direction: column;
   padding: 14px;
   overflow-y: auto;
   border-right: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .sideBarElements {
@@ -45,5 +57,3 @@
   font-size: 22px;
   font-weight: bold;
 }
-
-
