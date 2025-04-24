@@ -1,0 +1,30 @@
+/* Sidebar */
+.sideBar {
+    flex-shrink: 0;
+    align-items: start;
+    width: 20%;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .sideBarElements {
+    padding: 20px 14px;
+    display: flex;
+    align-items: start;
+    align-items: center;
+    gap: 15px;
+    flex-direction: row;
+    height: 20px;
+  }
+  .Ziffy {
+    padding: 22px 14px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  

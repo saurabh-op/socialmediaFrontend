@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import post from "../../../assets/post.png";
+import post from "../../assets/post.png";
 import "./PostCard.css";
 
 function PostCard() {

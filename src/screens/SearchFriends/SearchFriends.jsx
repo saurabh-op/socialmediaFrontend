@@ -1,29 +1,26 @@
+// SearchPage.jsx
 import React, { useState, useEffect } from "react";
-import "./SearchFriends.css";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import "./SearchFriends.css";
+import Navbar from "../Layout/Navbar";
+import "./searchList.css";
+import "./userPreview.css";
 
-const FriendSearchBox = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
+const SearchPage = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [userPreview, setPreview] = useState(null);
+  const [isSent, setSent] = useState(false);
+  const [isloadingPreview, setLoadingPreview] = useState(false);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    const timer = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 300); // debounce delay
-
-    return () => clearTimeout(handler);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [search]);
-  useEffect(() => {
-    if (!isOpen) {
-      setSearch("");
-      setDebouncedSearch("");
-      setResults([]);
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     if (debouncedSearch.trim() === "") {
@@ -31,62 +28,142 @@ const FriendSearchBox = ({ isOpen, onClose }) => {
       return;
     }
 
-    async function fetchUsers() {
+    const fetchUsers = async () => {
       try {
         setSearching(true);
-        // Replace with your actual API endpoint
-        const response = await fetch(
+        const res = await fetch(
           `http://localhost:8080/api/users/search/${debouncedSearch}`
         );
-        const data = await response.json();
+        const data = await res.json();
         console.log(data);
-        setSearching(false);
         setResults(data);
-      } catch (error) {
-        console.error("Search error:", error);
-        setSearching(false);
+      } catch (err) {
+        console.error("Search error:", err);
         setResults([]);
+      } finally {
+        setSearching(false);
       }
-    }
+    };
 
     fetchUsers();
   }, [debouncedSearch]);
 
-  if (!isOpen) return null;
+  const getPreview = async (id) => {
+    try {
+      setLoadingPreview(true);
+      const res = await fetch(`http://localhost:8080/api/users/get/${id}`);
+      const data = await res.json();
+      setSent(false);
+      setLoadingPreview(false);
+      setPreview(data);
+    } catch (error) {
+      console.error("Error fetching preview:", error);
+    }
+  };
+
+  const sendRequest = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/request/send/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            name: localStorage.getItem("name"),
+            userid: localStorage.getItem("id"),
+            userimg: "https://randomuser.me/api/portraits/men/75.jpg",
+          }),
+        }
+      );
+
+      const result = await response.text();
+      if (result === "sent") {
+        setSent(true);
+      }
+    } catch (error) {
+      console.error("Error sending request:", error);
+    }
+  };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-box">
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
+    <div className="mainPage">
+      <div className="navbar">
+        <Navbar />
+      </div>
+      <div className="List">
         <input
           type="text"
+          className="search-input"
           placeholder="Search for a person..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
         />
-        <div className="search-results">
+        <div className="list">
           {results.length === 0 && search.trim() !== "" && (
             <p className="no-results">
               {searching ? "Searching..." : "No users found."}
             </p>
           )}
           {results.map((user) => (
-            <div key={user.id} className="search-result-item">
-              <span
-                className="user-name"
-                onClick={() => navigate(`/user/${user.id}`)}
-              >
-                {user.name}
-              </span>
+            <div className="listItem" onClick={() => getPreview(user.id)}>
+              <img
+                className="profilePic"
+                src="https://randomuser.me/api/portraits/men/75.jpg"
+                alt="avatar"
+              />
+
+              <div className="user-info">
+                <span>
+                  <strong>{user.username}</strong>
+                </span>
+                <span>{user.name}</span>
+              </div>
             </div>
           ))}
         </div>
+      </div>
+      <div className="userPreview">
+        {isloadingPreview ? (
+          "Loading ..."
+        ) : userPreview ? (
+          <div className="profile-container">
+            <img
+              src="https://randomuser.me/api/portraits/men/75.jpg"
+              alt={userPreview.name}
+              className="dp"
+            />
+            <div className="profile-details">
+              <span>
+                <h3>{userPreview.userName}</h3>
+              </span>
+              <span>
+                {" "}
+                <h3>{userPreview.name}</h3>
+              </span>
+              <span>
+                {" "}
+                <p>{userPreview.bio}</p>
+              </span>
+              <button
+                className="follow-button"
+                onClick={() => sendRequest(userPreview.id)}
+              >
+                {isSent ? "Requested" : "Follow"}
+              </button>
+            </div>
+            <button className="close-btn" onClick={() => setPreview()}>
+              ×
+            </button>
+          </div>
+        ) : (
+          "Select the user to see details"
+        )}{" "}
       </div>
     </div>
   );
 };
 
-export default FriendSearchBox;
+export default SearchPage;

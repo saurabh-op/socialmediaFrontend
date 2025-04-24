@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
+import "../Layout/Common.css";
+import Navbar from "../Layout/Navbar";
+import upload from "../../assets/upload.png";
 
 function Feed() {
   const [isLoading, setLoading] = useState(true);
@@ -29,25 +32,38 @@ function Feed() {
   }
 
   return (
-    <div className="background">
-      <h2>Posts</h2>
-      <div>
-        <PostCard />
+    <div className="mainPage">
+      <div className="navbar">
+        <Navbar />
       </div>
-      <div>
-        <PostCard />
-      </div>
-      <div>
-        <PostCard />
-      </div>
-      <div>
-        <PostCard />
-      </div>
-      <div>
-        <PostCard />
+      <div className="rightPart">
+        <h2>Posts</h2>
+        <div>
+          <PostCard />
+        </div>
+        <div>
+          <PostCard />
+        </div>
+        <div>
+          <PostCard />
+        </div>
+        <div>
+          <PostCard />
+        </div>
+        <div>
+          <PostCard />
+        </div>
       </div>
     </div>
   );
 }
 
 export default Feed;
+{
+  /* <div className="upload">
+        <button className="upload-btn">
+          <strong>Upload </strong>
+          <img src={upload} alt="Upload Icon" className="upload-icon" />
+        </button>
+      </div> */
+}
