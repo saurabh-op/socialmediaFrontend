@@ -10,7 +10,7 @@ function SignUp() {
   const [isLoading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
-    userName: "",
+    username: "",
     phone: "",
     email: "",
     password: "",
@@ -44,12 +44,13 @@ function SignUp() {
         alert("User registered successfully!");
 
         localStorage.setItem("token", data.token);
-        localStorage.setItem("username", data.user.userName);
+        localStorage.setItem("username", data.user.username);
         localStorage.setItem("id", data.user.id);
         localStorage.setItem("name", data.user.name);
+        localStorage.setItem("password", data.user.password);
 
         setLoading(false);
-        navigate("/home", { state: user });
+        navigate("/feed", { state: user });
       }
       if (data.message === "error") {
         console.error("Error creating user:", error);
@@ -80,7 +81,7 @@ function SignUp() {
         <div className="field">
           <input
             type="text"
-            name="userName"
+            name="username"
             placeholder="Username"
             value={user.username}
             onChange={handleChange}
@@ -113,6 +114,16 @@ function SignUp() {
             name="password"
             placeholder="Password"
             value={user.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field">
+          <input
+            type="bio"
+            name="bio"
+            placeholder="Bio"
+            value={user.bio}
             onChange={handleChange}
             required
           />

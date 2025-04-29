@@ -5,7 +5,7 @@ import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
 import "./userPreview.css";
-
+import lock from "../../assets/lock.png";
 const SearchPage = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
@@ -63,25 +63,30 @@ const SearchPage = () => {
 
   const sendRequest = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/request/send/${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: localStorage.getItem("username"),
-            name: localStorage.getItem("name"),
-            userid: localStorage.getItem("id"),
-            userimg: "https://randomuser.me/api/portraits/men/75.jpg",
-          }),
-        }
-      );
+      const myid = localStorage.getItem("id");
+      if (myid != id) {
+        const response = await fetch(
+          `http://localhost:8080/api/request/send/${id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: localStorage.getItem("username"),
+              name: localStorage.getItem("name"),
+              userid: localStorage.getItem("id"),
+              userimg: "https://randomuser.me/api/portraits/men/75.jpg",
+            }),
+          }
+        );
 
-      const result = await response.text();
-      if (result === "sent") {
-        setSent(true);
+        const result = await response.text();
+        if (result === "sent") {
+          setSent(true);
+        }
+      } else {
+        alert("Can't sent requests to youself");
       }
     } catch (error) {
       console.error("Error sending request:", error);
@@ -137,7 +142,7 @@ const SearchPage = () => {
             />
             <div className="profile-details">
               <span>
-                <h3>{userPreview.userName}</h3>
+                <h3>{userPreview.username}</h3>
               </span>
               <span>
                 {" "}
@@ -147,12 +152,21 @@ const SearchPage = () => {
                 {" "}
                 <p>{userPreview.bio}</p>
               </span>
-              <button
-                className="follow-button"
-                onClick={() => sendRequest(userPreview.id)}
-              >
-                {isSent ? "Requested" : "Follow"}
-              </button>
+              <div className="pvt">
+                <span
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <img src={lock} height="20px" width="20px" alt="lock icon" />
+                  <p style={{ margin: 0 }}>Private Account</p>
+                </span>
+
+                <button
+                  className="follow-button"
+                  onClick={() => sendRequest(userPreview.id)}
+                >
+                  {isSent ? "Requested" : "Follow"}
+                </button>
+              </div>
             </div>
             <button className="close-btn" onClick={() => setPreview()}>
               ×

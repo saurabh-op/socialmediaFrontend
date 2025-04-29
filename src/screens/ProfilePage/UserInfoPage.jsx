@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
-import "../cssFiles/UserInfoPage.css";
+import { useParams } from "react-router-dom";
+import "./UserInfoPage.css";
+import "../Layout/Common.css";
+import Navbar from "../Layout/Navbar";
+import axios from "axios";
 
-function UserInfoPage({ userId }) {
-  const [user, setUser] = useState(null);
+function UserInfoPage() {
+  const { userId } = useParams();
+  const [posts, setPosts] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
+  const [user, setUser] = useState({
+    profilePicture: "https://randomuser.me/api/portraits/men/75.jpg",
+    name: "Munna Bhai ",
+    username: "Circuit",
+    bio: "Love coding and coffee ☕",
+    posts: 120,
+    followers: 3400,
+    following: 180,
+  });
 
   useEffect(() => {
     async function fetchUserDetails() {
@@ -13,7 +29,14 @@ function UserInfoPage({ userId }) {
         );
         const data = await response.json();
         console.log("Fetched user is : ", data);
-        setUser(data);
+        if (data != null) {
+          setUser((prevUser) => ({
+            ...prevUser,
+            name: data.name,
+            username: data.username,
+            bio: data.bio,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -24,39 +47,76 @@ function UserInfoPage({ userId }) {
     fetchUserDetails();
   }, [userId]);
 
-  if (loading) {
-    return (
-      <div className="user-profile-container">
-        <div className="loading-indicator">Loading...</div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/posts/allPosts/${userId}`
+        );
+        setPosts(res.data.gallery);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      }
+    };
 
-  if (!user) {
-    return (
-      <div className="user-profile-container">
-        <div className="error-message">User not found.</div>
-      </div>
-    );
-  }
+    fetchPosts();
+  }, []);
 
   return (
-    <div className="user-profile-container">
-      <div className="user-profile-card">
-        <div className="profile-picture-section">
-          <img
-            src={user.profilePicture || "/default-profile.png"}
-            alt="Profile"
-            className="profile-picture"
-          />
-        </div>
-        <div className="user-info-section">
-          <h1 className="user-name">{user.name}</h1>
-          <p className="user-username">@{user.userName}</p>
-          <p className="user-email">{user.email}</p>
-          <p className="user-bio">{user.bio || "No bio available."}</p>
-        </div>
+    <div className="mainPage">
+      <div className="navbar">
+        <Navbar />
       </div>
+
+      {loading ? (
+        <div className="rightPart">Loading...</div>
+      ) : user == null ? (
+        <div className="rightPart">User not found</div>
+      ) : (
+        <div className="rightPart">
+          <div className="profile-container">
+            <div className="profile-header">
+              <img
+                className="profile-pic"
+                src={user.profilePicture}
+                alt="Profile"
+              />
+              <div className="profile-info">
+                <div className="top-row">
+                  <h2>{user.username}</h2>
+                  {/* <button className="edit-btn">Edit Profile</button> */}
+                </div>
+                <div className="stats">
+                  <span>
+                    <strong>{user.posts}</strong> posts
+                  </span>
+                  <span>
+                    <strong>{user.followers}</strong> followers
+                  </span>
+                  <span>
+                    <strong>{user.following}</strong> following
+                  </span>
+                </div>
+                <div className="bio">
+                  <strong>{user.name}</strong>
+                  <p>{user.bio}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="gallery">
+              {posts.map((post) => (
+                <img
+                  className="img"
+                  key={post.postId}
+                  src={post.imageUrl}
+                  alt={post.caption}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

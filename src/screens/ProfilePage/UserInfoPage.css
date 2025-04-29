@@ -1,78 +1,54 @@
-/* Full screen container */
-.user-profile-container {
+.profile-container {
+  width: 100%;
   height: 100vh;
-  width: 100vw;
-  background-color: #fafafa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* Card layout like Instagram */
-.user-profile-card {
-  display: flex;
-  flex-direction: row;
-  background-color: #fff;
-  border: 1px solid #dbdbdb;
-  border-radius: 10px;
-  width: 70%;
-  max-width: 900px;
-  padding: 40px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-  gap: 40px;
-}
-
-/* Profile image section */
-.profile-picture-section {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.profile-picture {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-}
-
-/* User info section */
-.user-info-section {
-  flex: 2;
-  display: flex;
+  flex: auto;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: start;
+  overflow: auto;
+  font-family: Arial, sans-serif;
 }
 
-.user-name {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 10px;
+.profile-header {
+  width: 100%;
+  justify-content: space-evenly;
+  display: flex;
+  align-items: center;
 }
 
-.user-username {
-  font-size: 18px;
-  color: black;
-  margin-bottom: 10px;
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.user-email {
+.top-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.stats {
+  display: flex;
+  gap: 30px;
+  margin: 20px 0;
   font-size: 16px;
-  color: black;
-  margin-bottom: 10px;
 }
 
-.user-bio {
-  font-size: 16px;
-  color: black;
+.bio {
+  font-size: 15px;
 }
 
-.loading-indicator,
-.error-message {
-  font-size: 24px;
-  color: #555;
-  text-align: center;
+.gallery {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.img {
+  height: 350px;
+  width: 300px;
+  margin: 5px;
+  object-fit: contain;
+  background-color: bisque;
 }
