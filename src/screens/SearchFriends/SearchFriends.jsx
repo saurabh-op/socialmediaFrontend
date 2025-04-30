@@ -73,10 +73,10 @@ const SearchPage = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              username: localStorage.getItem("username"),
-              name: localStorage.getItem("name"),
-              userid: localStorage.getItem("id"),
-              userimg: "https://randomuser.me/api/portraits/men/75.jpg",
+              senderusername: localStorage.getItem("username"),
+              sendername: localStorage.getItem("name"),
+              senderid: localStorage.getItem("id"),
+              senderimage: "https://randomuser.me/api/portraits/men/75.jpg",
             }),
           }
         );

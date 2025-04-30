@@ -64,7 +64,7 @@ function Feed() {
     <div className="mainPage">
       <div className="navbar">
         <Navbar />
-        <div>
+        <div >
           <button onClick={() => setShowPicker(true)} className="upload-btn">
             Upload
           </button>

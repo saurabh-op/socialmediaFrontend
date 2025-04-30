@@ -63,12 +63,13 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      console.log("Calling login api ");
       const response = await axios.post(
         "http://localhost:8080/api/users/login",
         details
       );
       const data = response.data;
-
+      console.log(data);
       if (data.mes === "match") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("name", data.name);

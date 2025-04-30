@@ -10,7 +10,7 @@ import { useNavigate, useLocation, matchPath } from "react-router-dom";
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const userId = localStorage.getItem("id");
+  const userId = localStorage.getItem("userid");
 
   const tabs = [
     { name: "Home", icon: home, path: "/feed" },
@@ -18,6 +18,7 @@ function Navbar() {
     { name: "Chats", icon: chat, path: "/chats" },
     { name: "Notifications", icon: noti, path: "/notifications" },
     { name: "Profile", icon: profile, path: `/profile/${userId}` },
+    { name: "switch", icon: profile, path: `/` },
   ];
 
   return (
