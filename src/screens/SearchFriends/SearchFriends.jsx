@@ -63,7 +63,7 @@ const SearchPage = () => {
 
   const sendRequest = async (id) => {
     try {
-      const myid = localStorage.getItem("id");
+      const myid = localStorage.getItem("userid");
       if (myid != id) {
         const response = await fetch(
           `http://localhost:8080/api/request/send/${id}`,
@@ -75,7 +75,7 @@ const SearchPage = () => {
             body: JSON.stringify({
               senderusername: localStorage.getItem("username"),
               sendername: localStorage.getItem("name"),
-              senderid: localStorage.getItem("id"),
+              senderid: localStorage.getItem("userid"),
               senderimage: "https://randomuser.me/api/portraits/men/75.jpg",
             }),
           }

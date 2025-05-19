@@ -72,12 +72,14 @@ function UserInfoPage() {
   }, [userId]);
 
   useEffect(() => {
+    console.log("loading images .. ");
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
           `http://localhost:8080/api/posts/allPosts/${userId}`
         );
         setPosts(res.data.gallery);
+        console.log("loading images completed  .. ");
       } catch (err) {
         console.error("Error fetching posts:", err);
       }

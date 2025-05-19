@@ -48,7 +48,7 @@ export default function ImagePicker() {
 
   const uploadPost = async (imageFile, caption) => {
     try {
-      const userId = localStorage.getItem("id");
+      const userId = localStorage.getItem("userid");
 
       if (!imageFile || !caption || !userId) {
         alert("Missing data");

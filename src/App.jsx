@@ -4,6 +4,7 @@ import Login from "./screens/LoginSignup/Login";
 import SignUp from "./screens/LoginSignup/SignUp";
 import Feed from "./screens/Feed/Feed";
 import SearchPage from "./screens/SearchFriends/SearchFriends";
+import ChatPage from "./screens/Messages/chatPage";
 import UserInfoPage from "./screens/ProfilePage/UserInfoPage";
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/feed" element={<Feed />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/chat" element={<SearchPage />} />
+        <Route path="/chat" element={<ChatPage />} />
         <Route path="/notification" element={<SearchPage />} />{" "}
         <Route path="/profile/:userId" element={<UserInfoPage />} />
       </Routes>

@@ -15,7 +15,7 @@ function Navbar() {
   const tabs = [
     { name: "Home", icon: home, path: "/feed" },
     { name: "Search", icon: search, path: "/search" },
-    { name: "Chats", icon: chat, path: "/chats" },
+    { name: "Chats", icon: chat, path: "/chat" },
     { name: "Notifications", icon: noti, path: "/notifications" },
     { name: "Profile", icon: profile, path: `/profile/${userId}` },
     { name: "switch", icon: profile, path: `/` },

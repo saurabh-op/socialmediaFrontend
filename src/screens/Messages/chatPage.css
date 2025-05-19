@@ -58,3 +58,6 @@
 .chat-input button:hover {
   background-color: #357ab7;
 }
+.boxer {
+  display: flex;
+}

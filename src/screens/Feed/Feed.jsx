@@ -33,7 +33,7 @@ function Feed() {
 
   // const createPost = async () => {
   //   try {
-  //     const id = localStorage.getItem("id");
+  //     const id = localStorage.getItem("userid");
   //     setUserid(id);
   //     console.log("creating post the id is:");
   //     console.log(id);
@@ -64,7 +64,7 @@ function Feed() {
     <div className="mainPage">
       <div className="navbar">
         <Navbar />
-        <div >
+        <div>
           <button onClick={() => setShowPicker(true)} className="upload-btn">
             Upload
           </button>
