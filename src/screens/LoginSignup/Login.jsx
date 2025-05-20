@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-
+import { useWebSocket } from "../../services/webSocketContext";
 function Login() {
+  const { connect, disconnect } = useWebSocket();
   const navigate = useNavigate();
   const [isAuthenticating, setAuthenticating] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -11,48 +12,6 @@ function Login() {
     username: "",
     password: "",
   });
-
-  // useEffect(() => {
-  //   console.log("loging screen");
-  //   setAuthenticating(true);
-  //   const storedUsername = localStorage.getItem("username");
-  //   const storedPassword = localStorage.getItem("password");
-  //   console.log("username", storedUsername, "password", storedPassword);
-
-  //   if (storedUsername && storedPassword) {
-  //     console.log("verifying creds");
-  //     verifyCredentials(storedUsername, storedPassword);
-  //   } else {
-  //     setAuthenticating(false);
-  //   }
-  // }, []);
-
-  // const verifyCredentials = async (username, password) => {
-  //   try {
-  //     const response = await fetch("http://localhost:8080/api/users/login", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ username, password }),
-  //     });
-
-  //     const data = await response.json();
-  //     console.log(data);
-
-  //     if (data.mes === "match") {
-  //       console.log("match");
-  //       setAuthenticating(false);
-  //       navigate("/feed");
-  //     } else {
-  //       setAuthenticating(false);
-  //     }
-  //   } catch {
-  //     setAuthenticating(false);
-  //   } finally {
-  //     setAuthenticating(false);
-  //   }
-  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,7 +35,8 @@ function Login() {
         localStorage.setItem("username", data.username);
         localStorage.setItem("userid", data.id);
         localStorage.setItem("password", data.password);
-
+        disconnect();
+        connect(data.id);
         setLoading(false);
         navigate("/feed");
       }

@@ -22,7 +22,7 @@
   padding: 15px;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 12px;
 }
 

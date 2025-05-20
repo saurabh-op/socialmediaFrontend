@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import "./chatPage.css";
@@ -13,6 +14,9 @@ import "./newChatPopUp.css";
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);
   const chatHistoryRef = useRef(null);
+
+  const currentOtherUserRef = useRef("");
+  const { registerMessageHandler, unregisterMessageHandler } = useWebSocket();
 
   const [newchatid, setNewChatId] = useState("");
   const [search, setSearch] = useState("");
@@ -31,12 +35,24 @@ function ChatPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [currentChatid, setCurrentChatId] = useState("");
   const [currentOtherUser, setcurrentOtherUser] = useState("");
+
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chatHistory]);
-  const bottomRef = useRef(null);
+    currentOtherUserRef.current = currentOtherUser;
+  }, [currentOtherUser]);
+
+  useEffect(() => {
+    const messageHandler = (newMessage) => {
+      console.log("Received message inside the chatpage :", newMessage);
+      console.log("Current other user:", currentOtherUserRef.current);
+
+      if (newMessage.sid === currentOtherUserRef.current) {
+        setChatHistory((prev) => [newMessage, ...prev]);
+      }
+    };
+
+    registerMessageHandler(messageHandler);
+    return () => unregisterMessageHandler(messageHandler);
+  }, [registerMessageHandler, unregisterMessageHandler]);
 
   useEffect(() => {
     if (currentChatid) {
@@ -189,6 +205,7 @@ function ChatPage() {
     setChatHistory([]);
     setCurrentChatId(chatId);
     setcurrentOtherUser(userName);
+    console.log("Other user set to:", userName);
     setCurrentPage(0);
   }
   function renderChatList() {
@@ -278,11 +295,10 @@ function ChatPage() {
       )
       .then((response) => {
         console.log("Message sent successfully:", response.data);
-        setChatHistory((chatHistory) => [...chatHistory, response.data]); // Append new message to the bottom
+
+        setChatHistory((chatHistory) => [response.data, ...chatHistory]);
+
         setMessage("");
-        if (bottomRef.current) {
-          bottomRef.current.scrollIntoView({ behavior: "smooth" }); // Scroll to the bottom
-        }
       })
       .catch((error) => {
         console.error("Error sending message:", error);
@@ -322,8 +338,7 @@ function ChatPage() {
               ) : (
                 <div>No messages yet.</div>
               )}
-
-              <div ref={bottomRef} />
+              {/* <div ref={bottomRef} /> */}
             </div>
 
             <div className="chat-input-area">

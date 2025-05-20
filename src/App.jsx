@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { WebSocketProvider } from "./services/webSocketContext.jsx";
 import "./App.css";
 import Login from "./screens/LoginSignup/Login";
 import SignUp from "./screens/LoginSignup/SignUp";
@@ -9,17 +11,19 @@ import UserInfoPage from "./screens/ProfilePage/UserInfoPage";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />}></Route>
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/notification" element={<SearchPage />} />{" "}
-        <Route path="/profile/:userId" element={<UserInfoPage />} />
-      </Routes>
-    </BrowserRouter>
+    <WebSocketProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/notification" element={<SearchPage />} />{" "}
+          <Route path="/profile/:userId" element={<UserInfoPage />} />
+        </Routes>
+      </BrowserRouter>{" "}
+    </WebSocketProvider>
   );
 }
 
