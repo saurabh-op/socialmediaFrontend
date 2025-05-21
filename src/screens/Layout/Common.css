@@ -13,7 +13,7 @@
 .navbar {
   flex-shrink: 0;
   align-items: start;
-  width: 10px;
+  width: fit-content;
   height: 100vh;
   background: white;
   display: flex;

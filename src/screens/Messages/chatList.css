@@ -1,46 +1,58 @@
 .chatListContainer {
-  width: 40%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
-  height: 98vh; /* Fixed height: full screen */
-  min-width: 200px;
-  background: rgb(234, 44, 218);
-  margin: 10px;
-  padding: 5px;
+  height: 98vh;
   box-sizing: border-box;
+  padding: 10px;
+  background: rgb(230, 246, 198); /* or whatever color you want */
+  border-radius: 12px;
 }
 
 .List {
+  background-color: white;
   width: auto;
   overflow-y: auto;
   margin-bottom: 10px;
-}
-
-.chat-item {
-  margin: 2px;
-  display: flex;
-  flex-direction: column;
   padding: 10px;
-  border: 1px solid #000000;
-  position: relative;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
 }
 
-.chat-username {
+.chatListItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px; /* or whatever gap you want */
+  padding: 8px 8px;
+  margin: 5px 0;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.username {
+  font-weight: bold;
+  margin: 0;
+  color: #333;
   font-size: 16px;
-  margin: 0;
 }
 
-.chat-timestamp {
-  font-size: 12px;
+.time {
   color: gray;
-  position: absolute;
-  bottom: 5px;
-  right: 10px;
+  white-space: nowrap;
   margin: 0;
+  font-size: 12px;
+  text-align: right;
 }
-.chat-item:hover {
+
+.chatListItem:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #e0e0e0;
+  transition: all 0.2s ease;
 }
 
 h3 {
@@ -56,7 +68,7 @@ p {
 }
 
 strong {
-  color: #007bff;
+  color: black;
 }
 
 .newChatBtn {
@@ -66,4 +78,7 @@ strong {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease; /* Smooth transition */   
+  
 }

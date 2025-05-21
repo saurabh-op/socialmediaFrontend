@@ -45,13 +45,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-.img {
-  height: 350px;
-  width: 300px;
-  margin: 5px;
-  object-fit: contain;
-  background-color: bisque;
-}
+
+
 .modal {
   background-color: #fff;
   padding: 20px;

@@ -59,5 +59,6 @@
   background-color: #357ab7;
 }
 .boxer {
+  width: 100%;
   display: flex;
 }

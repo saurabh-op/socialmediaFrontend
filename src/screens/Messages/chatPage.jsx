@@ -197,7 +197,11 @@ function ChatPage() {
     return (
       <div className="boxer">
         {renderChatList()}
-        {currentChatid ? viewChat() : "Select a chat"}
+        {currentChatid ? (
+          viewChat()
+        ) : (
+          <div className="select_a_chat">Select a chat</div>
+        )}
       </div>
     );
   }
@@ -219,23 +223,18 @@ function ChatPage() {
               {chatList.map((chat) => (
                 <div
                   key={chat.chatId}
-                  className="chat-item"
+                  className="list-item"
                   onClick={() =>
                     setChatInfo(chat.chatId, chat.otherPersonUserName)
                   }
                 >
-                  <div className="chat-item-content">
-                    <p className="chat-username">
-                      <strong>{chat.otherPersonUserName}</strong>
-                    </p>
-                    <p className="chat-timestamp">
-                      {new Date(chat.timeStamp).toLocaleString("en-US", {
+                  <div className="chatListItem">
+                    <p className="username">{chat.otherPersonUserName}</p>
+                    <p className="time">
+                      {new Date(chat.timeStamp).toLocaleTimeString("en-US", {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: true,
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
                       })}
                     </p>
                   </div>
@@ -331,14 +330,16 @@ function ChatPage() {
                   >
                     <div className="message-text">{msg.tex}</div>
                     <div className="timestamp">
-                      {new Date(msg.tim).toLocaleTimeString()}
+                      {new Date(msg.tim).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </div>
                   </div>
                 ))
               ) : (
                 <div>No messages yet.</div>
               )}
-              {/* <div ref={bottomRef} /> */}
             </div>
 
             <div className="chat-input-area">

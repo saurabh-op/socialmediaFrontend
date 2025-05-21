@@ -2,7 +2,7 @@
 .sideBar {
   flex-shrink: 0;
   align-items: start;
-  width: 100px;
+  width: fit-content;
   height: 100vh;
   background: white;
   display: flex;
@@ -15,6 +15,7 @@
 
 .sideBarElements {
   padding: 20px 14px;
+  width: fit-content;
   display: flex;
   align-items: start;
   align-items: center;
