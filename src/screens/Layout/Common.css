@@ -11,9 +11,9 @@
 }
 
 .navbar {
+  width: 200px;
   flex-shrink: 0;
   align-items: start;
-  width: fit-content;
   height: 100vh;
   background: white;
   display: flex;
@@ -24,10 +24,9 @@
   box-sizing: border-box;
 }
 
-.rightPart {
-  background: rgb(230, 246, 198);
+.rightSide {
+  background: rgb(255 255 255);
   width: 100%;
   height: 100%;
   overflow: auto;
-  padding: 20px;
 }

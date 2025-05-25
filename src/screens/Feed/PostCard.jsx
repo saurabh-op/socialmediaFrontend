@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
 
-import post from "../../assets/post.png";
 import "./PostCard.css";
+import userLogo from "../../assets/man.jpg"; // Replace with actual user logo URL
 
-function PostCard() {
+function PostCard({ post }) {
   const [showComments, setDisplayComments] = useState(false);
   const [isCommentLoading, setisCommentLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [commentsList, setCommentsList] = useState([]);
   const [liked, setLike] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleCaption = () => {
+    setExpanded(!expanded);
+  };
+  useEffect(() => {
+    const textarea = document.querySelector(".comment-textarea");
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+  }, [comment]);
 
   const LoadComments = async () => {
     setDisplayComments(true);
@@ -32,32 +44,60 @@ function PostCard() {
     setCommentsList((prev) => [...prev, comment]);
     setComment("");
   };
+  const getTimeAgo = (timestamp) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const seconds = Math.floor((now - time) / 1000);
+
+    if (seconds < 60) return `${seconds} secs ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} mins ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hours ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} days ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} months ago`;
+    const years = Math.floor(months / 12);
+    return `${years} year`;
+  };
+
   return (
     <div className="post-card">
-      {/* Top: User Info */}
       <div className="post-top">
-        <img src={post.userLogo} alt="User" className="user-logo" />
-        <span className="user-name">username</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src={userLogo} alt="User" className="user-logo" />
+          <span className="user-name">{post.owner}</span>
+        </div>
+        <div className="post-timestamp">{getTimeAgo(post.timestamp)}</div>
       </div>
-      {/* Middle: Post Image */}
       <div className="post-middle">
-        <img src={post} alt="Post" className="post-image" />
+        <img src={post.imageUrl} alt="Post" className="post-image" />
       </div>
-      {/* Bottom: Actions */}
-      <div className="post-bottom">
-        <button className="action-btn" onClick={() => setLike(!liked)}>
+
+      <div
+        onClick={toggleCaption}
+        style={{ userSelect: "none" }}
+        className={`post-caption ${expanded ? "expanded" : ""}`}
+      >
+        {post.caption}
+      </div>
+      <div className="comment-input-container">
+        <textarea
+          className="comment-textarea"
+          placeholder="Write a comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          rows={1}
+        />
+        <button
+          className={`like-btn ${liked ? "liked" : ""}`}
+          onClick={() => setLike(!liked)}
+        >
           {liked ? "❤️" : "🤍"}
         </button>
-
-        <button
-          className="action-btn"
-          onClick={showComments ? handleClose : LoadComments}
-        >
-          {showComments ? "Close" : "💬 Comment"}
-        </button>
       </div>
 
-      {/* Comments Section */}
       {showComments && (
         <div className="comment-section">
           {isCommentLoading ? (

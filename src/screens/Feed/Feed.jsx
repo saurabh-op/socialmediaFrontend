@@ -2,63 +2,76 @@ import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import "../Layout/Common.css";
 import Navbar from "../Layout/Navbar";
-import upload from "../../assets/upload.png";
 import "./Feed.css";
 import ImagePicker from "./imagePicker";
+import { useWebSocket } from "../../services/webSocketContext";
 
 function Feed() {
-  const [isLoading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
+
   const [userid, setUserid] = useState();
   const [showPicker, setShowPicker] = useState(false);
 
+  //Related to feed :
+  const [isFeedLoading, setisFeedLoading] = useState(false);
+  const [feedList, setFeedList] = useState([]);
+  const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
+  const [selectedPostLikeList, setSelectedPostLikeList] = useState([]);
+
   useEffect(() => {
-    const fetchPosts = async () => {
+    const userId = localStorage.getItem("userid");
+    console.log("geeting feed of ", userId);
+
+    const fetchFeed = async () => {
       try {
-        setLoading(true);
+        setisFeedLoading(true);
         const response = await fetch(
-          "https://jsonplaceholder.typicode.com/posts"
+          `http://localhost:8080/api/feed/feedPosts/${userId}`
         );
         const data = await response.json();
-        setPosts(data);
+        console.log("feed data", data);
+        setFeedList(data || []);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching feed:", error);
+        setFeedList([]);
       } finally {
-        setLoading(false);
+        setisFeedLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchFeed();
   }, []);
 
-  // const createPost = async () => {
-  //   try {
-  //     const id = localStorage.getItem("userid");
-  //     setUserid(id);
-  //     console.log("creating post the id is:");
-  //     console.log(id);
-  //     const response = await fetch(
-  //       `http://localhost:8080/api/posts/${userid}/addPost`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           owner: userid,
-  //         }),
-  //       }
-  //     );
-  //     const result = await response.json();
-  //     if (response.ok) {
-  //       alert("Post created");
-  //     } else {
-  //       console.error("Error creating post:", result);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
+  useEffect(() => {
+    const handleNewFeedPost = (newPost) => {
+      setFeedList((prev) => [newPost, ...prev]);
+    };
+
+    registerFeedHandler(handleNewFeedPost);
+    return () => unregisterFeedHandler(handleNewFeedPost);
+  }, [registerFeedHandler, unregisterFeedHandler]);
+
+  function userFeed() {
+    return (
+      <div>
+        {isFeedLoading ? (
+          "Loading ..."
+        ) : (
+          <div className="feed-list-scrollable">
+            {Array.isArray(feedList) && feedList.length > 0 ? (
+              feedList.map((post, index) => (
+                <div key={post.postId || index}>
+                  <PostCard post={post} />
+                </div>
+              ))
+            ) : (
+              <div className="no-feed-message">No posts to show.</div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="mainPage">
@@ -70,40 +83,16 @@ function Feed() {
           </button>
         </div>
       </div>
-      <div className="rightPart">
+      <div className="rightSide">
         {showPicker ? (
           <div className="imagePicker">
             <button className="back-btn" onClick={() => setShowPicker(false)}>
               Go Back
             </button>
-
             <ImagePicker />
           </div>
         ) : (
-          <div>
-            <h2>Posts</h2>
-            {isLoading ? (
-              "Loading ..."
-            ) : (
-              <div>
-                <div>
-                  <PostCard />
-                </div>
-                <div>
-                  <PostCard />
-                </div>
-                <div>
-                  <PostCard />
-                </div>
-                <div>
-                  <PostCard />
-                </div>
-                <div>
-                  <PostCard />
-                </div>
-              </div>
-            )}
-          </div>
+          userFeed()
         )}
       </div>
     </div>

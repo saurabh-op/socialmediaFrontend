@@ -28,3 +28,22 @@
 .back-btn:hover {
   background-color: whitesmoke;
 }
+
+.no-feed-message {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin: 40px 0;
+  padding: 24px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.feed-list-scrollable {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}

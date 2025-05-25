@@ -12,6 +12,7 @@ export const WebSocketProvider = ({ children }) => {
   // Handler sets for chat and notifications
   const messageHandlersRef = useRef(new Set());
   const notificationHandlersRef = useRef(new Set());
+  const feedHandlerRef = useRef(new Set());
 
   const connect = (userId) => {
     if (stompClientRef.current?.connected) return;
@@ -24,6 +25,7 @@ export const WebSocketProvider = ({ children }) => {
       onConnect: () => {
         console.log("✅ WebSocket connected");
 
+        // subscribe to chat messages
         client.subscribe(`/topic/${userId}/chat`, (msg) => {
           const messageData = JSON.parse(msg.body);
           console.log("Received chat message via ws:", messageData);
@@ -47,6 +49,19 @@ export const WebSocketProvider = ({ children }) => {
             }
           });
         });
+
+        // subscribe to feed  "/topic/" + followerId + "/feed"
+        client.subscribe(`/topic/${userId}/feed`, (msg) => {
+          const feedData = JSON.parse(msg.body);
+          console.log("Received feed message via ws:", feedData);
+          feedHandlerRef.current.forEach((handler) => {
+            try {
+              handler(feedData);
+            } catch (err) {
+              console.error("Error in feed message handler:", err);
+            }
+          });
+        });
       },
       onStompError: (frame) => {
         console.error("❌ Broker error:", frame.headers["message"]);
@@ -61,7 +76,8 @@ export const WebSocketProvider = ({ children }) => {
     stompClientRef.current = client;
   };
 
-  const disconnect = () => {``
+  const disconnect = () => {
+    ``;
     if (stompClientRef.current) {
       stompClientRef.current.deactivate();
       stompClientRef.current = null;
@@ -69,6 +85,7 @@ export const WebSocketProvider = ({ children }) => {
     // Clear handlers on disconnect
     messageHandlersRef.current.clear();
     notificationHandlersRef.current.clear();
+    feedHandlerRef.current.clear();
   };
 
   // Chat message handlers
@@ -89,6 +106,15 @@ export const WebSocketProvider = ({ children }) => {
     notificationHandlersRef.current.delete(handler);
   };
 
+  // Feed handlers
+  const registerFeedHandler = (handler) => {
+    feedHandlerRef.current.add(handler);
+  };
+
+  const unregisterFeedHandler = (handler) => {
+    feedHandlerRef.current.delete(handler);
+  };
+
   return (
     <WebSocketContext.Provider
       value={{
@@ -99,6 +125,8 @@ export const WebSocketProvider = ({ children }) => {
         unregisterMessageHandler,
         registerNotificationHandler,
         unregisterNotificationHandler,
+        registerFeedHandler,
+        unregisterFeedHandler,
       }}
     >
       {children}
