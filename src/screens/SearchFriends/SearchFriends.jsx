@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
-import "./userPreview.css";
+import "./UserPreview.css";
 import lock from "../../assets/lock.png";
 const SearchPage = () => {
   const [search, setSearch] = useState("");
