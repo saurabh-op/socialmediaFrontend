@@ -3,7 +3,7 @@ import PostCard from "./PostCard";
 import "../Layout/Common.css";
 import Navbar from "../Layout/Navbar";
 import "./Feed.css";
-import ImagePicker from "./imagePicker";
+import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
 
 function Feed() {
