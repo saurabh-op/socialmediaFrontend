@@ -1,16 +1,88 @@
-.sideBarElements {
-  width: 200px;
-  padding: 20px 14px;
-  width: fit-content;
+.navbar-container {
   display: flex;
-  align-items: start;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  flex-direction: row;
-  height: 20px;
+  justify-content: space-between;
+  height: 100vh;
+  width: auto;
+  transition: width 0.3s ease;
+  box-sizing: border-box;
 }
+
+.navbar-container.collapsed {
+  align-items: stretch;
+  justify-content: space-between;
+  width: 60px;
+}
+
 .Ziffy {
-  padding: 22px 14px;
+  padding: 20px 30px;
   font-size: 22px;
   font-weight: bold;
+  text-align: left;
+  transition: text-align 0.3s ease;
+}
+
+.navbar-container.collapsed .Ziffy {
+  text-align: center;
+  padding: 20px;
+}
+
+.sideBarElements {
+  font-family: "Poppins", sans-serif;
+  padding: 20px 70px 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  height: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: justify-content 0.3s ease, color 0.3s ease;
+  color: #808080;
+  justify-content: flex-start;
+}
+
+.sideBarElements:hover {
+  background-color: #e5e5e5;
+}
+
+.sideBarElements.active {
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  padding: 20px 30px;
+  color: #000000;
+  font-weight: 800;
+}
+
+.navbar-container.collapsed .sideBarElements {
+  align-items: center;
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.navbar-container.collapsed .sideBarElements span {
+  display: none;
+}
+
+.collapse-btn {
+  width: auto;
+  padding: 5px 12px;
+  font-size: 25px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: none;
+  border: solid 1px #000000;
+  color: #000000;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.collapse-btn:hover {
+  padding: 5px 12px;
+  background-color: #000000;
+  border: solid 2px #000000;
+  color: #ffffff;
 }

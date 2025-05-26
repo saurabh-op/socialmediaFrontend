@@ -1,9 +1,7 @@
-/* Full screen layout */
-.mainPage {
+.mainpage {
   height: 100vh;
-  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: start;
   flex-direction: row;
   overflow: hidden;
@@ -11,22 +9,20 @@
 }
 
 .navbar {
-  width: 200px;
-  flex-shrink: 0;
-  align-items: start;
+  border-right: 2px solid #ccc;
+  align-items: stretch;
+  justify-content: space-between;
   height: 100vh;
-  background: white;
   display: flex;
   flex-direction: column;
-  padding: 14px;
+  overflow-x: hidden;
   overflow-y: auto;
-  border-right: 1px solid #ccc;
   box-sizing: border-box;
 }
 
 .rightSide {
-  background: rgb(255 255 255);
-  width: 100%;
+  position: relative;
   height: 100%;
   overflow: auto;
+  width: 100%;
 }

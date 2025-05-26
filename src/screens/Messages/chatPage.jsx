@@ -212,6 +212,29 @@ function ChatPage() {
     console.log("Other user set to:", userName);
     setCurrentPage(0);
   }
+
+  function formatChatTime(timestamp) {
+    const now = new Date();
+    const date = new Date(timestamp);
+
+    const isToday = date.toDateString() === now.toDateString();
+
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = date.toDateString() === yesterday.toDateString();
+
+    const timeString = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    if (isToday) return `Today ${timeString}`;
+    if (isYesterday) return `Yesterday ${timeString}`;
+
+    return `${date.toLocaleDateString("en-GB")}`;
+  }
+
   function renderChatList() {
     return (
       <div className="chatListContainer">
@@ -229,14 +252,8 @@ function ChatPage() {
                   }
                 >
                   <div className="chatListItem">
-                    <p className="username">{chat.otherPersonUserName}</p>
-                    <p className="time">
-                      {new Date(chat.timeStamp).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </p>
+                    <p className="chl-username">{chat.otherPersonUserName}</p>
+                    <p className="time">{formatChatTime(chat.timeStamp)}</p>
                   </div>
                 </div>
               ))}
@@ -363,12 +380,12 @@ function ChatPage() {
   };
 
   return (
-    <div className="mainPage">
+    <div className="mainpage">
       <div className="navbar">
         <Navbar />
       </div>
 
-      <div className="rightPart">
+      <div className="rightSide">
         {isLoadingChatList ? "Loading..." : <div>{renderChatRightPart()}</div>}
       </div>
     </div>

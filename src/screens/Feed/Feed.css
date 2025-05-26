@@ -1,9 +1,14 @@
 .upload-btn {
-  background-color: #007bff;
-  color: white;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ffffff;
+  width: auto;
+  color: #000000;
   font-weight: bold;
+  font-size: 18px;
   padding: 10px 20px;
-  border: none;
+  border: 2px solid #000000;
   border-radius: 8px;
   margin: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -12,7 +17,8 @@
 }
 
 .upload-btn:hover {
-  background-color: #0056b3;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .back-btn {

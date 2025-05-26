@@ -93,73 +93,82 @@ const SearchPage = () => {
     }
   };
 
-  return (
-    <div className="mainPage">
-      <div className="navbar">
-        <Navbar />
-      </div>
+  const List = React.memo(() => {
+    return (
       <div className="List">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search for a person..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="list">
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search for a person..."
+            value={search}
+            autoFocus
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <span className="clear-icon" onClick={() => setSearch("")}>
+              &times;
+            </span>
+          )}
+        </div>
+
+        <div className="srchlist">
           {results.length === 0 && search.trim() !== "" && (
             <p className="no-results">
               {searching ? "Searching..." : "No users found."}
             </p>
           )}
           {results.map((user) => (
-            <div className="listItem" onClick={() => getPreview(user.id)}>
+            <div
+              className="srchlistItem"
+              key={user.id}
+              onClick={() => getPreview(user.id)}
+            >
               <img
                 className="profilePic"
                 src="https://randomuser.me/api/portraits/men/75.jpg"
                 alt="avatar"
               />
-
-              <div className="user-info">
-                <span>
-                  <strong>{user.username}</strong>
-                </span>
+              <div className="srch-user-info">
+                <strong>{user.username}</strong>
                 <span>{user.name}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
+    );
+  });
+
+  function UserPreview() {
+    return (
       <div className="userPreview">
         {isloadingPreview ? (
           "Loading ..."
         ) : userPreview ? (
-          <div className="profile-container">
-            <img
-              src="https://randomuser.me/api/portraits/men/75.jpg"
-              alt={userPreview.name}
-              className="dp"
-            />
-            <div className="profile-details">
-              <span>
-                <h3>{userPreview.username}</h3>
-              </span>
-              <span>
-                {" "}
-                <h3>{userPreview.name}</h3>
-              </span>
-              <span>
-                {" "}
-                <p>{userPreview.bio}</p>
-              </span>
-              <div className="pvt">
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <img src={lock} height="20px" width="20px" alt="lock icon" />
-                  <p style={{ margin: 0 }}>Private Account</p>
+          <div className="srch-profile-container">
+            <div className="srch-cont1">
+              <img
+                src="https://randomuser.me/api/portraits/men/75.jpg"
+                alt={userPreview.name}
+                className="dp"
+              />
+              <div className="srch-profile-details">
+                <span>
+                  <h3>{userPreview.username}</h3>
                 </span>
+                <span>
+                  <h3>{userPreview.name}</h3>
+                </span>
+                <span>
+                  <p>{userPreview.bio}</p>
+                </span>
+              </div>
+            </div>
 
+            <div className="srch-cont2">
+              <div className="srch-pvt-actions">
+                <p className="srch-pvt">Private Account</p>
                 <button
                   className="follow-button"
                   onClick={() => sendRequest(userPreview.id)}
@@ -167,15 +176,24 @@ const SearchPage = () => {
                   {isSent ? "Requested" : "Follow"}
                 </button>
               </div>
+              <button className="srch-close-btn" onClick={() => setPreview()}>
+                ×
+              </button>
             </div>
-            <button className="close-btn" onClick={() => setPreview()}>
-              ×
-            </button>
           </div>
         ) : (
-          "Select the user to see details"
-        )}{" "}
+          <p className="no-user-selected">Select the user to see details</p>
+        )}
       </div>
+    );
+  }
+  return (
+    <div className="mainpage">
+      <div className="navbar">
+        <Navbar />
+      </div>
+      <List />
+      <UserPreview />
     </div>
   );
 };

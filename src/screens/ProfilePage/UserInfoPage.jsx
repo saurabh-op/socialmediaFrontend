@@ -182,7 +182,7 @@ function UserInfoPage() {
 
   function requestModal() {
     return (
-      <div className="rightPart">
+      <div className="rightSide">
         <div className="modal">
           <h2 className="modal-title">Friend Requests</h2>
           {requests.length == 0
@@ -221,7 +221,7 @@ function UserInfoPage() {
 
   function profileDetails() {
     return (
-      <div className="rightPart">
+      <div className="rightSide">
         <div className="profile-container">
           <div className="profile-header">
             <img
@@ -419,15 +419,15 @@ function UserInfoPage() {
   }
 
   return (
-    <div className="mainPage">
+    <div className="mainpage">
       <div className="navbar">
         <Navbar />
       </div>
 
       {loading ? (
-        <div className="rightPart">Loading...</div>
+        <div className="rightSide">Loading...</div>
       ) : user == null ? (
-        <div className="rightPart">User not found</div>
+        <div className="rightSide">User not found</div>
       ) : showModal ? (
         requestModal()
       ) : (

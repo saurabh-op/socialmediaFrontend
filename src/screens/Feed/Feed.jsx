@@ -74,14 +74,9 @@ function Feed() {
   }
 
   return (
-    <div className="mainPage">
+    <div className="mainpage">
       <div className="navbar">
         <Navbar />
-        <div>
-          <button onClick={() => setShowPicker(true)} className="upload-btn">
-            Upload
-          </button>
-        </div>
       </div>
       <div className="rightSide">
         {showPicker ? (
@@ -92,7 +87,17 @@ function Feed() {
             <ImagePicker />
           </div>
         ) : (
-          userFeed()
+          <div>
+            {userFeed()}
+            <div>
+              <button
+                onClick={() => setShowPicker(true)}
+                className="upload-btn"
+              >
+                Upload
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
