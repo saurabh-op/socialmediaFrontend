@@ -70,7 +70,7 @@ export default function ImagePicker() {
       } else {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/posts/${userId}/addPost`,
+            `https://ziffyconnect.onrender.com/api/posts/${userId}/addPost`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );

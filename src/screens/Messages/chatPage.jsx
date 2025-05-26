@@ -65,7 +65,7 @@ function ChatPage() {
     const fetchChatList = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/chatBook/${userid}`
+          `https://ziffyconnect.onrender.com/api/chatBook/${userid}`
         );
         setChatList(res.data);
         setChatListFetched(true);
@@ -92,7 +92,7 @@ function ChatPage() {
         } else {
           setSearching(true);
           const res = await fetch(
-            `http://localhost:8080/api/following/${userid}/${search}`
+            `https://ziffyconnect.onrender.com/api/following/${userid}/${search}`
           );
           const data = await res.json();
           console.log(data);
@@ -130,7 +130,7 @@ function ChatPage() {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/chatKeeper/new/${user1}/${user2}`
+        `https://ziffyconnect.onrender.com/api/chatKeeper/new/${user1}/${user2}`
       );
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
@@ -274,7 +274,7 @@ function ChatPage() {
     setIsLoadingChatHistory(true);
     axios
       .get(
-        `http://localhost:8080/api/chatKeeper/${currentChatid}?page=${currentPage}`
+        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}?page=${currentPage}`
       )
       .then((response) => {
         console.log("Chat history loaded:", response.data);
@@ -298,7 +298,7 @@ function ChatPage() {
 
     axios
       .post(
-        `http://localhost:8080/api/chatKeeper/${currentChatid}`,
+        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}`,
         {
           sid: senderId,
           tex: message,

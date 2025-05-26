@@ -27,7 +27,7 @@ function SignUp() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/signup",
+        "https://ziffyconnect.onrender.com/api/users/signup",
         user
       );
       const data = response.data;

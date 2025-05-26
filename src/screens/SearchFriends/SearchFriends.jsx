@@ -32,7 +32,7 @@ const SearchPage = () => {
       try {
         setSearching(true);
         const res = await fetch(
-          `http://localhost:8080/api/users/search/${debouncedSearch}`
+          `https://ziffyconnect.onrender.com/api/users/search/${debouncedSearch}`
         );
         const data = await res.json();
         console.log(data);
@@ -51,7 +51,9 @@ const SearchPage = () => {
   const getPreview = async (id) => {
     try {
       setLoadingPreview(true);
-      const res = await fetch(`http://localhost:8080/api/users/get/${id}`);
+      const res = await fetch(
+        `https://ziffyconnect.onrender.com/api/users/get/${id}`
+      );
       const data = await res.json();
       setSent(false);
       setLoadingPreview(false);
@@ -66,7 +68,7 @@ const SearchPage = () => {
       const myid = localStorage.getItem("userid");
       if (myid != id) {
         const response = await fetch(
-          `http://localhost:8080/api/request/send/${id}`,
+          `https://ziffyconnect.onrender.com/api/request/send/${id}`,
           {
             method: "POST",
             headers: {
