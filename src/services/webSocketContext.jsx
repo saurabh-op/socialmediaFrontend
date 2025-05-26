@@ -17,7 +17,7 @@ export const WebSocketProvider = ({ children }) => {
   const connect = (userId) => {
     if (stompClientRef.current?.connected) return;
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("https://ziffyconnect.onrender.com/ws");
 
     const client = new Client({
       webSocketFactory: () => socket,

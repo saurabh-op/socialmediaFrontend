@@ -22,7 +22,9 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("Calling login api ");
+      console.log(
+        "Calling login api https://ziffyconnect.onrender.com/api/users/login "
+      );
       const response = await axios.post(
         "https://ziffyconnect.onrender.com/api/users/login",
         details
