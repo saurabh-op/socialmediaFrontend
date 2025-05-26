@@ -8,7 +8,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: "globalThis", // 👈 Fixes "global is not defined"
+        global: "globalThis", 
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
