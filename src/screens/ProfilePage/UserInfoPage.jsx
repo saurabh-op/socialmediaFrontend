@@ -222,13 +222,9 @@ function UserInfoPage() {
   function profileDetails() {
     return (
       <div className="rightSide">
-        <div className="profile-container">
-          <div className="profile-header">
-            <img
-              className="profile-pic"
-              src={user.profilePicture}
-              alt="Profile"
-            />
+        <div className="profile">
+          <div className="idCard">
+            <img className="pic" src={user.profilePicture} alt="Profile" />
             <div className="profile-info">
               <div className="top-row">
                 <h2>{user.username}</h2>

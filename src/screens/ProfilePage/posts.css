@@ -1,6 +1,12 @@
 .img {
+  background-color: #ffe0eb;
+  margin: 10px;
+  padding: 20px;
   height: 350px;
   width: 300px;
-  margin: 5px;
+  border-radius: 20px;
   object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
