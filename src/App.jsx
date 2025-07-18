@@ -8,6 +8,7 @@ import Feed from "./screens/Feed/Feed";
 import SearchPage from "./screens/SearchFriends/SearchFriends";
 import ChatPage from "./screens/Messages/chatPage";
 import UserInfoPage from "./screens/ProfilePage/UserInfoPage";
+import Notification from "./screens/Notifications/notification.jsx";
 
 function App() {
   return (
@@ -19,10 +20,10 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/chat" element={<ChatPage />} />
-          <Route path="/notification" element={<SearchPage />} />{" "}
+          <Route path="/notification" element={<Notification />} />
           <Route path="/profile/:userId" element={<UserInfoPage />} />
         </Routes>
-      </BrowserRouter>{" "}
+      </BrowserRouter>
     </WebSocketProvider>
   );
 }

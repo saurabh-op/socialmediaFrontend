@@ -53,3 +53,31 @@
   overflow-y: auto;
   padding-right: 8px;
 }
+@media (max-width: 600px) {
+  .upload-btn {
+    position: fixed; /* Change from absolute to fixed for mobile */
+    bottom: 80px; /* Leave space above bottom navbar */
+    right: 16px;
+    font-size: 16px;
+    padding: 8px 16px;
+    margin: 0;
+    border-width: 1.5px;
+    z-index: 100; /* Stay on top of other elements */
+  }
+
+  .no-feed-message {
+    font-size: 1rem;
+    margin: 24px 0;
+    padding: 16px;
+  }
+
+  .feed-list-scrollable {
+    padding: 8px;
+    max-height: calc(100vh - 60px); /* Prevent overlap with navbar */
+  }
+
+  .back-btn {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+}

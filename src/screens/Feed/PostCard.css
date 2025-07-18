@@ -5,8 +5,8 @@
   margin: 10px auto;
   height: auto;
   max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* soft shadow */
-  background-color: #fff; /* add white bg for shadow to show nicely */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
 }
 
 .post-top {
@@ -192,4 +192,6 @@
   font-size: 14px;
   color: #777;
   padding: 10px 0;
+}
+@media (max-width: 600px) {
 }

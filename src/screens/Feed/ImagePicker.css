@@ -108,3 +108,45 @@
     transform: rotate(360deg);
   }
 }
+@media (max-width: 768px) {
+  .image-box {
+    width: 90vw;
+    height: 50vh;
+    padding: 10px;
+  }
+
+  .caption-textarea {
+    width: 90vw;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .upload {
+    bottom: 70px; /* Adjust to avoid overlapping bottom navbar */
+    right: 20px;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .Choose {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .clear-btn {
+    top: 10px;
+    right: 20px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .preview-img {
+    object-fit: contain;
+  }
+}

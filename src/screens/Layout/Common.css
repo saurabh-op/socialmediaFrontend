@@ -5,24 +5,43 @@
   align-items: start;
   flex-direction: row;
   overflow: hidden;
-  font-family: Arial, sans-serif;
 }
 
 .navbar {
-  border-right: 2px solid #ccc;
-  align-items: stretch;
-  justify-content: space-between;
+  border-right: 1px solid #0000004c;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: auto;
-  box-sizing: border-box;
+  background-color: #ffffff;
 }
 
 .rightSide {
-  position: relative;
   height: 100%;
   overflow: auto;
   width: 100%;
+}
+
+@media (max-width: 600px) {
+  .mainpage {
+    flex-direction: column;
+  }
+
+  .navbar {
+    align-items: center;
+    justify-content: space-evenly;
+    border-top: 1px solid #0000004c;
+    height: 60px;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .rightSide {
+    height: calc(100vh - 60px);
+    width: 100vw;
+  }
 }

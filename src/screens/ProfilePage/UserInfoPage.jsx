@@ -250,7 +250,9 @@ function UserInfoPage() {
                 >
                   <strong>{user.following}</strong> following
                 </span>
-                <button onClick={fetchRequests}>Requests</button>
+                <button onClick={fetchRequests} className="profile-request-btn">
+                  Requests
+                </button>
               </div>
               <div className="bio">
                 <strong>{user.name}</strong>

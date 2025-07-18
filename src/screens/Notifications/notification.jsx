@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./notification.css";
+import "../Layout/Common.css";
+import Navbar from "../Layout/Navbar";
 
-export default function NotificationPanel({
-  userId,
-  isOpen,
-  onClose,
-  className,
-}) {
+export default function NotificationPanel() {
   const [notifications, setNotifications] = useState([]);
+
   const getTimeAgo = (timestamp) => {
     const now = new Date();
     const time = new Date(timestamp);
@@ -25,44 +23,41 @@ export default function NotificationPanel({
     const years = Math.floor(months / 12);
     return `${years} y`;
   };
-  useEffect(() => {
-    if (isOpen) {
-      fetch(
-        `http://localhost:8080/api/notifications/all?notificationHolderId=${userId}`
-      )
-        .then((res) => res.json())
-        .then(setNotifications)
-        .catch(console.error);
-    }
-  }, [isOpen, userId]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const userId = localStorage.getItem("userid");
+    fetch(
+      `http://localhost:8080/api/notifications/all?notificationHolderId=${userId}`
+    )
+      .then((res) => res.json())
+      .then(setNotifications)
+      .catch(console.error);
+  }, []);
 
   return (
-    <div className={className}>
-      <div className="header">
-        <div>Notifications</div>
-        <button onClick={onClose} className="notif-close-btn">
-          X
-        </button>
+    <div className="mainpage">
+      <div className="navbar">
+        <Navbar />
       </div>
-      <ul>
-        {notifications.length === 0 ? (
-          <li>No notifications</li>
-        ) : (
-          notifications.map((n) => (
-            <li key={n.notificationId} className="listobj">
-              <div className="notification-item-top">
-                <div className="notification-sender">{n.userId}</div>{" "}
-                <small className="notification-time">
-                  {getTimeAgo(n.time)}
-                </small>
-              </div>
-              <div className="notification-message">{n.message}</div>
-            </li>
-          ))
-        )}
-      </ul>
+      <div className="Notif-rightSide">
+        <ul>
+          {notifications.length === 0 ? (
+            <li>No notifications</li>
+          ) : (
+            notifications.map((n) => (
+              <li key={n.notificationId} className="listobj">
+                <div className="notification-item-top">
+                  <div className="notification-sender">{n.userId}</div>
+                  <small className="notification-time">
+                    {getTimeAgo(n.time)}
+                  </small>
+                </div>
+                <div className="notification-message">{n.message}</div>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
