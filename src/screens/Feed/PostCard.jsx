@@ -75,21 +75,14 @@ function PostCard({ post }) {
         <img src={post.imageUrl} alt="Post" className="post-image" />
       </div>
 
-      <div
-        onClick={toggleCaption}
-        style={{ userSelect: "none" }}
-        className={`post-caption ${expanded ? "expanded" : ""}`}
-      >
-        {post.caption}
-      </div>
-      <div className="comment-input-container">
-        <textarea
-          className="comment-textarea"
-          placeholder="Write a comment..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          rows={1}
-        />
+      <div className="post-bottom">
+        <div
+          onClick={toggleCaption}
+          style={{ userSelect: "none" }}
+          className={`post-caption ${expanded ? "expanded" : ""}`}
+        >
+          {post.caption}{" "}
+        </div>
         <button
           className={`like-btn ${liked ? "liked" : ""}`}
           onClick={() => setLike(!liked)}
@@ -97,7 +90,6 @@ function PostCard({ post }) {
           {liked ? "❤️" : "🤍"}
         </button>
       </div>
-
       {showComments && (
         <div className="comment-section">
           {isCommentLoading ? (
