@@ -189,7 +189,7 @@ const SearchPage = () => {
   }
   return (
     <div className="mpage">
-      <div className="navbar">
+      <div className="navbar-container">
         <Navbar />
       </div>
 

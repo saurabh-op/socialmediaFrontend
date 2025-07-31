@@ -25,29 +25,27 @@ function Navbar() {
   ];
 
   return (
-    <div>
-      <div className="navbar">
-        {tabs.map((tab) => {
-          const isActive =
-            tab.name === "Profile"
-              ? matchPath(`/profile/${userId}`, location.pathname)
-              : location.pathname === tab.path;
+    <div className="navbar">
+      {tabs.map((tab) => {
+        const isActive =
+          tab.name === "Profile"
+            ? matchPath(`/profile/${userId}`, location.pathname)
+            : location.pathname === tab.path;
 
-          return (
-            <div
-              key={tab.name}
-              className={`icon ${isActive ? "active" : ""}`}
-              onClick={() => {
-                if (tab.path) {
-                  navigate(tab.path);
-                }
-              }}
-            >
-              <img src={tab.icon} height="30px" />
-            </div>
-          );
-        })}
-      </div>
+        return (
+          <div
+            key={tab.name}
+            className={`icon ${isActive ? "active" : ""}`}
+            onClick={() => {
+              if (tab.path) {
+                navigate(tab.path);
+              }
+            }}
+          >
+            <img src={tab.icon} height="30px" />
+          </div>
+        );
+      })}
     </div>
   );
 }

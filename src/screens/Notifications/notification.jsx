@@ -36,7 +36,7 @@ export default function NotificationPanel() {
 
   return (
     <div className="mainpage">
-      <div className="navbar">
+      <div className="navbar-container">
         <Navbar />
       </div>
       <div className="Notif-rightSide">

@@ -381,7 +381,7 @@ function ChatPage() {
 
   return (
     <div className="mainpage">
-      <div className="navbar">
+      <div className="navbar-container">
         <Navbar />
       </div>
 

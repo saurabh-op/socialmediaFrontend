@@ -75,7 +75,7 @@ function Feed() {
 
   return (
     <div className="mainpage">
-      <div className="navbar">
+      <div className="navbar-container">
         <Navbar />
       </div>
       <div className="rightSide">
