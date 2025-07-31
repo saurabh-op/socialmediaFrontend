@@ -100,7 +100,7 @@ const SearchPage = () => {
           <input
             type="text"
             className="search-input"
-            placeholder="Search for a person..."
+            placeholder="Enter username or name"
             value={search}
             autoFocus
             onChange={(e) => setSearch(e.target.value)}
@@ -126,8 +126,8 @@ const SearchPage = () => {
             >
               <img
                 className="profilePic"
-                src="https://randomuser.me/api/portraits/men/75.jpg"
-                alt="avatar"
+                src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?_gl=1*n0d8w5*_ga*MTk1MDc5NTc3MS4xNzQ0MDQyMzU2*_ga_8JE65Q40S6*czE3NTM4MDk5NDkkbzIkZzEkdDE3NTM4MDk5NTkkajUwJGwwJGgw"
+                alt="Profile pic"
               />
               <div className="srch-user-info">
                 <strong>{user.username}</strong>
@@ -188,12 +188,13 @@ const SearchPage = () => {
     );
   }
   return (
-    <div className="mainpage">
+    <div className="mpage">
       <div className="navbar">
         <Navbar />
       </div>
+
       <List />
-      <UserPreview />
+      {/* <UserPreview /> */}
     </div>
   );
 };
