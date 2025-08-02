@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Navbar.css";
 
-import home from "../../assets/home.png";
-import noti from "../../assets/notification.png";
-import search from "../../assets/search.png";
-import profile from "../../assets/Profile.png";
-import logout from "../../assets/logout.png";
-import chat from "../../assets/message.png";
+import {
+  IoHomeOutline,
+  IoNotificationsOutline,
+  IoSearchOutline,
+  IoPersonOutline,
+  IoExitOutline,
+  IoChatbubbleEllipsesOutline,
+} from "react-icons/io5";
+
 import { useNavigate, useLocation, matchPath } from "react-router-dom";
-import NotificationPanel from "../Notifications/notification";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -16,12 +18,12 @@ function Navbar() {
   const userId = localStorage.getItem("userid");
 
   const tabs = [
-    { name: "Home", icon: home, path: "/feed" },
-    { name: "Search", icon: search, path: "/search" },
-    { name: "Chats", icon: chat, path: "/chat" },
-    { name: "Alert", icon: noti, path: "/notification" },
-    { name: "Profile", icon: profile, path: `/profile/${userId}` },
-    { name: "Logout", icon: logout, path: `/` },
+    { name: "Home", icon: IoHomeOutline, path: "/feed" },
+    { name: "Search", icon: IoSearchOutline, path: "/search" },
+    { name: "Chats", icon: IoChatbubbleEllipsesOutline, path: "/chat" },
+    { name: "Alert", icon: IoNotificationsOutline, path: "/notification" },
+    { name: "Profile", icon: IoPersonOutline, path: `/profile/${userId}` },
+    { name: "Logout", icon: IoExitOutline, path: `/` },
   ];
 
   return (
@@ -32,17 +34,20 @@ function Navbar() {
             ? matchPath(`/profile/${userId}`, location.pathname)
             : location.pathname === tab.path;
 
+        const IconComponent = tab.icon;
+
         return (
           <div
             key={tab.name}
-            className={`icon ${isActive ? "active" : ""}`}
+            className={`navicon${isActive ? "active" : ""}`}
             onClick={() => {
-              if (tab.path) {
-                navigate(tab.path);
-              }
+              if (tab.path) navigate(tab.path);
             }}
           >
-            <img src={tab.icon} height="30px" />
+            <IconComponent
+              size={32}
+              className={`navicon${isActive ? "active" : ""}`}
+            />
           </div>
         );
       })}

@@ -3,7 +3,7 @@ import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import "./chatPage.css";
-import "../Layout/Common.css";
+import "./layout_chat.css";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
 import "./chatRightPart.css";

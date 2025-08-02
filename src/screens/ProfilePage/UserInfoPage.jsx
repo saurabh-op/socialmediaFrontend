@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import "./UserInfoPage.css";
 import "./posts.css";
 import "./Modal.css";
+import "./layout_profile.css";
 import "./postDetails.css";
-import "../Layout/Common.css";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
+import { FiEdit2 } from "react-icons/fi";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -30,7 +31,7 @@ function UserInfoPage() {
   const [selectedPostLikesList, setSelectedPostLikesList] = useState([]);
   const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
   const [view, setView] = useState("comments");
-
+  const isMobile = useIsMobile();
   const fetchRequests = async () => {
     try {
       console.log("fetching requests ");
@@ -56,12 +57,12 @@ function UserInfoPage() {
 
   const [user, setUser] = useState({
     profilePicture: "https://randomuser.me/api/portraits/men/75.jpg",
-    name: "Munna Bhai ",
-    username: "Circuit",
-    bio: "Love coding and coffee ☕",
-    posts: 120,
-    followers: 3400,
-    following: 180,
+    name: "Something went wrong",
+    username: "somethingwentwrong",
+    bio: "somethingwentwrogn",
+    posts: 0,
+    followers: 0,
+    following: 0,
   });
 
   useEffect(() => {
@@ -112,6 +113,23 @@ function UserInfoPage() {
     fetchUserDetails();
   }, [userId]);
 
+  const formatNumber = (num) => {
+    if (num >= 1_000_000)
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+    return num.toString();
+  };
+  function useIsMobile(maxWidth = 600) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= maxWidth);
+
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth <= maxWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, [maxWidth]);
+
+    return isMobile;
+  }
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -221,42 +239,64 @@ function UserInfoPage() {
 
   function profileDetails() {
     return (
-      <div className="rightSide">
+      <div className="rightSide_profile">
         <div className="profile">
           <div className="idCard">
             <img className="pic" src={user.profilePicture} alt="Profile" />
             <div className="profile-info">
               <div className="top-row">
                 <h2>{user.username}</h2>
-                {/* <button className="edit-btn">Edit Profile</button> */}
+                <FiEdit2
+                  style={{ marginRight: "6px", fontSize: 20, color: "grey" }}
+                />
               </div>
-              <div className="stats">
-                <span>
-                  <strong>{user.posts}</strong> posts
-                </span>
-                <span
-                  className="clickable"
-                  onClick={() => openModal("followers")}
-                >
-                  <strong>{user.followers}</strong> followers
-                </span>
-                <span
-                  className="clickable"
-                  onClick={() => openModal("following")}
-                >
-                  <strong>{user.following}</strong> following
-                </span>
-                <button onClick={fetchRequests} className="profile-request-btn">
-                  Requests
-                </button>
-              </div>
+
+              {!isMobile && (
+                <div className="stats">
+                  <span>
+                    <strong>{formatNumber(user.posts)}</strong> posts
+                  </span>
+                  <span
+                    className="clickable"
+                    onClick={() => openModal("followers")}
+                  >
+                    <strong>{formatNumber(user.followers)}</strong> followers
+                  </span>
+                  <span
+                    className="clickable"
+                    onClick={() => openModal("following")}
+                  >
+                    <strong>{formatNumber(user.following)}</strong> following
+                  </span>
+                </div>
+              )}
+
               <div className="bio">
-                <strong>{user.name}</strong>
-                <p>{user.bio}</p>
+                <p>I love coffe and playing fotball in rain {user.bio}</p>
               </div>
             </div>
           </div>
-          {gallery()}
+
+          {isMobile && (
+            <div className="stats_for_mobile_view">
+              <div className="stat-box">
+                <strong>{formatNumber(user.posts)}</strong>
+                <span>posts</span>
+              </div>
+
+              <div className="stat-box" onClick={() => openModal("followers")}>
+                <strong>{formatNumber(user.followers)}</strong>
+                <span>followers</span>
+              </div>
+
+              <div className="stat-box" onClick={() => openModal("following")}>
+                <strong>{formatNumber(user.posts)}</strong>
+                <span>following</span>
+              </div>
+            </div>
+          )}
+
+          <div>{gallery()}</div>
         </div>
         {isModalOpen && <ModalGenerator />}
         {showPostDetails && <PostDetails />}

@@ -1,7 +1,9 @@
 .mainpage {
+  width: 100vw;
+  background: blue;
   height: 100vh;
   display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: start;
   flex-direction: row;
   overflow: hidden;
@@ -13,7 +15,6 @@
   align-items: center;
   justify-content: center;
 }
-/* Desktop Navbar (left-middle floating) */
 .navbar {
   border-radius: 0 20px 20px 0;
   height: auto;
@@ -27,7 +28,10 @@
 }
 
 /* Right side main content */
-.rightSide {
+.rightSide_profile {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(201, 255, 192);
   height: 100%;
   overflow: auto;
   width: 100%;
@@ -36,7 +40,7 @@
 /* 📱 Mobile layout adjustments */
 @media (max-width: 600px) {
   .mainpage {
-    flex-direction: column;
+    background-color: red;
   }
 
   /* Mobile Navbar becomes bottom bar */
@@ -60,9 +64,14 @@
   }
 
   /* Adjust rightSide content to not go behind bottom nav */
-  .rightSide {
+  .rightSide_profile {
+    background-color: pink;
     height: calc(100vh - 60px);
     width: 100vw;
     overflow-y: auto;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    height: 100%;
   }
 }

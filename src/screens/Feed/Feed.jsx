@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
-import "../Layout/Common.css";
 import Navbar from "../Layout/Navbar";
+import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./imagePicker";
 import { useWebSocket } from "../../services/webSocketContext";

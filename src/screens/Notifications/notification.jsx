@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./notification.css";
-import "../Layout/Common.css";
+import "./layout_notif.css";
 import Navbar from "../Layout/Navbar";
 
 export default function NotificationPanel() {

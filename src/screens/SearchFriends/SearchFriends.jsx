@@ -5,6 +5,7 @@ import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
 import "./userPreview.css";
+import "./layout_searchFriends.css";
 import lock from "../../assets/lock.png";
 const SearchPage = () => {
   const [search, setSearch] = useState("");
