@@ -1,6 +1,6 @@
-.mainpage {
+.profilemainpage {
   width: 100vw;
-  background: blue;
+  background: rgb(255, 255, 255);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -31,16 +31,17 @@
 .rightSide_profile {
   display: flex;
   justify-content: center;
-  background-color: rgb(201, 255, 192);
-  height: 100%;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  height: 100vh;
   overflow: auto;
-  width: 100%;
+  width: 100vw;
 }
 
 /* 📱 Mobile layout adjustments */
 @media (max-width: 600px) {
   .mainpage {
-    background-color: red;
+    background-color: rgb(255, 255, 255);
   }
 
   /* Mobile Navbar becomes bottom bar */
@@ -65,7 +66,7 @@
 
   /* Adjust rightSide content to not go behind bottom nav */
   .rightSide_profile {
-    background-color: pink;
+    background-color: rgb(255, 255, 255);
     height: calc(100vh - 60px);
     width: 100vw;
     overflow-y: auto;

@@ -9,7 +9,7 @@ import {
   IoExitOutline,
   IoChatbubbleEllipsesOutline,
 } from "react-icons/io5";
-
+import { GoHome } from "react-icons/go";
 import { useNavigate, useLocation, matchPath } from "react-router-dom";
 
 function Navbar() {
@@ -18,7 +18,7 @@ function Navbar() {
   const userId = localStorage.getItem("userid");
 
   const tabs = [
-    { name: "Home", icon: IoHomeOutline, path: "/feed" },
+    { name: "Home", icon: GoHome, path: "/feed" },
     { name: "Search", icon: IoSearchOutline, path: "/search" },
     { name: "Chats", icon: IoChatbubbleEllipsesOutline, path: "/chat" },
     { name: "Alert", icon: IoNotificationsOutline, path: "/notification" },
@@ -45,7 +45,7 @@ function Navbar() {
             }}
           >
             <IconComponent
-              size={32}
+              size={35}
               className={`navicon${isActive ? "active" : ""}`}
             />
           </div>

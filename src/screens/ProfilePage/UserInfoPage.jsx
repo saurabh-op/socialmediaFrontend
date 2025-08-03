@@ -8,6 +8,8 @@ import "./postDetails.css";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
 import { FiEdit2 } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import EditProfile from "../edit profile/edit_profile";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -18,7 +20,7 @@ function UserInfoPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(null); // "followers" or "following"
   const [modalList, setModalList] = useState([]);
-
+  const [savedImageUrl, setSavedImageUrl] = useState(null);
   // Post details modal
   const [showPostDetails, setShowPostDetails] = useState(false);
   const [selectedPostImageLink, setSelectedPostImageLink] = useState("");
@@ -30,6 +32,9 @@ function UserInfoPage() {
   const [selectedPostCommentsCount, setSelectedPostCommentsCount] = useState(0);
   const [selectedPostLikesList, setSelectedPostLikesList] = useState([]);
   const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
+
+  // Edit profile modal
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const [view, setView] = useState("comments");
   const isMobile = useIsMobile();
   const fetchRequests = async () => {
@@ -83,7 +88,15 @@ function UserInfoPage() {
             bio: userData.bio,
           }));
         }
-
+        if (userData.profileImageUrl) {
+          const imageRes = await fetch(
+            `http://localhost:8080/api/editUser/${userId}/profilePic`
+          );
+          if (imageRes.ok) {
+            const imageUrl = await imageRes.text();
+            setSavedImageUrl(imageUrl);
+          }
+        }
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
           fetch(`http://localhost:8080/api/follower/count/${userId}`),
@@ -242,12 +255,17 @@ function UserInfoPage() {
       <div className="rightSide_profile">
         <div className="profile">
           <div className="idCard">
-            <img className="pic" src={user.profilePicture} alt="Profile" />
+            <img
+              className="pic"
+              src={savedImageUrl || emptyProfilePic}
+              alt="Profile"
+            />
             <div className="profile-info">
               <div className="top-row">
                 <h2>{user.username}</h2>
                 <FiEdit2
-                  style={{ marginRight: "6px", fontSize: 20, color: "grey" }}
+                  style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
+                  onClick={() => setShowEditProfile(true)}
                 />
               </div>
 
@@ -272,7 +290,7 @@ function UserInfoPage() {
               )}
 
               <div className="bio">
-                <p>I love coffe and playing fotball in rain {user.bio}</p>
+                <p style={{ whiteSpace: "pre-line" }}>{user.bio}</p>
               </div>
             </div>
           </div>
@@ -457,17 +475,21 @@ function UserInfoPage() {
   }
 
   return (
-    <div className="mainpage">
+    <div className="profilemainpage">
       <div className="navbar-container">
         <Navbar />
       </div>
 
       {loading ? (
-        <div className="rightSide">Loading...</div>
+        <div className="rightSide_profile">Loading...</div>
       ) : user == null ? (
-        <div className="rightSide">User not found</div>
+        <div className="rightSide_profile">User not found</div>
       ) : showModal ? (
         requestModal()
+      ) : showEditProfile ? (
+        <div className="rightSide_profile">
+          <EditProfile />
+        </div>
       ) : (
         profileDetails()
       )}
