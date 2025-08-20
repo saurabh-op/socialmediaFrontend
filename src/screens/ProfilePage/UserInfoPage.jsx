@@ -4,12 +4,13 @@ import "./UserInfoPage.css";
 import "./posts.css";
 import "./Modal.css";
 import "./layout_profile.css";
-import "./postDetails.css";
+import "./post_popup.css";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
 import { FiEdit2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import EditProfile from "../edit profile/edit_profile";
+import { useNavigate } from "react-router-dom";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -33,8 +34,9 @@ function UserInfoPage() {
   const [selectedPostLikesList, setSelectedPostLikesList] = useState([]);
   const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
 
-  // Edit profile modal
-  const [showEditProfile, setShowEditProfile] = useState(false);
+  // Editprofile page
+  const navigate = useNavigate();
+
   const [view, setView] = useState("comments");
   const isMobile = useIsMobile();
   const fetchRequests = async () => {
@@ -263,9 +265,10 @@ function UserInfoPage() {
             <div className="profile-info">
               <div className="top-row">
                 <h2>{user.username}</h2>
+
                 <FiEdit2
                   style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
-                  onClick={() => setShowEditProfile(true)}
+                  onClick={() => navigate(`/edit-profile`)}
                 />
               </div>
 
@@ -308,7 +311,7 @@ function UserInfoPage() {
               </div>
 
               <div className="stat-box" onClick={() => openModal("following")}>
-                <strong>{formatNumber(user.posts)}</strong>
+                <strong>{formatNumber(user.following)}</strong>
                 <span>following</span>
               </div>
             </div>
@@ -350,23 +353,23 @@ function UserInfoPage() {
     setSelectedPostUsername(post.owner);
 
     try {
-      const [likeRes, commentRes] = await Promise.all([
+      const [likeRes] = await Promise.all([
         fetch(`http://localhost:8080/api/like/likeDetails/${post.postId}`),
-        fetch(
-          `http://localhost:8080/api/comment/commentDetails/${post.postId}`
-        ),
+        // fetch(
+        //   `http://localhost:8080/api/comment/commentDetails/${post.postId}`
+        // ),
       ]);
 
       const likeData = await likeRes.json();
-      const commentData = await commentRes.json();
+      // const commentData = await commentRes.json();
 
       setSelectedPostLikesCount(likeData.likeCount);
       setSelectedPostLikesList(likeData.likelist || []);
 
-      setSelectedPostCommentsCount(commentData.commentCount);
-      setSelectedPostCommentsList(commentData.commentList || []);
+      //     setSelectedPostCommentsCount(commentData.commentCount);
+      //    setSelectedPostCommentsList(commentData.commentList || []);
     } catch (err) {
-      console.error("Error fetching like/comment details:", err);
+      // console.error("Error fetching like/comment details:", err);
     }
   }
 
@@ -396,12 +399,12 @@ function UserInfoPage() {
               >
                 ❤️ {selectedPostLikesCount}
               </button>
-              <button
+              {/* <button
                 className={view === "comments" ? "active" : ""}
                 onClick={() => setView("comments")}
               >
                 💬 {selectedPostCommentsCount}
-              </button>
+              </button> */}
             </div>
 
             <div className="list-container">
@@ -486,10 +489,6 @@ function UserInfoPage() {
         <div className="rightSide_profile">User not found</div>
       ) : showModal ? (
         requestModal()
-      ) : showEditProfile ? (
-        <div className="rightSide_profile">
-          <EditProfile />
-        </div>
       ) : (
         profileDetails()
       )}

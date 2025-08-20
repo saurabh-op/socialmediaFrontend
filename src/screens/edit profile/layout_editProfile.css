@@ -1,0 +1,74 @@
+.mainpage_editProfile {
+  width: 100vw;
+  background: rgb(255, 255, 255);
+  height: 100vh;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  flex-direction: row;
+  overflow: hidden;
+}
+.navbar-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* Desktop Navbar (left-middle floating) */
+.navbar {
+  border-radius: 0 20px 20px 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid #0000004c;
+}
+
+/* Right side main content */
+.rightSide {
+  height: 100%;
+  overflow: auto;
+  width: 100%;
+}
+
+/* 📱 Mobile layout adjustments */
+@media (max-width: 600px) {
+  .mainpage {
+    background-color: red;
+  }
+
+  /* Mobile Navbar becomes bottom bar */
+  .navbar {
+    top: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 0; /* flat bar */
+    border-top: 1px solid #0000004c;
+    background-color: #ffffff;
+    z-index: 100;
+    transform: none;
+    margin-left: 0;
+    padding: 0 10px;
+  }
+
+  /* Adjust rightSide content to not go behind bottom nav */
+  .rightSide_profile {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    height: calc(100vh - 60px);
+    width: 100vw;
+    overflow-y: auto;
+  }
+}

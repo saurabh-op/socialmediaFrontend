@@ -3,9 +3,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./edit_profile.css";
+import "./layout_editProfile.css";
+import { useNavigate } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 import emptyProfilePic from "../../assets/Profile.png";
 import imageCompression from "browser-image-compression";
 function EditProfile() {
+  const navigate = useNavigate();
   //related to profile image
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -357,9 +361,26 @@ function EditProfile() {
     );
   }
   return (
-    <div className="editProfilemainpage">
-      <div> {profileImage()}</div>
-      <div>{basicdetails()}</div>
+    <div className="mainpage_editProfile">
+      <div className="navbar-container">
+        <Navbar />
+      </div>
+      <div className="editProfilemainpage">
+        <FiArrowLeft
+          onClick={() => navigate(`/profile/${user.id}`)} // <-- Use navigate to go to profile page
+          style={{
+            position: "fixed",
+            top: "16px",
+            left: "10vw",
+            fontSize: "24px",
+            cursor: "pointer",
+            color: "black",
+            zIndex: 1000,
+          }}
+        />
+        <div> {profileImage()}</div>
+        <div>{basicdetails()}</div>
+      </div>
     </div>
   );
 }
