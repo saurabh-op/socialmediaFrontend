@@ -1,26 +1,30 @@
 .image-picker-container {
+  background-color: rgb(60, 208, 107);
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
-  height: 100%;
+  width: 100%;
+  height: 100%; /* Full viewport height */
   box-sizing: border-box;
 }
 
-.preview-img {
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 .image-box {
-  background-color: pink;
-  width: 80vh;
-  height: 70vh;
+  background-color: rgba(255, 255, 255, 0.342);
+  height: 60vh;
+  aspect-ratio: 4/5;
   border: 2px dashed #aaa;
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: auto;
+}
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  aspect-ratio: 4 / 5;
+  display: block;
 }
 
 .upload {
@@ -43,11 +47,6 @@
   font-weight: bold;
 }
 
-.preview-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
 .clear-btn {
   position: absolute;
   top: 10px;
@@ -106,5 +105,64 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+@media (max-width: 600px) {
+  .image-picker-container {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    width: 100%;
+    height: 100%; /* Full viewport height */
+    box-sizing: border-box;
+  }
+  .image-box {
+    background-color: rgba(255, 255, 255, 0.342);
+    height: 60vh;
+    aspect-ratio: 4/5;
+    border: 2px dashed #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: 4 / 5;
+    display: block;
+  }
+  .caption-textarea {
+    width: 90vw;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .upload {
+    bottom: 70px; /* Adjust to avoid overlapping bottom navbar */
+    right: 20px;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .Choose {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .clear-btn {
+    top: 10px;
+    right: 20px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
   }
 }

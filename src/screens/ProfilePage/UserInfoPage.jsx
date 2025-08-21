@@ -3,10 +3,15 @@ import { useParams } from "react-router-dom";
 import "./UserInfoPage.css";
 import "./posts.css";
 import "./Modal.css";
-import "./postDetails.css";
-import "../Layout/Common.css";
+import "./layout_profile.css";
+import "./post_popup.css";
+import emptyProfilePic from "../../assets/no_profile_pic.png";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
+import { FiEdit2 } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import EditProfile from "../edit profile/edit_profile";
+import { useNavigate } from "react-router-dom";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -17,7 +22,7 @@ function UserInfoPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(null); // "followers" or "following"
   const [modalList, setModalList] = useState([]);
-
+  const [savedImageUrl, setSavedImageUrl] = useState(null);
   // Post details modal
   const [showPostDetails, setShowPostDetails] = useState(false);
   const [selectedPostImageLink, setSelectedPostImageLink] = useState("");
@@ -29,8 +34,12 @@ function UserInfoPage() {
   const [selectedPostCommentsCount, setSelectedPostCommentsCount] = useState(0);
   const [selectedPostLikesList, setSelectedPostLikesList] = useState([]);
   const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
-  const [view, setView] = useState("comments");
 
+  // Editprofile page
+  const navigate = useNavigate();
+
+  const [view, setView] = useState("comments");
+  const isMobile = useIsMobile();
   const fetchRequests = async () => {
     try {
       console.log("fetching requests ");
@@ -58,12 +67,12 @@ function UserInfoPage() {
 
   const [user, setUser] = useState({
     profilePicture: "https://randomuser.me/api/portraits/men/75.jpg",
-    name: "Munna Bhai ",
-    username: "Circuit",
-    bio: "Love coding and coffee ☕",
-    posts: 120,
-    followers: 3400,
-    following: 180,
+    name: "Something went wrong",
+    username: "somethingwentwrong",
+    bio: "somethingwentwrogn",
+    posts: 0,
+    followers: 0,
+    following: 0,
   });
 
   useEffect(() => {
@@ -84,7 +93,15 @@ function UserInfoPage() {
             bio: userData.bio,
           }));
         }
-
+        if (userData.profileImageUrl) {
+          const imageRes = await fetch(
+            `https://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`
+          );
+          if (imageRes.ok) {
+            const imageUrl = await imageRes.text();
+            setSavedImageUrl(imageUrl);
+          }
+        }
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
           fetch(
@@ -118,6 +135,23 @@ function UserInfoPage() {
     fetchUserDetails();
   }, [userId]);
 
+  const formatNumber = (num) => {
+    if (num >= 1_000_000)
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+    return num.toString();
+  };
+  function useIsMobile(maxWidth = 600) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= maxWidth);
+
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth <= maxWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, [maxWidth]);
+
+    return isMobile;
+  }
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -227,44 +261,70 @@ function UserInfoPage() {
 
   function profileDetails() {
     return (
-      <div className="rightSide">
-        <div className="profile-container">
-          <div className="profile-header">
+      <div className="rightSide_profile">
+        <div className="profile">
+          <div className="idCard">
             <img
-              className="profile-pic"
-              src={user.profilePicture}
+              className="pic"
+              src={savedImageUrl || emptyProfilePic}
               alt="Profile"
             />
             <div className="profile-info">
               <div className="top-row">
                 <h2>{user.username}</h2>
-                {/* <button className="edit-btn">Edit Profile</button> */}
+
+                <FiEdit2
+                  style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
+                  onClick={() => navigate(`/edit-profile`)}
+                />
               </div>
-              <div className="stats">
-                <span>
-                  <strong>{user.posts}</strong> posts
-                </span>
-                <span
-                  className="clickable"
-                  onClick={() => openModal("followers")}
-                >
-                  <strong>{user.followers}</strong> followers
-                </span>
-                <span
-                  className="clickable"
-                  onClick={() => openModal("following")}
-                >
-                  <strong>{user.following}</strong> following
-                </span>
-                <button onClick={fetchRequests}>Requests</button>
-              </div>
+
+              {!isMobile && (
+                <div className="stats">
+                  <span>
+                    <strong>{formatNumber(user.posts)}</strong> posts
+                  </span>
+                  <span
+                    className="clickable"
+                    onClick={() => openModal("followers")}
+                  >
+                    <strong>{formatNumber(user.followers)}</strong> followers
+                  </span>
+                  <span
+                    className="clickable"
+                    onClick={() => openModal("following")}
+                  >
+                    <strong>{formatNumber(user.following)}</strong> following
+                  </span>
+                </div>
+              )}
+
               <div className="bio">
-                <strong>{user.name}</strong>
-                <p>{user.bio}</p>
+                <p style={{ whiteSpace: "pre-line" }}>{user.bio}</p>
               </div>
             </div>
           </div>
-          {gallery()}
+
+          {isMobile && (
+            <div className="stats_for_mobile_view">
+              <div className="stat-box">
+                <strong>{formatNumber(user.posts)}</strong>
+                <span>posts</span>
+              </div>
+
+              <div className="stat-box" onClick={() => openModal("followers")}>
+                <strong>{formatNumber(user.followers)}</strong>
+                <span>followers</span>
+              </div>
+
+              <div className="stat-box" onClick={() => openModal("following")}>
+                <strong>{formatNumber(user.following)}</strong>
+                <span>following</span>
+              </div>
+            </div>
+          )}
+
+          <div>{gallery()}</div>
         </div>
         {isModalOpen && <ModalGenerator />}
         {showPostDetails && <PostDetails />}
@@ -300,25 +360,25 @@ function UserInfoPage() {
     setSelectedPostUsername(post.owner);
 
     try {
-      const [likeRes, commentRes] = await Promise.all([
+      const [likeRes] = await Promise.all([
         fetch(
           `https://ziffyconnect.onrender.com/api/like/likeDetails/${post.postId}`
         ),
-        fetch(
-          `https://ziffyconnect.onrender.com/api/comment/commentDetails/${post.postId}`
-        ),
+        // fetch(
+        //   `https://ziffyconnect.onrender.com/api/comment/commentDetails/${post.postId}`
+        // ),
       ]);
 
       const likeData = await likeRes.json();
-      const commentData = await commentRes.json();
+      // const commentData = await commentRes.json();
 
       setSelectedPostLikesCount(likeData.likeCount);
       setSelectedPostLikesList(likeData.likelist || []);
 
-      setSelectedPostCommentsCount(commentData.commentCount);
-      setSelectedPostCommentsList(commentData.commentList || []);
+      //     setSelectedPostCommentsCount(commentData.commentCount);
+      //    setSelectedPostCommentsList(commentData.commentList || []);
     } catch (err) {
-      console.error("Error fetching like/comment details:", err);
+      // console.error("Error fetching like/comment details:", err);
     }
   }
 
@@ -347,12 +407,6 @@ function UserInfoPage() {
                 onClick={() => setView("likes")}
               >
                 ❤️ {selectedPostLikesCount}
-              </button>
-              <button
-                className={view === "comments" ? "active" : ""}
-                onClick={() => setView("comments")}
-              >
-                💬 {selectedPostCommentsCount}
               </button>
             </div>
 
@@ -427,15 +481,15 @@ function UserInfoPage() {
   }
 
   return (
-    <div className="mainpage">
-      <div className="navbar">
+    <div className="profilemainpage">
+      <div className="navbar-container">
         <Navbar />
       </div>
 
       {loading ? (
-        <div className="rightSide">Loading...</div>
+        <div className="rightSide_profile">Loading...</div>
       ) : user == null ? (
-        <div className="rightSide">User not found</div>
+        <div className="rightSide_profile">User not found</div>
       ) : showModal ? (
         requestModal()
       ) : (

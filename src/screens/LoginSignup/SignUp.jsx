@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
-
+import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 // TODO : 3 :Attach a mobile OTP verification service
 
 function SignUp() {
@@ -14,8 +14,8 @@ function SignUp() {
     phone: "",
     email: "",
     password: "",
-    bio: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +24,11 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!/^\d{10}$/.test(user.phone)) {
+      alert("Phone number must be exactly 10 digits.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const response = await axios.post(
@@ -38,27 +43,28 @@ function SignUp() {
         alert("Username is taken, try other username !");
       }
       if (data.message === "userCreated") {
-        console.log("User created:", response.data);
-        console.log(response.data.user);
+        // console.log("User created:", response.data);
+        // console.log(response.data.user);
 
         alert("User registered successfully!");
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
-        localStorage.setItem("id", data.user.id);
+        localStorage.setItem("userid", data.user.id);
         localStorage.setItem("name", data.user.name);
         localStorage.setItem("password", data.user.password);
+        localStorage.setItem("email", data.user.email);
 
         setLoading(false);
         navigate("/feed", { state: user });
       }
       if (data.message === "error") {
-        console.error("Error creating user:", error);
-        alert("Something went wrong. Check console.");
+        //  console.error("Error creating user:", error);
+        alert("Something went wrong.");
       }
     } catch (error) {
-      console.error("Error creating user:", error);
-      alert("Something went wrong. Check console.");
+      // console.error("Error creating user:", error);
+      alert("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -66,78 +72,92 @@ function SignUp() {
 
   return (
     <div className="page-wrapper">
-      <div className="grp1">
+      <div className="outlinebox">
         <div className="heading">Sign Up</div>
-        <div className="field">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={user.name}
-            onChange={handleChange}
-            required
-          />
+        <div className="fields">
+          {" "}
+          <div className="input-wrapper">
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={user.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
-        <div className="field">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={user.username}
-            onChange={handleChange}
-            required
-          />
+        <div className="fields">
+          {" "}
+          <div className="input-wrapper">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={user.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
-        <div className="field">
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            value={user.phone}
-            onChange={handleChange}
-            required
-          />
+        <div className="fields">
+          {" "}
+          <div className="input-wrapper">
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone"
+              value={user.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
-        <div className="field">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={user.email}
-            onChange={handleChange}
-            required
-          />
+        <div className="fields">
+          {" "}
+          <div className="input-wrapper">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
-        <div className="field">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={user.password}
-            onChange={handleChange}
-            required
-          />
+        <div className="fields password-field">
+          <div className="input-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={user.password}
+              onChange={handleChange}
+              required
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
         </div>
-        <div className="field">
-          <input
-            type="bio"
-            name="bio"
-            placeholder="Bio"
-            value={user.bio}
-            onChange={handleChange}
-            required
-          />
+        <div className="actions">
+          {" "}
+          <button
+            onClick={() => navigate("/")}
+            className="actions-btn"
+            disabled={isLoading}
+          >
+            <FaArrowLeft />
+            Login
+          </button>
+          <button onClick={handleSubmit} className="actions-btn">
+            {isLoading ? "Processing..." : "Register"}
+          </button>
         </div>
-        <button onClick={handleSubmit} className="register-btn">
-          {isLoading ? "Processing..." : "Register"}
-        </button>
-        <button
-          onClick={() => navigate("/")}
-          className="register-btn"
-          disabled={isLoading}
-        >
-          Back to Login
-        </button>
       </div>
     </div>
   );

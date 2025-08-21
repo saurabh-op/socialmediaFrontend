@@ -1,39 +1,79 @@
-.profile-container {
-  width: 100%;
-  height: 100vh;
-  flex: auto;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
+.profile {
+  background-color: rgb(255, 255, 255);
   overflow: auto;
+  width: 100vw;
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: start;
   font-family: Arial, sans-serif;
 }
 
-.profile-header {
+.idCard {
+  background-color: rgb(255, 255, 255);
   width: 100%;
+  height: auto;
   justify-content: space-evenly;
-  display: flex;
+  gap: 20px;
   align-items: center;
+  flex-direction: row;
+  display: flex;
+  align-items: start;
+  margin-bottom: 20px;
 }
 
-.profile-pic {
+.pic {
   width: 150px;
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.top-row {
+.profile-info {
   display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}
+
+.top-row {
+  font-size: 16px;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
 }
 
 .stats {
+  color: rgb(64, 64, 64);
   display: flex;
   gap: 30px;
   margin: 20px 0;
   font-size: 16px;
+}
+
+.profile-request-btn {
+  background-color: #ffffff;
+  width: auto;
+  color: #000000;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-request-btn:hover {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .bio {
@@ -41,12 +81,14 @@
 }
 
 .gallery {
-  padding: 20px;
+  background-color: #fffcfc;
+  width: 100%;
   display: grid;
+  gap: 5px;
   grid-template-columns: repeat(3, 1fr);
 }
 
-.modal {
+*/ .modal {
   background-color: #fff;
   padding: 20px;
   max-width: 500px;
@@ -129,4 +171,107 @@
 
 .close-btn:hover {
   background-color: #777;
+}
+@media (max-width: 600px) {
+  .profile {
+    background-color: rgb(255, 255, 255);
+    overflow: auto;
+    width: 100vw;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto;
+    padding: 2px;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    font-family: Arial, sans-serif;
+  }
+
+  .idCard {
+    padding: 15px;
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    height: auto;
+    justify-content: start;
+    gap: 20px;
+    display: flex;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+
+  .pic {
+    width: 30%;
+    height: auto;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .profile-info {
+    background-color: #ffffff;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+  }
+
+  .top-row {
+    font-size: 16px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stats_for_mobile_view {
+    margin-bottom: 2px;
+    padding: 10px 0px;
+    border-top: 2px solid #d6c8c8;
+    border-bottom: 2px solid #d6c8c8;
+    color: #262626b3;
+    background-color: white;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-evenly;
+    font-size: 16px;
+  }
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  .profile-request-btn {
+    background-color: #ffffff;
+    width: auto;
+    color: #000000;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .profile-request-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .bio {
+    width: 100%; /* or a max-width if needed */
+    word-wrap: break-word; /* breaks long words */
+    white-space: normal; /* allows wrapping */
+    overflow-wrap: anywhere; /* modern alternative */
+    margin-top: 10px;
+  }
 }

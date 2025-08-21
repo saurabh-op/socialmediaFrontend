@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
-import "./UserPreview.css";
+import "./userPreview.css";
+import "./layout_searchFriends.css";
 import lock from "../../assets/lock.png";
+import emptyProfilePic from "../../assets/no_profile_pic.png";
+import EditProfile from "../edit profile/edit_profile";
 const SearchPage = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
@@ -14,6 +17,7 @@ const SearchPage = () => {
   const [userPreview, setPreview] = useState(null);
   const [isSent, setSent] = useState(false);
   const [isloadingPreview, setLoadingPreview] = useState(false);
+  const [requestedIds, setRequestedIds] = useState(new Set());
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,7 +39,7 @@ const SearchPage = () => {
           `https://ziffyconnect.onrender.com/api/users/search/${debouncedSearch}`
         );
         const data = await res.json();
-        console.log(data);
+        console.log("the searche result data is : ", data);
         setResults(data);
       } catch (err) {
         console.error("Search error:", err);
@@ -47,21 +51,6 @@ const SearchPage = () => {
 
     fetchUsers();
   }, [debouncedSearch]);
-
-  const getPreview = async (id) => {
-    try {
-      setLoadingPreview(true);
-      const res = await fetch(
-        `https://ziffyconnect.onrender.com/api/users/get/${id}`
-      );
-      const data = await res.json();
-      setSent(false);
-      setLoadingPreview(false);
-      setPreview(data);
-    } catch (error) {
-      console.error("Error fetching preview:", error);
-    }
-  };
 
   const sendRequest = async (id) => {
     try {
@@ -77,7 +66,7 @@ const SearchPage = () => {
             body: JSON.stringify({
               senderusername: localStorage.getItem("username"),
               sendername: localStorage.getItem("name"),
-              senderid: localStorage.getItem("userid"),
+              senderid: myid,
               senderimage: "https://randomuser.me/api/portraits/men/75.jpg",
             }),
           }
@@ -85,7 +74,7 @@ const SearchPage = () => {
 
         const result = await response.text();
         if (result === "sent") {
-          setSent(true);
+          setRequestedIds((prev) => new Set(prev).add(id));
         }
       } else {
         alert("Can't sent requests to youself");
@@ -102,7 +91,7 @@ const SearchPage = () => {
           <input
             type="text"
             className="search-input"
-            placeholder="Search for a person..."
+            placeholder="Enter username or name"
             value={search}
             autoFocus
             onChange={(e) => setSearch(e.target.value)}
@@ -126,14 +115,36 @@ const SearchPage = () => {
               key={user.id}
               onClick={() => getPreview(user.id)}
             >
-              <img
-                className="profilePic"
-                src="https://randomuser.me/api/portraits/men/75.jpg"
-                alt="avatar"
-              />
-              <div className="srch-user-info">
-                <strong>{user.username}</strong>
-                <span>{user.name}</span>
+              <div className="pic_and_name">
+                <img
+                  className="profilePic"
+                  src={
+                    user.profileImageUrl && user.profileImageUrl.trim() !== ""
+                      ? user.profileImageUrl
+                      : emptyProfilePic
+                  }
+                  alt="Profile pic"
+                />
+                <div className="srch-user-info">
+                  <strong>{user.username}</strong>
+                  <span>{user.name}</span>
+                </div>
+              </div>
+
+              <div>
+                {requestedIds.has(user.id) ? (
+                  <button
+                    type="button"
+                    disabled
+                    style={{ background: "#ccc", cursor: "not-allowed" }}
+                  >
+                    Requested
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => sendRequest(user.id)}>
+                    Add Friend
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -142,60 +153,14 @@ const SearchPage = () => {
     );
   });
 
-  function UserPreview() {
-    return (
-      <div className="userPreview">
-        {isloadingPreview ? (
-          "Loading ..."
-        ) : userPreview ? (
-          <div className="srch-profile-container">
-            <div className="srch-cont1">
-              <img
-                src="https://randomuser.me/api/portraits/men/75.jpg"
-                alt={userPreview.name}
-                className="dp"
-              />
-              <div className="srch-profile-details">
-                <span>
-                  <h3>{userPreview.username}</h3>
-                </span>
-                <span>
-                  <h3>{userPreview.name}</h3>
-                </span>
-                <span>
-                  <p>{userPreview.bio}</p>
-                </span>
-              </div>
-            </div>
-
-            <div className="srch-cont2">
-              <div className="srch-pvt-actions">
-                <p className="srch-pvt">Private Account</p>
-                <button
-                  className="follow-button"
-                  onClick={() => sendRequest(userPreview.id)}
-                >
-                  {isSent ? "Requested" : "Follow"}
-                </button>
-              </div>
-              <button className="srch-close-btn" onClick={() => setPreview()}>
-                ×
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p className="no-user-selected">Select the user to see details</p>
-        )}
-      </div>
-    );
-  }
   return (
-    <div className="mainpage">
-      <div className="navbar">
+    <div className="mpage">
+      <div className="navbar-container">
         <Navbar />
       </div>
+
       <List />
-      <UserPreview />
+      {/* <UserPreview /> */}
     </div>
   );
 };

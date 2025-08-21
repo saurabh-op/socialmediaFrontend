@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
-import "../Layout/Common.css";
 import Navbar from "../Layout/Navbar";
+import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
@@ -75,7 +75,7 @@ function Feed() {
 
   return (
     <div className="mainpage">
-      <div className="navbar">
+      <div className="navbar-container">
         <Navbar />
       </div>
       <div className="rightSide">

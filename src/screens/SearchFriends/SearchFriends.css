@@ -1,9 +1,9 @@
 /* Full screen layout */
-.mainpage {
+.mpage {
   height: 100vh;
   width: 100%;
   display: flex;
-  justify-content: start;
+  justify-content: start; /* Center horizontally */
   align-items: start;
   flex-direction: row;
   overflow: hidden;
@@ -11,14 +11,17 @@
 }
 
 .List {
-  background: rgb(7, 4, 4);
-  width: 40%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  background: rgb(180, 34, 34);
   height: 100%;
   padding: 20px;
   overflow: auto;
 }
 .srch-close-btn {
-  background-color: #ffffff;
+  background-color: #ab4343;
   color: #000000;
   border: 1px solid #000000;
   padding: 5px 10px;

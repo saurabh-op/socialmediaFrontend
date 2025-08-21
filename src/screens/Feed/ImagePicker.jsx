@@ -19,22 +19,76 @@ export default function ImagePicker() {
   const handleSubmit = async () => {
     if (selectedImage && caption) {
       try {
+        // ✅ Step 1: Crop the image to 4:5
+        const croppedBlob = await cropImageToAspectRatio(selectedImage, 4 / 5);
+
+        // ✅ Step 2: Compress
         const options = {
           maxSizeMB: 1,
           maxWidthOrHeight: 1920,
           useWebWorker: true,
         };
 
-        const compressedFile = await imageCompression(selectedImage, options);
+        const compressedFile = await imageCompression(croppedBlob, options);
 
+        // ✅ Step 3: Upload
         uploadPost(compressedFile, caption);
       } catch (error) {
-        console.error("Error compressing image:", error);
+        console.error("Error processing image:", error);
         alert("Error compressing image, please try again.");
       }
     } else {
       alert("Please select an image and enter a caption.");
     }
+  };
+
+  const cropImageToAspectRatio = (file, aspectRatio) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+
+        // Calculate crop dimensions
+        const inputWidth = img.width;
+        const inputHeight = img.height;
+        let cropWidth = inputWidth;
+        let cropHeight = inputWidth / aspectRatio;
+
+        if (cropHeight > inputHeight) {
+          cropHeight = inputHeight;
+          cropWidth = cropHeight * aspectRatio;
+        }
+
+        const x = (inputWidth - cropWidth) / 2;
+        const y = (inputHeight - cropHeight) / 2;
+
+        canvas.width = cropWidth;
+        canvas.height = cropHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(
+          img,
+          x,
+          y,
+          cropWidth,
+          cropHeight,
+          0,
+          0,
+          cropWidth,
+          cropHeight
+        );
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            resolve(new File([blob], file.name, { type: file.type }));
+          } else {
+            reject(new Error("Canvas toBlob failed"));
+          }
+        }, file.type);
+      };
+
+      img.onerror = (err) => reject(err);
+    });
   };
 
   const handleClear = () => {

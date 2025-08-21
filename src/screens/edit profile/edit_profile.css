@@ -1,0 +1,385 @@
+.editProfilemainpage {
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: space-evenly;
+  overflow-y: auto;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 20vh;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+.edit_image-container {
+  padding: 20px;
+  background-color: rgb(255, 255, 255);
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.imagebox {
+  border: 2px solid black;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.edit_imagepreview {
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit_image-actions {
+  width: 210px;
+  margin: 20px;
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.edit_upload {
+  width: 210px;
+  font-size: 16px;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.edit_upload:hover {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+.edit_Choose,
+.edit_clear-btn {
+  width: 100px;
+  font-size: 16px;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.edit_Choose:hover,
+.edit_clear-btn:hover {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+.edit-spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.edit_spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.basicdetail_outlinebox {
+  gap: 18px;
+  background: rgb(255, 255, 255);
+  padding: 20px 20px;
+  width: 50vw;
+  border-radius: 10px;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.edit_fields input {
+  width: 40vw;
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 20px;
+  font-family: "Roboto", sans-serif;
+  border: 1px solid #999999;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+}
+.edit_fields_bio textarea {
+  position: relative;
+  width: 40vw;
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 20px;
+  font-family: "Roboto", sans-serif;
+  border: 1px solid #999999;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+}
+.word-count {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 12px;
+  color: #888;
+}
+
+.edit_actions_save {
+  background-color: rgb(255, 255, 255);
+  padding: 12px 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 100px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.edit_actions_save:hover {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+@media (max-width: 600px) {
+  .editProfilemainpage {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    overflow-y: auto;
+    height: 100vh;
+    width: 100vw;
+    padding-top: 5px;
+  }
+
+  .edit_image-container {
+    padding: 20px;
+    padding-bottom: 10px;
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  }
+  .imagebox {
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255);
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit_imagepreview {
+    padding: 2px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .edit_image-actions {
+    width: 210px;
+    margin: 10px;
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit_upload {
+    width: 210px;
+    font-size: 16px;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    padding: 12px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .edit_upload:hover {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 15px;
+    border: 1px solid white;
+  }
+
+  .edit_Choose,
+  .edit_clear-btn {
+    width: 100px;
+    font-size: 16px;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    padding: 12px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .edit_Choose:hover,
+  .edit_clear-btn:hover {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 15px;
+    border: 1px solid white;
+  }
+
+  .edit-spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
+  .edit_spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #007bff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .basicdetail_outlinebox {
+    gap: 8px;
+    padding-top: 10px;
+
+    background: rgb(255, 255, 255);
+    width: 100vw;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .edit_fields input {
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 16px;
+    border-radius: 20px;
+    font-family: "Roboto", sans-serif;
+    border: 1px solid #999999;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
+  }
+
+  .input-wrapper {
+    width: 96vw;
+  }
+  .edit_fields_bio textarea {
+    position: relative;
+    width: 96vw;
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 20px;
+    font-family: "Roboto", sans-serif;
+    border: 1px solid #999999;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
+  }
+  .word-count {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 12px;
+    color: #888;
+  }
+
+  .edit_actions_save {
+    background-color: rgb(255, 255, 255);
+    padding: 12px 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 100px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .edit_actions_save:hover {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid white;
+  }
+}

@@ -1,0 +1,78 @@
+.profilemainpage {
+  width: 100vw;
+  background: rgb(255, 255, 255);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: row;
+  overflow: hidden;
+}
+.navbar-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.navbar {
+  border-radius: 0 20px 20px 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid #0000004c;
+}
+
+/* Right side main content */
+.rightSide_profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  height: 100vh;
+  overflow: auto;
+  width: 100vw;
+}
+
+/* 📱 Mobile layout adjustments */
+@media (max-width: 600px) {
+  .mainpage {
+    background-color: rgb(255, 255, 255);
+  }
+
+  /* Mobile Navbar becomes bottom bar */
+  .navbar {
+    top: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 0; /* flat bar */
+    border-top: 1px solid #0000004c;
+    background-color: #ffffff;
+    z-index: 100;
+    transform: none;
+    margin-left: 0;
+    padding: 0 10px;
+  }
+
+  /* Adjust rightSide content to not go behind bottom nav */
+  .rightSide_profile {
+    background-color: rgb(255, 255, 255);
+    height: calc(100vh - 60px);
+    width: 100vw;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
