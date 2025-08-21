@@ -47,7 +47,7 @@ export default function NotificationPanel() {
             notifications.map((n) => (
               <li key={n.notificationId} className="listobj">
                 <div className="notification-item-top">
-                  <div className="notification-sender">{n.userId}</div>
+                  <div className="notification-sender">{n.userName}</div>
                   <small className="notification-time">
                     {getTimeAgo(n.time)}
                   </small>

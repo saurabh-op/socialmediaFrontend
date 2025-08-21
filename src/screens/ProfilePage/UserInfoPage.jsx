@@ -5,6 +5,7 @@ import "./posts.css";
 import "./Modal.css";
 import "./layout_profile.css";
 import "./post_popup.css";
+import emptyProfilePic from "../../assets/no_profile_pic.png";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
 import { FiEdit2 } from "react-icons/fi";
@@ -399,12 +400,6 @@ function UserInfoPage() {
               >
                 ❤️ {selectedPostLikesCount}
               </button>
-              {/* <button
-                className={view === "comments" ? "active" : ""}
-                onClick={() => setView("comments")}
-              >
-                💬 {selectedPostCommentsCount}
-              </button> */}
             </div>
 
             <div className="list-container">
