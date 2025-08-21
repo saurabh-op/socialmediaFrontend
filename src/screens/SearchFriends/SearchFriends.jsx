@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
-import "./userPreview.css";
+import "./UserPreview.css";
 import "./layout_searchFriends.css";
 import lock from "../../assets/lock.png";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
