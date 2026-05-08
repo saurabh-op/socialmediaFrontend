@@ -351,7 +351,15 @@ function ChatPage() {
         console.log("Message sent successfully:", response.data);
 
         // Add sent message to chat history immediately
-        setChatHistory((chatHistory) => [response.data, ...chatHistory]);
+        setChatHistory((prev) => {
+          const exists = prev.some((m) => m && m.mid === response.data.mid);
+
+          if (exists) {
+            return prev;
+          }
+
+          return [response.data, ...prev];
+        });
 
         // Also send via WebSocket to recipient in real-time
         if (stompClient.current && stompClient.current.connected) {
