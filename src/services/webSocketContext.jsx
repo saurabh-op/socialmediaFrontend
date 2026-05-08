@@ -21,7 +21,7 @@ export const WebSocketProvider = ({ children }) => {
     }
 
     console.log("🔌 Attempting WebSocket connection for user:", userId);
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("http://ziffyconnect.onrender.com/ws");
 
     const client = new Client({
       webSocketFactory: () => socket,
