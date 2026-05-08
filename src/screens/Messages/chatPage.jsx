@@ -16,7 +16,12 @@ function ChatPage() {
   const chatHistoryRef = useRef(null);
 
   const currentOtherUserRef = useRef("");
-  const { registerMessageHandler, unregisterMessageHandler } = useWebSocket();
+  const {
+    registerMessageHandler,
+    unregisterMessageHandler,
+    connect,
+    stompClient,
+  } = useWebSocket();
 
   const [newchatid, setNewChatId] = useState("");
   const [search, setSearch] = useState("");
@@ -36,23 +41,36 @@ function ChatPage() {
   const [currentChatid, setCurrentChatId] = useState("");
   const [currentOtherUser, setcurrentOtherUser] = useState("");
 
+  // Initialize WebSocket connection on component mount
+  useEffect(() => {
+    const userid = localStorage.getItem("userid");
+    if (userid && (!stompClient.current || !stompClient.current.connected)) {
+      console.log("Initializing WebSocket connection for user:", userid);
+      connect(userid);
+    }
+  }, [connect, stompClient]);
+
   useEffect(() => {
     currentOtherUserRef.current = currentOtherUser;
   }, [currentOtherUser]);
 
   useEffect(() => {
     const messageHandler = (newMessage) => {
-      console.log("Received message inside the chatpage :", newMessage);
-      console.log("Current other user:", currentOtherUserRef.current);
+      console.log("Received message via WebSocket:", newMessage);
+      console.log("Current chat ID:", currentChatid);
+      console.log("Message chat ID:", newMessage.chatId || newMessage.cid);
 
-      if (newMessage.sid === currentOtherUserRef.current) {
+      // Check if the message belongs to the current chat
+      const messageChatId = newMessage.chatId || newMessage.cid;
+      if (messageChatId === currentChatid) {
+        console.log("Message is for current chat, adding to history");
         setChatHistory((prev) => [newMessage, ...prev]);
       }
     };
 
     registerMessageHandler(messageHandler);
     return () => unregisterMessageHandler(messageHandler);
-  }, [registerMessageHandler, unregisterMessageHandler]);
+  }, [registerMessageHandler, unregisterMessageHandler, currentChatid]);
 
   useEffect(() => {
     if (currentChatid) {
@@ -65,7 +83,7 @@ function ChatPage() {
     const fetchChatList = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/chatBook/${userid}`
+          `http://localhost:8080/api/chatBook/${userid}`,
         );
         setChatList(res.data);
         setChatListFetched(true);
@@ -92,7 +110,7 @@ function ChatPage() {
         } else {
           setSearching(true);
           const res = await fetch(
-            `http://localhost:8080/api/following/${userid}/${search}`
+            `http://localhost:8080/api/following/${userid}/${search}`,
           );
           const data = await res.json();
           console.log(data);
@@ -130,7 +148,7 @@ function ChatPage() {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/chatKeeper/new/${user1}/${user2}`
+        `http://localhost:8080/api/chatKeeper/new/${user1}/${user2}`,
       );
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
@@ -274,7 +292,7 @@ function ChatPage() {
     setIsLoadingChatHistory(true);
     axios
       .get(
-        `http://localhost:8080/api/chatKeeper/${currentChatid}?page=${currentPage}`
+        `http://localhost:8080/api/chatKeeper/${currentChatid}?page=${currentPage}`,
       )
       .then((response) => {
         console.log("Chat history loaded:", response.data);
@@ -296,6 +314,7 @@ function ChatPage() {
   function onSend(message) {
     const senderId = localStorage.getItem("userid");
 
+    // First, send message via HTTP to save to database
     axios
       .post(
         `http://localhost:8080/api/chatKeeper/${currentChatid}`,
@@ -307,12 +326,26 @@ function ChatPage() {
           headers: {
             rid: currentOtherUser,
           },
-        }
+        },
       )
       .then((response) => {
         console.log("Message sent successfully:", response.data);
 
+        // Add sent message to chat history immediately
         setChatHistory((chatHistory) => [response.data, ...chatHistory]);
+
+        // Also send via WebSocket to recipient in real-time
+        if (stompClient.current && stompClient.current.connected) {
+          const messagePayload = {
+            ...response.data,
+            chatId: currentChatid,
+          };
+          stompClient.current.publish({
+            destination: `/app/chat/${currentOtherUser}`,
+            body: JSON.stringify(messagePayload),
+          });
+          console.log("Message published to WebSocket:", messagePayload);
+        }
 
         setMessage("");
       })

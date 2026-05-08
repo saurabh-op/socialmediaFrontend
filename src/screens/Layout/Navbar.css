@@ -1,18 +1,57 @@
-.navicon {
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 50px;
+  width: 50px;
   padding: 6px;
   cursor: pointer;
   transform: scale(1);
-  color: #00000074; /* light gray for inactive */
+  color: #ffffff; /* light gray for inactive */
 }
 
-.navicon:hover {
-  transform: scale(1.2);
-  color: #666; /* medium gray on hover */
+.icon:hover {
+  transform: scale(1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 50px;
+  width: 50px;
 }
 
-.navicon.active {
-  transform: scale(1.4);
+.iconactive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 50px;
+  width: 50px;
+  padding: 5px;
+  transform: scale(1);
+  background-color: rgb(255, 255, 255);
   color: #000000; /* dark black for active */
+}
+.navbar_left {
+  height: 100vh;
+  width: 70px;
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #000000;
+}
+.navbar_top {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.navbar_bottom {
+  margin-bottom: 20px;
 }
 
 @media (max-width: 600px) {

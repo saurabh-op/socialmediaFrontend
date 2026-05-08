@@ -16,17 +16,6 @@
   justify-content: center;
 }
 /* Desktop Navbar (left-middle floating) */
-.navbar {
-  border-radius: 0 20px 20px 0;
-  height: auto;
-  display: flex;
-  align-items: center;
-  padding: 10px 5px;
-  justify-content: center;
-  flex-direction: column;
-  background-color: #ffffff;
-  border: 1px solid #0000004c;
-}
 
 /* Right side main content */
 .rightSide {

@@ -78,7 +78,7 @@ function UserInfoPage() {
       try {
         // Fetch basic user info
         const userRes = await fetch(
-          `http://localhost:8080/api/users/get/${userId}`
+          `http://localhost:8080/api/users/get/${userId}`,
         );
         const userData = await userRes.json();
         console.log("Fetched user is:", userData);
@@ -93,7 +93,7 @@ function UserInfoPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `http://localhost:8080/api/editUser/${userId}/profilePic`
+            `http://localhost:8080/api/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
@@ -150,7 +150,7 @@ function UserInfoPage() {
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/posts/allPosts/${userId}`
+          `http://localhost:8080/api/posts/allPosts/${userId}`,
         );
         setPosts(res.data.gallery);
       } catch (err) {
@@ -165,7 +165,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/request/accept/${receiverId}/${senderId}`
+        `http://localhost:8080/api/request/accept/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -180,7 +180,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/request/delete/${receiverId}/${senderId}`
+        `http://localhost:8080/api/request/delete/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -208,8 +208,8 @@ function UserInfoPage() {
         setModalList(
           modalType === "followers"
             ? data.followersList || []
-            : data.followingList || []
-        )
+            : data.followingList || [],
+        ),
       )
       .catch((err) => console.error(`Error fetching ${modalType}:`, err));
   }, [isModalOpen]);
@@ -267,10 +267,28 @@ function UserInfoPage() {
               <div className="top-row">
                 <h2>{user.username}</h2>
 
-                <FiEdit2
-                  style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
-                  onClick={() => navigate(`/edit-profile`)}
-                />
+                <div
+                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
+                >
+                  <button
+                    onClick={fetchRequests}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: "#007bff",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Requests
+                  </button>
+                  <FiEdit2
+                    style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
+                    onClick={() => navigate(`/edit-profile`)}
+                  />
+                </div>
               </div>
 
               {!isMobile && (

@@ -27,7 +27,7 @@ function Navbar() {
   ];
 
   return (
-    <div className="navbar">
+    <div className="navbar_left">
       {tabs.map((tab) => {
         const isActive =
           tab.name === "Profile"
@@ -39,14 +39,14 @@ function Navbar() {
         return (
           <div
             key={tab.name}
-            className={`navicon${isActive ? "active" : ""}`}
+            className={`icon${isActive ? "active" : ""}`}
             onClick={() => {
               if (tab.path) navigate(tab.path);
             }}
           >
             <IconComponent
-              size={35}
-              className={`navicon${isActive ? "active" : ""}`}
+              size={40}
+              className={`icon${isActive ? "active" : ""}`}
             />
           </div>
         );
