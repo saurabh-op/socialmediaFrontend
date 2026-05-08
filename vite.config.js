@@ -4,10 +4,11 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 
 export default defineConfig({
   plugins: [react()],
+
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: "globalThis", // 👈 Fixes "global is not defined"
+        global: "globalThis", 
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({

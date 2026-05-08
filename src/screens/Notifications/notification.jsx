@@ -27,7 +27,7 @@ export default function NotificationPanel() {
   useEffect(() => {
     const userId = localStorage.getItem("userid");
     fetch(
-      `http://localhost:8080/api/notifications/all?notificationHolderId=${userId}`
+      `https://ziffyconnect.onrender.com/api/notifications/all?notificationHolderId=${userId}`
     )
       .then((res) => res.json())
       .then(setNotifications)

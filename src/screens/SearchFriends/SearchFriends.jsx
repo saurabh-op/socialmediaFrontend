@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
 import "./searchList.css";
-import "./userPreview.css";
+import "./UserPreview.css";
 import "./layout_searchFriends.css";
 import lock from "../../assets/lock.png";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
@@ -36,7 +36,7 @@ const SearchPage = () => {
       try {
         setSearching(true);
         const res = await fetch(
-          `http://localhost:8080/api/users/search/${debouncedSearch}`
+          `https://ziffyconnect.onrender.com/api/users/search/${debouncedSearch}`
         );
         const data = await res.json();
         console.log("the searche result data is : ", data);
@@ -57,7 +57,7 @@ const SearchPage = () => {
       const myid = localStorage.getItem("userid");
       if (myid != id) {
         const response = await fetch(
-          `http://localhost:8080/api/request/send/${id}`,
+          `https://ziffyconnect.onrender.com/api/request/send/${id}`,
           {
             method: "POST",
             headers: {

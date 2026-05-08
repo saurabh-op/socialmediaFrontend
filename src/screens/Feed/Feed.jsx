@@ -26,7 +26,7 @@ function Feed() {
       try {
         setisFeedLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/feed/feedPosts/${userId}`
+          `https://ziffyconnect.onrender.com/api/feed/feedPosts/${userId}`
         );
         const data = await response.json();
         console.log("feed data", data);
