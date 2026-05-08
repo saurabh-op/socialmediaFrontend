@@ -32,8 +32,8 @@ function SignUp() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://ziffyconnect.onrender.com/api/users/signup",
-        user
+        "http://localhost:8080/api/users/signup",
+        user,
       );
       const data = response.data;
       if (data.message === "userAlreadyExists") {

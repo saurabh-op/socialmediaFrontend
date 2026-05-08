@@ -36,7 +36,7 @@ const SearchPage = () => {
       try {
         setSearching(true);
         const res = await fetch(
-          `https://ziffyconnect.onrender.com/api/users/search/${debouncedSearch}`
+          `http://localhost:8080/api/users/search/${debouncedSearch}`,
         );
         const data = await res.json();
         console.log("the searche result data is : ", data);
@@ -57,7 +57,7 @@ const SearchPage = () => {
       const myid = localStorage.getItem("userid");
       if (myid != id) {
         const response = await fetch(
-          `https://ziffyconnect.onrender.com/api/request/send/${id}`,
+          `http://localhost:8080/api/request/send/${id}`,
           {
             method: "POST",
             headers: {
@@ -69,7 +69,7 @@ const SearchPage = () => {
               senderid: myid,
               senderimage: "https://randomuser.me/api/portraits/men/75.jpg",
             }),
-          }
+          },
         );
 
         const result = await response.text();

@@ -93,9 +93,9 @@ function EditProfile() {
       } else {
         try {
           const response = await axios.post(
-            `https://ziffyconnect.onrender.com/api/editUser/${userId}/uploadProfilePic`,
+            `http://localhost:8080/api/editUser/${userId}/uploadProfilePic`,
             formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
 
           alert("Uploaded");
@@ -134,8 +134,8 @@ function EditProfile() {
     try {
       // console.log("User details to be updated:", user);
       const response = await axios.put(
-        "https://ziffyconnect.onrender.com/api/edituser/editBasicInfo",
-        user
+        "http://localhost:8080/api/edituser/editBasicInfo",
+        user,
       );
       const data = response.data;
       if (data.message === "emailAlreadyExists") {
@@ -176,7 +176,7 @@ function EditProfile() {
         const userId = localStorage.getItem("userid");
 
         const userRes = await fetch(
-          `https://ziffyconnect.onrender.com/api/users/get/${userId}`
+          `http://localhost:8080/api/users/get/${userId}`,
         );
         const userData = await userRes.json();
         //   console.log("Fetched user for editing is:", userData);
@@ -194,7 +194,7 @@ function EditProfile() {
 
           if (userData.profileImageUrl) {
             const imageRes = await fetch(
-              `https://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`
+              `http://localhost:8080/api/editUser/${userId}/profilePic`,
             );
             if (imageRes.ok) {
               const imageUrl = await imageRes.text();

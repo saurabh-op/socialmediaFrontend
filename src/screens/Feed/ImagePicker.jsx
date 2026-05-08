@@ -75,7 +75,7 @@ export default function ImagePicker() {
           0,
           0,
           cropWidth,
-          cropHeight
+          cropHeight,
         );
 
         canvas.toBlob((blob) => {
@@ -124,9 +124,9 @@ export default function ImagePicker() {
       } else {
         try {
           const response = await axios.post(
-            `https://ziffyconnect.onrender.com/api/posts/${userId}/addPost`,
+            `http://localhost:8080/api/posts/${userId}/addPost`,
             formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
           console.log(response.data);
         } catch (error) {

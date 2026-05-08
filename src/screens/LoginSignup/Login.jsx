@@ -26,8 +26,8 @@ function Login() {
     try {
       // console.log("Calling login api ");
       const response = await axios.post(
-        "https://ziffyconnect.onrender.com/api/users/login",
-        details
+        "http://localhost:8080/api/users/login",
+        details,
       );
       const data = response.data;
       // console.log(data);
