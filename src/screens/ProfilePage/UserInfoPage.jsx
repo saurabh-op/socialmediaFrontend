@@ -44,9 +44,7 @@ function UserInfoPage() {
     try {
       console.log("fetching requests ");
       const id = localStorage.getItem("userid");
-      const res = await fetch(
-        `https://ziffyconnect.onrender.com/api/request/${id}`,
-      );
+      const res = await fetch(`http://localhost:8080/api/request/${id}`);
 
       if (res.status === 204) {
         console.log("No new requests");
@@ -104,13 +102,9 @@ function UserInfoPage() {
         }
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
-          fetch(
-            `https://ziffyconnect.onrender.com/api/follower/count/${userId}`,
-          ),
-          fetch(
-            `https://ziffyconnect.onrender.com/api/following/count/${userId}`,
-          ),
-          fetch(`https://ziffyconnect.onrender.com/api/posts/count/${userId}`),
+          fetch(`http://localhost:8080/api/follower/count/${userId}`),
+          fetch(`http://localhost:8080/api/following/count/${userId}`),
+          fetch(`http://localhost:8080/api/posts/count/${userId}`),
         ]);
 
         const [followers, following, posts] = await Promise.all([
@@ -206,8 +200,8 @@ function UserInfoPage() {
     if (!isModalOpen) return;
     const endpoint =
       modalType === "followers"
-        ? `https://ziffyconnect.onrender.com/api/follower/${userId}`
-        : `https://ziffyconnect.onrender.com/api/following/${userId}`;
+        ? `http://localhost:8080/api/follower/${userId}`
+        : `http://localhost:8080/api/following/${userId}`;
     fetch(endpoint)
       .then((res) => res.json())
       .then((data) =>
@@ -379,11 +373,9 @@ function UserInfoPage() {
 
     try {
       const [likeRes] = await Promise.all([
-        fetch(
-          `https://ziffyconnect.onrender.com/api/like/likeDetails/${post.postId}`,
-        ),
+        fetch(`http://localhost:8080/api/like/likeDetails/${post.postId}`),
         // fetch(
-        //   `https://ziffyconnect.onrender.com/api/comment/commentDetails/${post.postId}`
+        //   `http://localhost:8080/api/comment/commentDetails/${post.postId}`
         // ),
       ]);
 

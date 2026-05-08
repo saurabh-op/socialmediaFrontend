@@ -58,13 +58,32 @@ function ChatPage() {
     const messageHandler = (newMessage) => {
       console.log("Received message via WebSocket:", newMessage);
       console.log("Current chat ID:", currentChatid);
-      console.log("Message chat ID:", newMessage.chatId || newMessage.cid);
+
+      // Reconstruct the chat ID from sender and current user if not provided
+      let messageChatId = newMessage.chatId || newMessage.cid;
+      if (!messageChatId && newMessage.sid) {
+        const currentUserId = localStorage.getItem("userid");
+        messageChatId = [currentUserId, newMessage.sid].sort().join("_");
+        console.log("Reconstructed chat ID:", messageChatId);
+      }
+
+      console.log("Message chat ID:", messageChatId);
 
       // Check if the message belongs to the current chat
-      const messageChatId = newMessage.chatId || newMessage.cid;
       if (messageChatId === currentChatid) {
         console.log("Message is for current chat, adding to history");
-        setChatHistory((prev) => [newMessage, ...prev]);
+        setChatHistory((prev) => {
+          // Deduplicate by `mid` to avoid inserting the same message twice
+          if (!newMessage || !newMessage.mid) {
+            return [newMessage, ...prev];
+          }
+          const exists = prev.some((m) => m && m.mid === newMessage.mid);
+          if (exists) {
+            console.log("Duplicate message ignored:", newMessage.mid);
+            return prev;
+          }
+          return [newMessage, ...prev];
+        });
       }
     };
 
@@ -317,7 +336,7 @@ function ChatPage() {
     // First, send message via HTTP to save to database
     axios
       .post(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}`,
+        `http://localhost:8080/api/chatKeeper/${currentChatid}`,
         {
           sid: senderId,
           tex: message,
