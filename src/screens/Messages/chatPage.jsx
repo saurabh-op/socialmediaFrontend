@@ -336,7 +336,7 @@ function ChatPage() {
     // First, send message via HTTP to save to database
     axios
       .post(
-        `http://localhost:8080/api/chatKeeper/${currentChatid}`,
+        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}`,
         {
           sid: senderId,
           tex: message,
