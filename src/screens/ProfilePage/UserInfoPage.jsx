@@ -45,7 +45,7 @@ function UserInfoPage() {
       console.log("fetching requests ");
       const id = localStorage.getItem("userid");
       const res = await fetch(
-        `https://ziffyconnect.onrender.com/api/request/${id}`
+        `https://ziffyconnect.onrender.com/api/request/${id}`,
       );
 
       if (res.status === 204) {
@@ -80,7 +80,7 @@ function UserInfoPage() {
       try {
         // Fetch basic user info
         const userRes = await fetch(
-          `https://ziffyconnect.onrender.com/api/users/get/${userId}`
+          `http://localhost:8080/api/users/get/${userId}`,
         );
         const userData = await userRes.json();
         console.log("Fetched user is:", userData);
@@ -95,7 +95,7 @@ function UserInfoPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `https://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`
+            `http://localhost:8080/api/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
@@ -105,10 +105,10 @@ function UserInfoPage() {
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
           fetch(
-            `https://ziffyconnect.onrender.com/api/follower/count/${userId}`
+            `https://ziffyconnect.onrender.com/api/follower/count/${userId}`,
           ),
           fetch(
-            `https://ziffyconnect.onrender.com/api/following/count/${userId}`
+            `https://ziffyconnect.onrender.com/api/following/count/${userId}`,
           ),
           fetch(`https://ziffyconnect.onrender.com/api/posts/count/${userId}`),
         ]);
@@ -156,7 +156,7 @@ function UserInfoPage() {
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
-          `https://ziffyconnect.onrender.com/api/posts/allPosts/${userId}`
+          `http://localhost:8080/api/posts/allPosts/${userId}`,
         );
         setPosts(res.data.gallery);
       } catch (err) {
@@ -171,7 +171,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.get(
-        `https://ziffyconnect.onrender.com/api/request/accept/${receiverId}/${senderId}`
+        `http://localhost:8080/api/request/accept/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -186,7 +186,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.delete(
-        `https://ziffyconnect.onrender.com/api/request/delete/${receiverId}/${senderId}`
+        `http://localhost:8080/api/request/delete/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -214,8 +214,8 @@ function UserInfoPage() {
         setModalList(
           modalType === "followers"
             ? data.followersList || []
-            : data.followingList || []
-        )
+            : data.followingList || [],
+        ),
       )
       .catch((err) => console.error(`Error fetching ${modalType}:`, err));
   }, [isModalOpen]);
@@ -273,10 +273,28 @@ function UserInfoPage() {
               <div className="top-row">
                 <h2>{user.username}</h2>
 
-                <FiEdit2
-                  style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
-                  onClick={() => navigate(`/edit-profile`)}
-                />
+                <div
+                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
+                >
+                  <button
+                    onClick={fetchRequests}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: "#007bff",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Requests
+                  </button>
+                  <FiEdit2
+                    style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
+                    onClick={() => navigate(`/edit-profile`)}
+                  />
+                </div>
               </div>
 
               {!isMobile && (
@@ -362,7 +380,7 @@ function UserInfoPage() {
     try {
       const [likeRes] = await Promise.all([
         fetch(
-          `https://ziffyconnect.onrender.com/api/like/likeDetails/${post.postId}`
+          `https://ziffyconnect.onrender.com/api/like/likeDetails/${post.postId}`,
         ),
         // fetch(
         //   `https://ziffyconnect.onrender.com/api/comment/commentDetails/${post.postId}`

@@ -15,65 +15,95 @@ export const WebSocketProvider = ({ children }) => {
   const feedHandlerRef = useRef(new Set());
 
   const connect = (userId) => {
-    if (stompClientRef.current?.connected) return;
+    if (stompClientRef.current?.connected) {
+      console.log("✅ WebSocket already connected");
+      return;
+    }
 
-    const socket = new SockJS("https://ziffyconnect.onrender.com/ws");
+    console.log("🔌 Attempting WebSocket connection for user:", userId);
+    const socket = new SockJS("http://localhost:8080/ws");
 
     const client = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
       onConnect: () => {
-        console.log("✅ WebSocket connected");
+        console.log("✅ WebSocket connected successfully for user:", userId);
 
         // subscribe to chat messages
         client.subscribe(`/topic/${userId}/chat`, (msg) => {
-          const messageData = JSON.parse(msg.body);
-          console.log("Received chat message via ws:", messageData);
-          messageHandlersRef.current.forEach((handler) => {
-            try {
-              handler(messageData);
-            } catch (err) {
-              console.error("Error in chat message handler:", err);
-            }
-          });
+          try {
+            const messageData = JSON.parse(msg.body);
+            console.log("📨 Received chat message via WebSocket:", messageData);
+            messageHandlersRef.current.forEach((handler) => {
+              try {
+                handler(messageData);
+              } catch (err) {
+                console.error("Error in chat message handler:", err);
+              }
+            });
+          } catch (parseErr) {
+            console.error("Error parsing WebSocket message:", parseErr);
+          }
         });
 
         // Subscribe to notifications
         client.subscribe(`/topic/${userId}/notification`, (msg) => {
-          const notificationData = JSON.parse(msg.body);
-          notificationHandlersRef.current.forEach((handler) => {
-            try {
-              handler(notificationData);
-            } catch (err) {
-              console.error("Error in notification handler:", err);
-            }
-          });
+          try {
+            const notificationData = JSON.parse(msg.body);
+            console.log(
+              "🔔 Received notification via WebSocket:",
+              notificationData,
+            );
+            notificationHandlersRef.current.forEach((handler) => {
+              try {
+                handler(notificationData);
+              } catch (err) {
+                console.error("Error in notification handler:", err);
+              }
+            });
+          } catch (parseErr) {
+            console.error("Error parsing notification:", parseErr);
+          }
         });
 
-        // subscribe to feed  "/topic/" + followerId + "/feed"
+        // subscribe to feed
         client.subscribe(`/topic/${userId}/feed`, (msg) => {
-          const feedData = JSON.parse(msg.body);
-          console.log("Received feed message via ws:", feedData);
-          feedHandlerRef.current.forEach((handler) => {
-            try {
-              handler(feedData);
-            } catch (err) {
-              console.error("Error in feed message handler:", err);
-            }
-          });
+          try {
+            const feedData = JSON.parse(msg.body);
+            console.log("📰 Received feed message via WebSocket:", feedData);
+            feedHandlerRef.current.forEach((handler) => {
+              try {
+                handler(feedData);
+              } catch (err) {
+                console.error("Error in feed message handler:", err);
+              }
+            });
+          } catch (parseErr) {
+            console.error("Error parsing feed message:", parseErr);
+          }
         });
       },
       onStompError: (frame) => {
         console.error("❌ Broker error:", frame.headers["message"]);
-        console.error("Details:", frame.body);
+        console.error("Error frame:", frame);
       },
       onWebSocketError: (event) => {
         console.error("❌ WebSocket connection error:", event);
       },
+      onWebSocketClose: () => {
+        console.warn("⚠️ WebSocket connection closed");
+      },
     });
 
-    client.activate();
-    stompClientRef.current = client;
+    try {
+      client.activate();
+      stompClientRef.current = client;
+      console.log("🚀 WebSocket client activated");
+    } catch (err) {
+      console.error("❌ Error activating WebSocket client:", err);
+    }
   };
 
   const disconnect = () => {
