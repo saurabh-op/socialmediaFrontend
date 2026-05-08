@@ -80,7 +80,7 @@ function UserInfoPage() {
       try {
         // Fetch basic user info
         const userRes = await fetch(
-          `http://ziffyconnect.onrender.com/api/users/get/${userId}`,
+          `https://ziffyconnect.onrender.com/api/users/get/${userId}`,
         );
         const userData = await userRes.json();
         console.log("Fetched user is:", userData);
@@ -95,7 +95,7 @@ function UserInfoPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `http://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`,
+            `https://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
@@ -156,7 +156,7 @@ function UserInfoPage() {
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
-          `http://ziffyconnect.onrender.com/api/posts/allPosts/${userId}`,
+          `https://ziffyconnect.onrender.com/api/posts/allPosts/${userId}`,
         );
         setPosts(res.data.gallery);
       } catch (err) {
@@ -171,7 +171,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.get(
-        `http://ziffyconnect.onrender.com/api/request/accept/${receiverId}/${senderId}`,
+        `https://ziffyconnect.onrender.com/api/request/accept/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -186,7 +186,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.delete(
-        `http://ziffyconnect.onrender.com/api/request/delete/${receiverId}/${senderId}`,
+        `https://ziffyconnect.onrender.com/api/request/delete/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
