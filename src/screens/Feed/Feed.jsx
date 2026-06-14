@@ -5,6 +5,7 @@ import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
+import { Plus } from "lucide-react";
 
 function Feed() {
   const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
@@ -65,7 +66,14 @@ function Feed() {
                 </div>
               ))
             ) : (
-              <div className="no-feed-message">No posts to show.</div>
+              <div className="no-feed-message">
+                <div className="no-feed-title">Nothing here yet</div>
+
+                <div className="no-feed-subtitle">
+                  Follow people, share moments, and your feed will begin to
+                  light up.
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -93,8 +101,11 @@ function Feed() {
               <button
                 onClick={() => setShowPicker(true)}
                 className="upload-btn"
+                aria-label="Upload"
               >
-                Upload
+                <div className="upload-btn-inner">
+                  <Plus size={20} strokeWidth={2.5} />
+                </div>
               </button>
             </div>
           </div>

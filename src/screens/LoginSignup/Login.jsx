@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { FaArrowRight, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -25,10 +26,7 @@ function Login() {
     setLoading(true);
     try {
       // console.log("Calling login api ");
-      const response = await axios.post(
-        "http://localhost:8080/api/users/login",
-        details,
-      );
+      const response = await api.post("/users/login", details);
       const data = response.data;
       // console.log(data);
       if (data.mes === "match") {

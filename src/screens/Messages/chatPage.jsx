@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import api from "../../config/axios";
 import "./chatPage.css";
 import "./layout_chat.css";
 import Navbar from "../Layout/Navbar";
@@ -101,9 +102,7 @@ function ChatPage() {
 
     const fetchChatList = async () => {
       try {
-        const res = await axios.get(
-          `https://ziffyconnect.onrender.com/api/chatBook/${userid}`,
-        );
+        const res = await api.get(`/chatBook/${userid}`);
         setChatList(res.data);
         setChatListFetched(true);
       } catch (error) {
@@ -128,9 +127,7 @@ function ChatPage() {
           setResults([]);
         } else {
           setSearching(true);
-          const res = await fetch(
-            `https://ziffyconnect.onrender.com/api/following/${userid}/${search}`,
-          );
+          const res = await api.get(`/following/${userid}/${search}`);
           const data = await res.json();
           console.log(data);
           setResults(data);
@@ -166,9 +163,7 @@ function ChatPage() {
     }
 
     try {
-      const response = await axios.get(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/new/${user1}/${user2}`,
-      );
+      const response = await api.get(`/chatKeeper/new/${user1}/${user2}`);
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
       setcurrentOtherUser(username);
@@ -309,10 +304,8 @@ function ChatPage() {
 
   function loadChat() {
     setIsLoadingChatHistory(true);
-    axios
-      .get(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}?page=${currentPage}`,
-      )
+    api
+      .get(`/chatKeeper/${currentChatid}?page=${currentPage}`)
       .then((response) => {
         console.log("Chat history loaded:", response.data);
         if (response.data.length === 0) {
@@ -334,9 +327,9 @@ function ChatPage() {
     const senderId = localStorage.getItem("userid");
 
     // First, send message via HTTP to save to database
-    axios
+    api
       .post(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}`,
+        `/chatKeeper/${currentChatid}`,
         {
           sid: senderId,
           tex: message,

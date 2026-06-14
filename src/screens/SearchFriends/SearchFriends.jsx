@@ -1,11 +1,13 @@
 // SearchPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./SearchFriends.css";
 import Navbar from "../Layout/Navbar";
+import { X } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import "./searchList.css";
 import "./UserPreview.css";
-import "./layout_searchFriends.css";
+import "./pagelayout.css";
+import { Button } from "@/components/ui/button";
 import lock from "../../assets/lock.png";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
 import EditProfile from "../edit profile/edit_profile";
@@ -86,24 +88,33 @@ const SearchPage = () => {
 
   const List = React.memo(() => {
     return (
-      <div className="List">
-        <div className="search-input-wrapper">
+      <div className="sfcontent">
+        <div className="search-box">
           <input
             type="text"
-            className="search-input"
-            placeholder="Enter username or name"
+            className="finduser"
+            placeholder="Search a friend"
             value={search}
             autoFocus
             onChange={(e) => setSearch(e.target.value)}
           />
           {search && (
-            <span className="clear-icon" onClick={() => setSearch("")}>
-              &times;
-            </span>
+            <button
+              type="button"
+              className="clear-icon"
+              onClick={() => setSearch("")}
+            >
+              <X size={18} />
+            </button>
           )}
         </div>
-
-        <div className="srchlist">
+        {/* {search.trim() === "" && results.length === 0 && !searching && (
+          <div className="empty-state">
+            <UserPlus size={40} />
+            <p>Search for users to connect with</p>
+          </div>
+        )} */}
+        <div className="resultlist">
           {results.length === 0 && search.trim() !== "" && (
             <p className="no-results">
               {searching ? "Searching..." : "No users found."}
@@ -117,7 +128,7 @@ const SearchPage = () => {
             >
               <div className="pic_and_name">
                 <img
-                  className="profilePic"
+                  className="picture"
                   src={
                     user.profileImageUrl && user.profileImageUrl.trim() !== ""
                       ? user.profileImageUrl
@@ -133,17 +144,16 @@ const SearchPage = () => {
 
               <div>
                 {requestedIds.has(user.id) ? (
-                  <button
-                    type="button"
-                    disabled
-                    style={{ background: "#ccc", cursor: "not-allowed" }}
-                  >
+                  <Button disabled className="requested-btn">
                     Requested
-                  </button>
+                  </Button>
                 ) : (
-                  <button type="button" onClick={() => sendRequest(user.id)}>
-                    Add Friend
-                  </button>
+                  <Button
+                    onClick={() => sendRequest(user.id)}
+                    className="friend-btn"
+                  >
+                    <UserPlus size={24} />
+                  </Button>
                 )}
               </div>
             </div>
@@ -154,13 +164,9 @@ const SearchPage = () => {
   });
 
   return (
-    <div className="mpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
-
+    <div className="sfmpage">
+      <Navbar />
       <List />
-      {/* <UserPreview /> */}
     </div>
   );
 };
