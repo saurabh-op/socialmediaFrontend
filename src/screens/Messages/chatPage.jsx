@@ -3,11 +3,13 @@ import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import api from "../../config/axios";
-import "./chatPage.css";
+
+import { Search, X, Send } from "lucide-react";
+import "./search_bar.css";
 import "./layout_chat.css";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
-import "./chatRightPart.css";
+
 import "./chatList.css";
 import "./chatViewPort.css";
 import "./newChatPopUp.css";
@@ -26,6 +28,7 @@ function ChatPage() {
 
   const [newchatid, setNewChatId] = useState("");
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [chatList, setChatList] = useState([]);
   const [showNewChatPopUp, setNewSearchPopUp] = useState(false);
@@ -128,9 +131,9 @@ function ChatPage() {
         } else {
           setSearching(true);
           const res = await api.get(`/following/${userid}/${search}`);
-          const data = await res.json();
-          console.log(data);
-          setResults(data);
+          const data = res.data;
+          console.log("Search response:", data);
+          setResults(data || []);
         }
       } catch (err) {
         console.error("Search error:", err);
@@ -196,7 +199,24 @@ function ChatPage() {
             </p>
           )}
 
-          {results && (
+          {Array.isArray(results) ? (
+            results.map((r) => (
+              <div
+                key={r.userid || r.id}
+                className="listItem"
+                onClick={() => beginNewChat(r.userid, r.username)}
+              >
+                <img className="profilePic" src={r.image} alt="User Profile" />
+
+                <div className="user-info">
+                  <span>
+                    <strong>{r.username}</strong>
+                  </span>
+                  <span>{r.name}</span>
+                </div>
+              </div>
+            ))
+          ) : results ? (
             <div
               className="listItem"
               onClick={() => beginNewChat(results.userid, results.username)}
@@ -214,7 +234,7 @@ function ChatPage() {
                 <span>{results.name}</span>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         <div>
@@ -225,12 +245,12 @@ function ChatPage() {
       </div>
     );
   }
-  function renderChatRightPart() {
+  function main_page() {
     return (
-      <div className="boxer">
-        {renderChatList()}
+      <div className="chat_mainpage">
+        {chat_list()}
         {currentChatid ? (
-          viewChat()
+          opened_chat()
         ) : (
           <div className="select_a_chat">Select a chat</div>
         )}
@@ -249,53 +269,105 @@ function ChatPage() {
     const now = new Date();
     const date = new Date(timestamp);
 
-    const isToday = date.toDateString() === now.toDateString();
+    const diffMs = now - date;
 
-    const yesterday = new Date();
-    yesterday.setDate(now.getDate() - 1);
-    const isYesterday = date.toDateString() === yesterday.toDateString();
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    const timeString = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
+    // less than 1 hour
+    if (minutes < 60) {
+      return `${minutes}m`;
+    }
+
+    // less than 24 hours
+    if (hours < 24) {
+      return `${hours}h`;
+    }
+
+    // days
+    if (days < 7) {
+      return `${days}d`;
+    }
+
+    // fallback date
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
     });
-
-    if (isToday) return `Today ${timeString}`;
-    if (isYesterday) return `Yesterday ${timeString}`;
-
-    return `${date.toLocaleDateString("en-GB")}`;
   }
 
-  function renderChatList() {
+  function chat_list() {
     return (
       <div className="chatListContainer">
         {showNewChatPopUp ? (
           <div>{searchPopUp()}</div>
         ) : (
           <>
-            <div className="List">
-              {chatList.map((chat) => (
-                <div
-                  key={chat.chatId}
-                  className="list-item"
-                  onClick={() =>
-                    setChatInfo(chat.chatId, chat.otherPersonUserName)
-                  }
-                >
-                  <div className="chatListItem">
-                    <p className="chl-username">{chat.otherPersonUserName}</p>
-                    <p className="time">{formatChatTime(chat.timeStamp)}</p>
+            <div className="chat_list">
+              <h2 className="Message_header">Messages</h2>
+              <div className="searchContainer">
+                <Search className="searchIcon" />
+
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search"
+                  className="searchInput"
+                />
+
+                {query && (
+                  <button onClick={() => setQuery("")} className="clearBtn">
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+
+              {(() => {
+                const filtered = query.trim()
+                  ? chatList.filter((chat) =>
+                      (chat.otherPersonUserName || "")
+                        .toLowerCase()
+                        .includes(query.toLowerCase()),
+                    )
+                  : chatList;
+
+                return filtered.map((chat) => (
+                  <div
+                    key={chat.chatId}
+                    className="list-item"
+                    onClick={() =>
+                      setChatInfo(chat.chatId, chat.otherPersonUserName)
+                    }
+                  >
+                    <div className="chat_card">
+                      <div className="avatarWrapper">
+                        <div className="avatar">
+                          {chat.otherPersonUserName?.charAt(0).toUpperCase()}
+                        </div>
+                      </div>
+                      <div className="chatInfo">
+                        <div className="topRow">
+                          <span className="chatUsername">
+                            {chat.otherPersonUserName}
+                          </span>
+
+                          <span className="chatTime">
+                            {formatChatTime(chat.timeStamp)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
-            <button
+            {/* <button
               className="newChatBtn"
               onClick={() => setNewSearchPopUp(true)}
             >
               New chat
-            </button>
+            </button> */}
           </>
         )}
       </div>
@@ -375,7 +447,7 @@ function ChatPage() {
       });
   }
 
-  const viewChat = () => {
+  const opened_chat = () => {
     const myUserId = localStorage.getItem("userid");
     const handleSend = () => {
       if (message.trim() === "") return;
@@ -387,44 +459,65 @@ function ChatPage() {
         {isloadingChatHistory && <div>Loading chat...</div>}
         <div>
           <div className="chat-window">
-            <div className="chat-header">{currentOtherUser}</div>
+            <div className="chat-header">
+              {" "}
+              <div className="avatarWrapper">
+                <div className="avatar">
+                  {currentOtherUser.charAt(0).toUpperCase()}
+                </div>
+              </div>
+              {currentOtherUser}
+            </div>
 
             <div className="chat-history">
               {chatHistory && chatHistory.length > 0 ? (
-                chatHistory.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`chat-message ${
-                      msg.sid === myUserId ? "my-message" : "their-message"
-                    }`}
-                  >
-                    <div className="message-text">{msg.tex}</div>
-                    <div className="timestamp">
-                      {new Date(msg.tim).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                chatHistory.map((msg, index) => {
+                  const mine = msg.sid === myUserId;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`message-row ${mine ? "me" : "them"}`}
+                    >
+                      <div
+                        className={`chat-message ${
+                          mine ? "my-message" : "their-message"
+                        }`}
+                      >
+                        <div className="message-text">{msg.tex}</div>
+
+                        <div className="msgtimestamp">
+                          {new Date(msg.tim).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          })}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
-                <div>No messages yet.</div>
+                <div className="no-user-selected">No messages yet</div>
               )}
             </div>
-
-            <div className="chat-input-area">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSend();
-                  }
-                }}
-                placeholder="Type a message"
-              />
-              <button onClick={handleSend}>Send</button>
+            <div className="chat-bottom">
+              <div className="chat-input-area">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSend();
+                    }
+                  }}
+                  placeholder={`Message ${currentOtherUser}`}
+                />
+                <button onClick={handleSend}>
+                  <Send size={16} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -433,14 +526,10 @@ function ChatPage() {
   };
 
   return (
-    <div className="mainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
+    <div>
+      <Navbar />
 
-      <div className="rightSide">
-        {isLoadingChatList ? "Loading..." : <div>{renderChatRightPart()}</div>}
-      </div>
+      <div>{isLoadingChatList ? "Loading..." : <div>{main_page()}</div>}</div>
     </div>
   );
 }

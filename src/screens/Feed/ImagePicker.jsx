@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+  import React, { useState } from "react";
 import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";

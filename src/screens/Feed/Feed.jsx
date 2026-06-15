@@ -86,7 +86,7 @@ function Feed() {
       <div className="navbar-container">
         <Navbar />
       </div>
-      <div className="rightSide">
+      <div className="feedpagerightSide">
         {showPicker ? (
           <div className="imagePicker">
             <button className="back-btn" onClick={() => setShowPicker(false)}>
