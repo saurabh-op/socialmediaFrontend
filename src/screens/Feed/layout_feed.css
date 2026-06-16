@@ -10,7 +10,7 @@
   flex-direction: column;
   min-height: 100vh;
   align-items: center;
-  padding-top: 2rem;
+  padding-top: 2rem; /* Remove this when possible,imagepicker's back button should not be hindered */
   overflow: auto;
 }
 

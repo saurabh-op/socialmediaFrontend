@@ -117,8 +117,7 @@
 
   height: 100%;
   max-height: 100vh;
-
-  overflow-y: auto;
+  width: auto;  overflow-y: auto;
 
   padding-right: 8px;
 }

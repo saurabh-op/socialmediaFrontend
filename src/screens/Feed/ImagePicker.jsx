@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+import React, { useState } from "react";
 import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
@@ -103,6 +103,8 @@ export default function ImagePicker() {
   const uploadPost = async (imageFile, caption) => {
     try {
       const userId = localStorage.getItem("userid");
+      const username = localStorage.getItem("username");
+      const name = localStorage.getItem("name");
 
       if (!imageFile || !caption || !userId) {
         alert("Missing data");
@@ -114,6 +116,8 @@ export default function ImagePicker() {
       const formData = new FormData();
       formData.append("image", imageFile);
       formData.append("caption", caption);
+      formData.append("username", username);
+      formData.append("name", name);
 
       const image = formData.get("image");
       const maxSize = 1 * 1024 * 1024;

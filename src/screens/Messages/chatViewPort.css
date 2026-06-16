@@ -98,13 +98,14 @@
 }
 
 .chat-message {
+  background: rgba(255, 255, 255, 0.75);
   max-width: 68%;
 
-  padding: 12px;
+  padding: 14px 17px;
 
   border-radius: 22px;
 
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
 
   word-break: break-word;
@@ -115,8 +116,8 @@
 /* MY MESSAGE */
 
 .my-message {
-  background: #111827;
-  color: white;
+  background: #000000;
+  color: rgb(255, 255, 255);
   font-family: Arial, sans-serif;
   border-bottom-right-radius: 8px;
 }

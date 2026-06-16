@@ -83,9 +83,8 @@ function Feed() {
 
   return (
     <div className="mainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
+      <Navbar />
+
       <div className="feedpagerightSide">
         {showPicker ? (
           <div className="imagePicker">

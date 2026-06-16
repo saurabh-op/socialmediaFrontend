@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./UserInfoPage.css";
-import "./posts.css";
+
 import "./Modal.css";
 import "./layout_profile.css";
 import "./post_popup.css";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
-import { FiEdit2 } from "react-icons/fi";
+
 import { Link } from "react-router-dom";
 import EditProfile from "../edit profile/edit_profile";
 import { useNavigate } from "react-router-dom";
+import { FiEdit2 } from "react-icons/fi";
+import { Circle, Heart, Settings, Share2 } from "lucide-react";
+// Importing fonts :
 
 function UserInfoPage() {
   const { userId } = useParams();
   const [posts, setPosts] = useState([]);
+  const [showUI, setShowUI] = useState(true);
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,6 +157,7 @@ function UserInfoPage() {
           `http://localhost:8080/api/posts/allPosts/${userId}`,
         );
         setPosts(res.data.gallery);
+        console.log(res.data.gallery);
       } catch (err) {
         console.error("Error fetching posts:", err);
       }
@@ -255,89 +260,115 @@ function UserInfoPage() {
 
   function profileDetails() {
     return (
-      <div className="rightSide_profile">
-        <div className="profile">
-          <div className="idCard">
-            <img
-              className="pic"
-              src={savedImageUrl || emptyProfilePic}
-              alt="Profile"
-            />
-            <div className="profile-info">
-              <div className="top-row">
-                <h2>{user.username}</h2>
+      <div className="profile-container">
+        <section className="profile-card">
+          <div className="profile-details">
+            {/* Avatar */}
+            <div className="avatar-wrapper">
+              <div className="avatar-gradient">
+                <img
+                  className="avatar-img"
+                  src={savedImageUrl || emptyProfilePic}
+                  alt="Profile"
+                />
+              </div>
 
-                <div
-                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
-                >
+              <span className="online-indicator"></span>
+            </div>
+
+            {/* INFO */}
+            <div className="profile-content">
+              <div className="profile-top">
+                <div>
+                  <div className="name-row">
+                    <h1>{user.name}</h1>
+                  </div>
+
+                  <p className="handle">@{user.username}</p>
+                </div>
+                {/* BIO */}
+                <div className="bio">
+                  <p>{user.bio}</p>
+                </div>
+                <div className="profile-actions">
                   <button
+                    className="glass-btn primary-btn"
                     onClick={fetchRequests}
-                    style={{
-                      padding: "8px 12px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
                   >
                     Requests
                   </button>
-                  <FiEdit2
-                    style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
-                    onClick={() => navigate(`/edit-profile`)}
-                  />
-                </div>
-              </div>
 
-              {!isMobile && (
-                <div className="stats">
-                  <span>
-                    <strong>{formatNumber(user.posts)}</strong> posts
-                  </span>
-                  <span
-                    className="clickable"
-                    onClick={() => openModal("followers")}
+                  <button
+                    className="icon-btn"
+                    onClick={() => navigate("/edit-profile")}
                   >
-                    <strong>{formatNumber(user.followers)}</strong> followers
-                  </span>
-                  <span
-                    className="clickable"
-                    onClick={() => openModal("following")}
-                  >
-                    <strong>{formatNumber(user.following)}</strong> following
-                  </span>
+                    <FiEdit2 size={18} />
+                  </button>
                 </div>
-              )}
-
-              <div className="bio">
-                <p style={{ whiteSpace: "pre-line" }}>{user.bio}</p>
               </div>
             </div>
           </div>
-
-          {isMobile && (
-            <div className="stats_for_mobile_view">
-              <div className="stat-box">
-                <strong>{formatNumber(user.posts)}</strong>
-                <span>posts</span>
-              </div>
-
-              <div className="stat-box" onClick={() => openModal("followers")}>
-                <strong>{formatNumber(user.followers)}</strong>
-                <span>followers</span>
-              </div>
-
-              <div className="stat-box" onClick={() => openModal("following")}>
-                <strong>{formatNumber(user.following)}</strong>
-                <span>following</span>
-              </div>
+          {/*Stats*/}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <strong>{formatNumber(user.posts)}</strong>
+              <span>Posts</span>
             </div>
-          )}
 
-          <div>{gallery()}</div>
+            <div
+              className="stat-card clickables"
+              onClick={() => openModal("followers")}
+            >
+              <strong>{formatNumber(user.followers)}</strong>
+              <span>Followers</span>
+            </div>
+
+            <div
+              className="stat-card clickables"
+              onClick={() => openModal("following")}
+            >
+              <strong>{formatNumber(user.following)}</strong>
+              <span>Following</span>
+            </div>
+          </div>
+        </section>
+
+        {isMobile && (
+          <div className="stats_for_mobile_view">
+            <div className="stat-box">
+              <strong>{formatNumber(user.posts)}</strong>
+              <span>posts</span>
+            </div>
+
+            <div className="stat-box" onClick={() => openModal("followers")}>
+              <strong>{formatNumber(user.followers)}</strong>
+              <span>followers</span>
+            </div>
+
+            <div className="stat-box" onClick={() => openModal("following")}>
+              <strong>{formatNumber(user.following)}</strong>
+              <span>following</span>
+            </div>
+          </div>
+        )}
+
+        {/* GALLERY */}
+        <div className="gallery-grid">
+          {posts?.map((post) => (
+            <div
+              key={post.postId}
+              className="gallery-item"
+              onClick={() => handlePostClick(post)}
+            >
+              <img
+                src={post.imageUrl}
+                alt={post.caption}
+                className="gallery-image"
+              />
+            </div>
+          ))}
         </div>
+
         {isModalOpen && <ModalGenerator />}
         {showPostDetails && <PostDetails />}
       </div>
@@ -369,7 +400,7 @@ function UserInfoPage() {
     setSelectedPostId(post.postId);
     setSelectedPostCaption(post.caption);
     setSelectedPostTimestamp(post.timestamp);
-    setSelectedPostUsername(post.owner);
+    setSelectedPostUsername(post.username);
 
     try {
       const [likeRes] = await Promise.all([
@@ -394,67 +425,59 @@ function UserInfoPage() {
 
   function PostDetails() {
     return (
-      <div className="post-details-overlay">
-        <div className="post-details-container">
-          {/* Left - Image */}
-          <div className="post-details-left">
-            {selectedPostImageLink && (
-              <img src={selectedPostImageLink} alt="post" />
-            )}
+      <div
+        className="post-overlay-background"
+        onClick={() => setShowPostDetails(false)}
+      >
+        <div
+          className="post-details-container"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="imgcontainer">
+            {/* IMAGE */}
+            <img
+              src={selectedPostImageLink}
+              alt="post"
+              onClick={() => setShowUI((prev) => !prev)}
+            />
           </div>
 
-          {/* Right - Info */}
-          <div className="post-details-right">
-            <div className="username">{selectedPostUsername}</div>
-            <div className="caption">{selectedPostCaption}</div>
-            <div className="timestamp">
-              {new Date(selectedPostTimestamp).toLocaleString()}
-            </div>
+          {/* BOTTOM OVERLAY */}
+          <div
+            className={`post-bottom-overlay ${
+              showUI ? "overlay-visible" : "overlay-hidden"
+            }`}
+          >
+            <div className="post-user-info">
+              <div className="overlay-username">@{selectedPostUsername}</div>
 
-            <div className="icon-row">
-              <button
-                className={view === "likes" ? "active" : ""}
-                onClick={() => setView("likes")}
-              >
-                ❤️ {selectedPostLikesCount}
-              </button>
-            </div>
+              <div className="post-user-meta">
+                <div className="overlay-time">
+                  {new Date(selectedPostTimestamp).toLocaleString([], {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }) +
+                    " · " +
+                    new Date(selectedPostTimestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                </div>
 
-            <div className="list-container">
-              {view === "likes" ? (
-                <ul>
-                  {(selectedPostLikesList || []).map((like, i) => (
-                    <li key={i}>
-                      <strong>{like.likeby}</strong> —{" "}
-                      <span>{new Date(like.time).toLocaleString()}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <ul>
-                  {(selectedPostCommentsList || []).map((comment, i) => (
-                    <li key={i}>
-                      <strong>{comment.commentBy}</strong> —{" "}
-                      <span>{comment.text}</span>:{" "}
-                      {new Date(comment.timestamp).toLocaleString()}
-                    </li>
-                  ))}
-                </ul>
-              )}
+                <div className="overlay-likes">
+                  <Circle size={8} fill="white" strokeWidth={2} />
+                  <div>Likes {selectedPostLikesCount}</div>
+                </div>
+              </div>
             </div>
-
-            <button
-              onClick={() => setShowPostDetails(false)}
-              className="close-button"
-            >
-              Close
-            </button>
+            <div className="overlay-caption">{selectedPostCaption}</div>
           </div>
         </div>
       </div>
     );
   }
-
   function ModalGenerator() {
     return (
       <>
@@ -492,9 +515,7 @@ function UserInfoPage() {
 
   return (
     <div className="profilemainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
+      <Navbar />
 
       {loading ? (
         <div className="rightSide_profile">Loading...</div>

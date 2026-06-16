@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import "./PostCard.css";
+import { Heart, MoreHorizontal } from "lucide-react";
 import userLogo from "../../assets/man.jpg"; // Replace with actual user logo URL
 
 function PostCard({ post }) {
@@ -14,36 +15,36 @@ function PostCard({ post }) {
   const toggleCaption = () => {
     setExpanded(!expanded);
   };
-  useEffect(() => {
-    const textarea = document.querySelector(".comment-textarea");
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = textarea.scrollHeight + "px";
-    }
-  }, [comment]);
+  // useEffect(() => {
+  //   const textarea = document.querySelector(".comment-textarea");
+  //   if (textarea) {
+  //     textarea.style.height = "auto";
+  //     textarea.style.height = textarea.scrollHeight + "px";
+  //   }
+  // }, [comment]);
 
-  const LoadComments = async () => {
-    setDisplayComments(true);
-    setisCommentLoading(true);
-    try {
-      // const response = await fetch(`/api/posts/${post.id}/comments`);
-      // const data = await response.json();
-      setCommentsList([]);
-    } catch (err) {
-      console.error("Failed to fetch comments:", err);
-    } finally {
-      setisCommentLoading(false);
-    }
-  };
-  const handleClose = () => {
-    setDisplayComments(false);
-  };
+  // const LoadComments = async () => {
+  //   setDisplayComments(true);
+  //   setisCommentLoading(true);
+  //   try {
+  //     // const response = await fetch(`/api/posts/${post.id}/comments`);
+  //     // const data = await response.json();
+  //     setCommentsList([]);
+  //   } catch (err) {
+  //     console.error("Failed to fetch comments:", err);
+  //   } finally {
+  //     setisCommentLoading(false);
+  //   }
+  // };
+  // const handleClose = () => {
+  //   setDisplayComments(false);
+  // };
 
-  const handleCommentSubmit = () => {
-    if (comment.trim() === "") return;
-    setCommentsList((prev) => [...prev, comment]);
-    setComment("");
-  };
+  // const handleCommentSubmit = () => {
+  //   if (comment.trim() === "") return;
+  //   setCommentsList((prev) => [...prev, comment]);
+  //   setComment("");
+  // };
   const getTimeAgo = (timestamp) => {
     const now = new Date();
     const time = new Date(timestamp);
@@ -65,16 +66,25 @@ function PostCard({ post }) {
   return (
     <div className="post-card">
       <div className="post-top">
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="post-user">
           <img src={userLogo} alt="User" className="user-logo" />
-          <span className="user-name">{post.owner}</span>
+
+          <div className="user-meta">
+            <span className="user-name">{post.name}</span>
+
+            <span className="post-timestamp">
+              @{post.owner} · {getTimeAgo(post.timestamp)}
+            </span>
+          </div>
         </div>
-        <div className="post-timestamp">{getTimeAgo(post.timestamp)}</div>
+
+        <button className="more-btn">
+          <MoreHorizontal size={18} />
+        </button>
       </div>
       <div className="post-middle">
         <img src={post.imageUrl} alt="Post" className="post-image" />
       </div>
-
       <div className="post-bottom">
         <div
           onClick={toggleCaption}
@@ -90,7 +100,7 @@ function PostCard({ post }) {
           {liked ? "❤️" : "🤍"}
         </button>
       </div>
-      {showComments && (
+      {/* {showComments && (
         <div className="comment-section">
           {isCommentLoading ? (
             <div className="loading-text">Loading comments...</div>
@@ -123,7 +133,7 @@ function PostCard({ post }) {
             </>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 }
