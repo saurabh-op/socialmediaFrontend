@@ -1,6 +1,11 @@
 .mainpage {
-  min-height: 100vh;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: row;
+  overflow-y: auto;
 }
 
 /* Right side main content */
@@ -9,9 +14,11 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
   align-items: center;
   padding-top: 2rem; /* Remove this when possible,imagepicker's back button should not be hindered */
-  overflow: auto;
+  overflow: visible;
+  min-height: auto;
 }
 
 /* 📱 Mobile layout adjustments */

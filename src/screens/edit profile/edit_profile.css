@@ -532,7 +532,10 @@
       box-shadow 0.3s ease;
     background-color: #ffffff;
   }
-
+  .edit_fields input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
   .input-wrapper {
     width: 96vw;
   }

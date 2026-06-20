@@ -16,8 +16,8 @@ function Feed() {
   //Related to feed :
   const [isFeedLoading, setisFeedLoading] = useState(false);
   const [feedList, setFeedList] = useState([]);
-  const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
-  const [selectedPostLikeList, setSelectedPostLikeList] = useState([]);
+  // const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
+  // const [selectedPostLikeList, setSelectedPostLikeList] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userid");

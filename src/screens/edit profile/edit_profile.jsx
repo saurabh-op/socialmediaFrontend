@@ -235,6 +235,7 @@ function EditProfile() {
               placeholder="@username"
               value={user.username}
               onChange={handleChange}
+              disabled
             />
           </div>
 

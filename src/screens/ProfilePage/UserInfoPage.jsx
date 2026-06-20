@@ -85,7 +85,7 @@ function UserInfoPage() {
           `http://localhost:8080/api/users/get/${userId}`,
         );
         const userData = await userRes.json();
-        console.log("Fetched user is:", userData);
+        // console.log("Fetched user is:", userData);
 
         if (userData != null) {
           setUser((prevUser) => ({

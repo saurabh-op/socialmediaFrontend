@@ -222,8 +222,6 @@
   border: 1px solid rgba(255, 46, 99, 0.18);
 }
 
-
-
 @keyframes pop {
   0% {
     transform: scale(1);
