@@ -4,7 +4,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import api from "../../config/axios";
 
-import { Search, X, Send } from "lucide-react";
+import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
 import "./search_bar.css";
 import "./layout_chat.css";
 import Navbar from "../Layout/Navbar";
@@ -31,7 +31,7 @@ function ChatPage() {
   const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [chatList, setChatList] = useState([]);
-  const [showNewChatPopUp, setNewSearchPopUp] = useState(false);
+  const [searchNewChat, setSearchNewChat] = useState(false);
   const [isLoadingChatList, setisLoadingChatlist] = useState(true);
   const [message, setMessage] = useState("");
   const [results, setResults] = useState([]);
@@ -102,11 +102,12 @@ function ChatPage() {
   }, [currentChatid, currentPage]);
   useEffect(() => {
     const userid = localStorage.getItem("userid");
-
+    console.log(userid);
     const fetchChatList = async () => {
       try {
         const res = await api.get(`/chatBook/${userid}`);
         setChatList(res.data);
+        console.log(res.data);
         setChatListFetched(true);
       } catch (error) {
         console.error("Error fetching chat list:", error);
@@ -151,100 +152,40 @@ function ChatPage() {
   }, [search]);
 
   const beginNewChat = async (userid, username) => {
-    const user1 = localStorage.getItem("userid");
-    const user2 = userid;
+    const my_local_id = localStorage.getItem("userid");
+    const friends_id = userid;
+    const friends_username = username;
 
-    const sortedChatId = [user1, user2].sort().join("_");
+    const sortedChatId = [my_local_id, friends_id].sort().join("_");
 
     const existingChat = chatList.find((chat) => chat.chatId === sortedChatId);
 
     if (existingChat) {
       setCurrentChatId(existingChat.chatId);
-      setcurrentOtherUser(existingChat.otherPersonUserName);
-      setNewSearchPopUp(false);
+      setcurrentOtherUser(existingChat.friends_username);
+      setSearchNewChat(false);
       return;
     }
 
     try {
-      const response = await api.get(`/chatKeeper/new/${user1}/${user2}`);
+      const response = await api.get(
+        `/chatKeeper/new/${my_local_id}/${friends_id}/${friends_username}`,
+      );
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
       setcurrentOtherUser(username);
       const newChat = {
         chatId: response.data,
         timeStamp: new Date().toISOString(),
-        otherPersonUserName: username,
+        friends_username: username,
       };
       setChatList((chatList) => [newChat, ...chatList]);
-      setNewSearchPopUp(false);
+      setSearchNewChat(false);
     } catch (error) {
       console.error("Error creating chat:", error);
     }
   };
 
-  function searchPopUp() {
-    return (
-      <div className="popupContainer">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search username"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="list">
-          {results.length === 0 && search.trim() !== "" && (
-            <p className="no-results">
-              {searching ? "Searching..." : "No users found."}
-            </p>
-          )}
-
-          {Array.isArray(results) ? (
-            results.map((r) => (
-              <div
-                key={r.userid || r.id}
-                className="listItem"
-                onClick={() => beginNewChat(r.userid, r.username)}
-              >
-                <img className="profilePic" src={r.image} alt="User Profile" />
-
-                <div className="user-info">
-                  <span>
-                    <strong>{r.username}</strong>
-                  </span>
-                  <span>{r.name}</span>
-                </div>
-              </div>
-            ))
-          ) : results ? (
-            <div
-              className="listItem"
-              onClick={() => beginNewChat(results.userid, results.username)}
-            >
-              <img
-                className="profilePic"
-                src={results.image}
-                alt="User Profile"
-              />
-
-              <div className="user-info">
-                <span>
-                  <strong>{results.username}</strong>
-                </span>
-                <span>{results.name}</span>
-              </div>
-            </div>
-          ) : null}
-        </div>
-
-        <div>
-          <button className="backbtn" onClick={() => setNewSearchPopUp(false)}>
-            Back
-          </button>
-        </div>
-      </div>
-    );
-  }
   function main_page() {
     return (
       <div className="chat_mainpage">
@@ -252,7 +193,7 @@ function ChatPage() {
         {currentChatid ? (
           opened_chat()
         ) : (
-          <div className="select_a_chat">Select a chat</div>
+          <div className="select_a_chat">Say Hi to a friend.</div>
         )}
       </div>
     );
@@ -300,76 +241,130 @@ function ChatPage() {
   function chat_list() {
     return (
       <div className="chatListContainer">
-        {showNewChatPopUp ? (
-          <div>{searchPopUp()}</div>
-        ) : (
-          <>
-            <div className="chat_list">
-              <h2 className="Message_header">Messages</h2>
-              <div className="searchContainer">
-                <Search className="searchIcon" />
+        <div className="chat_list">
+          <h2 className="Message_header">
+            {searchNewChat ? "New Chat" : "Messages"}
+          </h2>
+          <div className="searchContainer">
+            <Search className="searchIcon" />
+            <input
+              value={searchNewChat ? search : query}
+              onChange={(e) =>
+                searchNewChat
+                  ? setSearch(e.target.value)
+                  : setQuery(e.target.value)
+              }
+              placeholder={searchNewChat ? "Enter username" : "Search"}
+              className="searchInput"
+            />
+            {(searchNewChat ? search : query) && (
+              <button
+                onClick={() => (searchNewChat ? setSearch("") : setQuery(""))}
+                className="clearBtn"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          {searchNewChat ? (
+            <>
+              {results.length === 0 && search.trim() !== "" && (
+                <p className="no-results">
+                  {searching ? "Searching..." : "No users found."}
+                </p>
+              )}
 
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search"
-                  className="searchInput"
-                />
-
-                {query && (
-                  <button onClick={() => setQuery("")} className="clearBtn">
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-
-              {(() => {
-                const filtered = query.trim()
-                  ? chatList.filter((chat) =>
-                      (chat.otherPersonUserName || "")
-                        .toLowerCase()
-                        .includes(query.toLowerCase()),
-                    )
-                  : chatList;
-
-                return filtered.map((chat) => (
+              {Array.isArray(results) ? (
+                results.map((r) => (
                   <div
-                    key={chat.chatId}
+                    key={r.userid}
                     className="list-item"
-                    onClick={() =>
-                      setChatInfo(chat.chatId, chat.otherPersonUserName)
-                    }
+                    onClick={() => beginNewChat(r.userid, r.username)}
                   >
                     <div className="chat_card">
                       <div className="avatarWrapper">
                         <div className="avatar">
-                          {chat.otherPersonUserName?.charAt(0).toUpperCase()}
+                          {r.name?.charAt(0).toUpperCase()}
                         </div>
                       </div>
+
                       <div className="chatInfo">
                         <div className="topRow">
-                          <span className="chatUsername">
-                            {chat.otherPersonUserName}
-                          </span>
-
-                          <span className="chatTime">
-                            {formatChatTime(chat.timeStamp)}
-                          </span>
+                          <span className="chatUsername">{r.username}</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                ));
-              })()}
-            </div>
-            {/* <button
-              className="newChatBtn"
-              onClick={() => setNewSearchPopUp(true)}
-            >
-              New chat
-            </button> */}
-          </>
-        )}
+                ))
+              ) : results ? (
+                <div
+                  className="list-Item"
+                  onClick={() => beginNewChat(results.userid, results.username)}
+                >
+                  <div className="chat_card">
+                    <div className="avatarWrapper">
+                      <div className="avatar">
+                        {results.name?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+
+                    <div className="chatInfo">
+                      <div className="topRow">
+                        <span className="chatUsername">{results.username}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            (() => {
+              const filtered = query.trim()
+                ? chatList.filter((chat) =>
+                    (chat.friends_username || "")
+                      .toLowerCase()
+                      .includes(query.toLowerCase()),
+                  )
+                : chatList;
+
+              return filtered.map((chat) => (
+                <div
+                  key={chat.chatId}
+                  className="list-item"
+                  onClick={() =>
+                    setChatInfo(chat.chatId, chat.friends_username)
+                  }
+                >
+                  <div className="chat_card">
+                    <div className="avatarWrapper">
+                      <div className="avatar">
+                        {chat.friends_username?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+
+                    <div className="chatInfo">
+                      <div className="topRow">
+                        <span className="chatUsername">
+                          {chat.friends_username}
+                        </span>
+
+                        <span className="chatTime">
+                          {formatChatTime(chat.timeStamp)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ));
+            })()
+          )}
+        </div>
+        <button
+          className="floatingActionBtns"
+          onClick={() => setSearchNewChat(!searchNewChat)}
+        >
+          {searchNewChat ? <ArrowLeft size={20} /> : <Plus size={20} />}
+        </button>
       </div>
     );
   }
@@ -456,7 +451,7 @@ function ChatPage() {
 
     return (
       <>
-        {isloadingChatHistory && <div>Loading chat...</div>}
+        {isloadingChatHistory && <div>Hang on a moment ...</div>}
         <div>
           <div className="chat-window">
             <div className="chat-header">

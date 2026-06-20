@@ -1,4 +1,5 @@
 .chatListContainer {
+  position: relative;
   width: 320px;
 
   flex-shrink: 0;
@@ -140,7 +141,10 @@
 
   color: rgba(0, 0, 0, 0.45);
 }
-.newChatBtn {
+.floatingActionBtns {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   font-size: 18px;
   font-weight: bold;
   padding: 10px;
@@ -152,7 +156,7 @@
   transition: background-color 0.3s ease; /* Smooth transition */
 }
 
-.newChatBtn:hover {
+.floatingActionBtns:hover {
   color: #ffffff;
   background-color: #000000; /* Darker shade on hover */
 }
