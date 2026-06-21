@@ -7,11 +7,12 @@ const WebSocketContext = createContext(null);
 export const useWebSocket = () => useContext(WebSocketContext);
 
 export const WebSocketProvider = ({ children }) => {
+  const subscriptionsRef = useRef([]);
   const stompClientRef = useRef(null);
 
   // Handler sets for chat and notifications
   const messageHandlersRef = useRef(new Set());
-  const notificationHandlersRef = useRef(new Set());
+  //const notificationHandlersRef = useRef(new Set());
   const feedHandlerRef = useRef(new Set());
 
   const connect = (userId) => {
@@ -32,8 +33,9 @@ export const WebSocketProvider = ({ children }) => {
         console.log("✅ WebSocket connected successfully for user:", userId);
 
         // subscribe to chat messages
-        client.subscribe(`/topic/${userId}/chat`, (msg) => {
+        const chatSub = client.subscribe(`/topic/${userId}/chat`, (msg) => {
           try {
+            console.log("SUBSCRIPTION CALLBACK FIRED");
             const messageData = JSON.parse(msg.body);
             console.log("📨 Received chat message via WebSocket:", messageData);
             messageHandlersRef.current.forEach((handler) => {
@@ -49,27 +51,30 @@ export const WebSocketProvider = ({ children }) => {
         });
 
         // Subscribe to notifications
-        client.subscribe(`/topic/${userId}/notification`, (msg) => {
-          try {
-            const notificationData = JSON.parse(msg.body);
-            console.log(
-              "🔔 Received notification via WebSocket:",
-              notificationData,
-            );
-            notificationHandlersRef.current.forEach((handler) => {
-              try {
-                handler(notificationData);
-              } catch (err) {
-                console.error("Error in notification handler:", err);
-              }
-            });
-          } catch (parseErr) {
-            console.error("Error parsing notification:", parseErr);
-          }
-        });
+        // const notificationSub = client.subscribe(
+        //   `/topic/${userId}/notification`,
+        //   (msg) => {
+        //     try {
+        //       const notificationData = JSON.parse(msg.body);
+        //       console.log(
+        //         "🔔 Received notification via WebSocket:",
+        //         notificationData,
+        //       );
+        //       notificationHandlersRef.current.forEach((handler) => {
+        //         try {
+        //           handler(notificationData);
+        //         } catch (err) {
+        //           console.error("Error in notification handler:", err);
+        //         }
+        //       });
+        //     } catch (parseErr) {
+        //       console.error("Error parsing notification:", parseErr);
+        //     }
+        //   },
+        // );
 
         // subscribe to feed
-        client.subscribe(`/topic/${userId}/feed`, (msg) => {
+        const feedSub = client.subscribe(`/topic/${userId}/feed`, (msg) => {
           try {
             const feedData = JSON.parse(msg.body);
             console.log("📰 Received feed message via WebSocket:", feedData);
@@ -84,6 +89,8 @@ export const WebSocketProvider = ({ children }) => {
             console.error("Error parsing feed message:", parseErr);
           }
         });
+
+        subscriptionsRef.current = [chatSub, feedSub];
       },
       onStompError: (frame) => {
         console.error("❌ Broker error:", frame.headers["message"]);
@@ -107,14 +114,18 @@ export const WebSocketProvider = ({ children }) => {
   };
 
   const disconnect = () => {
-    ``;
+    subscriptionsRef.current.forEach((sub) => {
+      try {
+        sub.unsubscribe();
+      } catch (e) {}
+    });
     if (stompClientRef.current) {
       stompClientRef.current.deactivate();
       stompClientRef.current = null;
     }
     // Clear handlers on disconnect
     messageHandlersRef.current.clear();
-    notificationHandlersRef.current.clear();
+    // notificationHandlersRef.current.clear();
     feedHandlerRef.current.clear();
   };
 
@@ -127,14 +138,14 @@ export const WebSocketProvider = ({ children }) => {
     messageHandlersRef.current.delete(handler);
   };
 
-  // Notification handlers
-  const registerNotificationHandler = (handler) => {
-    notificationHandlersRef.current.add(handler);
-  };
+  // // Notification handlers
+  // const registerNotificationHandler = (handler) => {
+  //   notificationHandlersRef.current.add(handler);
+  // };
 
-  const unregisterNotificationHandler = (handler) => {
-    notificationHandlersRef.current.delete(handler);
-  };
+  // const unregisterNotificationHandler = (handler) => {
+  //   notificationHandlersRef.current.delete(handler);
+  // };
 
   // Feed handlers
   const registerFeedHandler = (handler) => {
@@ -153,8 +164,8 @@ export const WebSocketProvider = ({ children }) => {
         stompClient: stompClientRef,
         registerMessageHandler,
         unregisterMessageHandler,
-        registerNotificationHandler,
-        unregisterNotificationHandler,
+        // registerNotificationHandler,
+        // unregisterNotificationHandler,
         registerFeedHandler,
         unregisterFeedHandler,
       }}

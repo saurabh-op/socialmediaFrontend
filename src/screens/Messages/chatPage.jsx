@@ -1,18 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
+
+//Web socket Services
 import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import api from "../../config/axios";
 
-import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
-import "./search_bar.css";
-import "./layout_chat.css";
-import Navbar from "../Layout/Navbar";
+//Axios
+import api from "../../config/axios";
 import axios from "axios";
 
+//Css files
 import "./chatList.css";
 import "./chatViewPort.css";
 import "./newChatPopUp.css";
+import "./search_bar.css";
+import "./layout_chat.css";
+
+//Components
+import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
+import Navbar from "../Layout/Navbar";
 
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);
@@ -43,7 +49,8 @@ function ChatPage() {
   const [isloadingChatHistory, setIsLoadingChatHistory] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [currentChatid, setCurrentChatId] = useState("");
-  const [currentOtherUser, setcurrentOtherUser] = useState("");
+  const [currentReceiver_username, setcurrentReceiver_username] = useState("");
+  const [currentReceiver_id, setCurrentReceiver_Id] = useState("");
 
   // Initialize WebSocket connection on component mount
   useEffect(() => {
@@ -55,8 +62,8 @@ function ChatPage() {
   }, [connect, stompClient]);
 
   useEffect(() => {
-    currentOtherUserRef.current = currentOtherUser;
-  }, [currentOtherUser]);
+    currentOtherUserRef.current = currentReceiver_username;
+  }, [currentReceiver_username]);
 
   useEffect(() => {
     const messageHandler = (newMessage) => {
@@ -65,9 +72,9 @@ function ChatPage() {
 
       // Reconstruct the chat ID from sender and current user if not provided
       let messageChatId = newMessage.chatId || newMessage.cid;
-      if (!messageChatId && newMessage.sid) {
+      if (!messageChatId && newMessage.sender_id) {
         const currentUserId = localStorage.getItem("userid");
-        messageChatId = [currentUserId, newMessage.sid].sort().join("_");
+        messageChatId = [currentUserId, newMessage.sender_id].sort().join("_");
         console.log("Reconstructed chat ID:", messageChatId);
       }
 
@@ -77,13 +84,15 @@ function ChatPage() {
       if (messageChatId === currentChatid) {
         console.log("Message is for current chat, adding to history");
         setChatHistory((prev) => {
-          // Deduplicate by `mid` to avoid inserting the same message twice
-          if (!newMessage || !newMessage.mid) {
+          // Deduplicate by `message_id` to avoid inserting the same message twice
+          if (!newMessage || !newMessage.message_id) {
             return [newMessage, ...prev];
           }
-          const exists = prev.some((m) => m && m.mid === newMessage.mid);
+          const exists = prev.some(
+            (m) => m && m.message_id === newMessage.message_id,
+          );
           if (exists) {
-            console.log("Duplicate message ignored:", newMessage.mid);
+            console.log("Duplicate message ignored:", newMessage.message_id);
             return prev;
           }
           return [newMessage, ...prev];
@@ -153,6 +162,7 @@ function ChatPage() {
 
   const beginNewChat = async (userid, username) => {
     const my_local_id = localStorage.getItem("userid");
+    const my_local_username = localStorage.getItem("username");
     const friends_id = userid;
     const friends_username = username;
 
@@ -162,18 +172,19 @@ function ChatPage() {
 
     if (existingChat) {
       setCurrentChatId(existingChat.chatId);
-      setcurrentOtherUser(existingChat.friends_username);
+      setcurrentReceiver_username(existingChat.friends_username);
       setSearchNewChat(false);
       return;
     }
 
     try {
       const response = await api.get(
-        `/chatKeeper/new/${my_local_id}/${friends_id}/${friends_username}`,
+        `/chatKeeper/new/${my_local_id}/${my_local_username}/${friends_id}/${friends_username}`,
       );
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
-      setcurrentOtherUser(username);
+      setcurrentReceiver_username(friends_username);
+      setCurrentReceiver_Id(friends_id);
       const newChat = {
         chatId: response.data,
         timeStamp: new Date().toISOString(),
@@ -198,11 +209,11 @@ function ChatPage() {
       </div>
     );
   }
-  function setChatInfo(chatId, userName) {
+  function setChatInfo(chatId, friend_username, friend_id) {
     setChatHistory([]);
     setCurrentChatId(chatId);
-    setcurrentOtherUser(userName);
-    console.log("Other user set to:", userName);
+    setcurrentReceiver_username(friend_username);
+    setCurrentReceiver_Id(friend_id);
     setCurrentPage(0);
   }
 
@@ -332,7 +343,11 @@ function ChatPage() {
                   key={chat.chatId}
                   className="list-item"
                   onClick={() =>
-                    setChatInfo(chat.chatId, chat.friends_username)
+                    setChatInfo(
+                      chat.chatId,
+                      chat.friends_username,
+                      chat.friends_id,
+                    )
                   }
                 >
                   <div className="chat_card">
@@ -398,12 +413,12 @@ function ChatPage() {
       .post(
         `/chatKeeper/${currentChatid}`,
         {
-          sid: senderId,
-          tex: message,
+          sender_id: senderId,
+          text: message,
         },
         {
           headers: {
-            rid: currentOtherUser,
+            send_to: currentReceiver_id,
           },
         },
       )
@@ -412,7 +427,9 @@ function ChatPage() {
 
         // Add sent message to chat history immediately
         setChatHistory((prev) => {
-          const exists = prev.some((m) => m && m.mid === response.data.mid);
+          const exists = prev.some(
+            (m) => m && m.message_id === response.data.message_id,
+          );
 
           if (exists) {
             return prev;
@@ -428,7 +445,7 @@ function ChatPage() {
             chatId: currentChatid,
           };
           stompClient.current.publish({
-            destination: `/app/chat/${currentOtherUser}`,
+            destination: `/app/chat/${currentReceiver_username}`,
             body: JSON.stringify(messagePayload),
           });
           console.log("Message published to WebSocket:", messagePayload);
@@ -458,16 +475,16 @@ function ChatPage() {
               {" "}
               <div className="avatarWrapper">
                 <div className="avatar">
-                  {currentOtherUser.charAt(0).toUpperCase()}
+                  {currentReceiver_username.charAt(0).toUpperCase()}
                 </div>
               </div>
-              {currentOtherUser}
+              {currentReceiver_username}
             </div>
 
             <div className="chat-history">
               {chatHistory && chatHistory.length > 0 ? (
                 chatHistory.map((msg, index) => {
-                  const mine = msg.sid === myUserId;
+                  const mine = msg.sender_id === myUserId;
 
                   return (
                     <div
@@ -479,10 +496,10 @@ function ChatPage() {
                           mine ? "my-message" : "their-message"
                         }`}
                       >
-                        <div className="message-text">{msg.tex}</div>
+                        <div className="message-text">{msg.text}</div>
 
                         <div className="msgtimestamp">
-                          {new Date(msg.tim).toLocaleTimeString([], {
+                          {new Date(msg.time).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: false,
@@ -507,7 +524,7 @@ function ChatPage() {
                       handleSend();
                     }
                   }}
-                  placeholder={`Message ${currentOtherUser}`}
+                  placeholder={`Message ${currentReceiver_username}`}
                 />
                 <button onClick={handleSend}>
                   <Send size={16} />

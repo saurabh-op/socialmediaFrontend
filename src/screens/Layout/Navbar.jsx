@@ -2,14 +2,15 @@ import React from "react";
 import "./Navbar.css";
 
 import {
-  IoNotificationsOutline,
-  IoSearchOutline,
-  IoPersonOutline,
-  IoExitOutline,
-  IoChatbubbleEllipsesOutline,
-} from "react-icons/io5";
+  // IoNotificationsOutline,
+  Search,
+  UserRound,
+  LogOut,
+  MessageCircle,
+  HomeIcon,
+} from "lucide-react";
 
-import { GoHome } from "react-icons/go";
+// import { GoHome } from "react-icons/go";
 
 import { useNavigate, useLocation, matchPath } from "react-router-dom";
 
@@ -20,25 +21,25 @@ function Navbar() {
   const userId = localStorage.getItem("userid");
 
   const tabs = [
-    { name: "Home", icon: GoHome, path: "/feed" },
+    { name: "Home", icon: HomeIcon, path: "/feed" },
 
-    { name: "Search", icon: IoSearchOutline, path: "/search" },
+    { name: "Search", icon: Search, path: "/search" },
 
-    { name: "Chats", icon: IoChatbubbleEllipsesOutline, path: "/chat" },
+    { name: "Chats", icon: MessageCircle, path: "/chat" },
 
-    {
-      name: "Alert",
-      icon: IoNotificationsOutline,
-      path: "/notification",
-    },
+    // {
+    //   name: "Alert",
+    //   icon: IoNotificationsOutline,
+    //   path: "/notification",
+    // },
 
     {
       name: "Profile",
-      icon: IoPersonOutline,
+      icon: UserRound,
       path: `/profile/${userId}`,
     },
 
-    { name: "Logout", icon: IoExitOutline, path: `/` },
+    { name: "Logout", icon: LogOut, path: `/` },
   ];
 
   return (

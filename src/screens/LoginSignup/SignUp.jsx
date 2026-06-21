@@ -43,18 +43,14 @@ function SignUp() {
         alert("Username is taken, try other username !");
       }
       if (data.message === "userCreated") {
-        // console.log("User created:", response.data);
-        // console.log(response.data.user);
-
         alert("User registered successfully!");
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("userid", data.user.id);
         localStorage.setItem("name", data.user.name);
-        localStorage.setItem("password", data.user.password);
-        localStorage.setItem("email", data.user.email);
-
+        localStorage.removeItem("password");
+        localStorage.removeItem("email");
         setLoading(false);
         navigate("/feed", { state: user });
       }

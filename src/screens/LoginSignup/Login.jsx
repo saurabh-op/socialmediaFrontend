@@ -25,16 +25,16 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      // console.log("Calling login api ");
       const response = await api.post("/users/login", details);
       const data = response.data;
-      // console.log(data);
+
       if (data.mes === "match") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("name", data.name);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userid", data.id);
-        localStorage.setItem("password", data.password);
+        localStorage.removeItem("password");
+        localStorage.removeItem("email");
         disconnect();
         connect(data.id);
         setLoading(false);
