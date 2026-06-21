@@ -1,6 +1,7 @@
 // SearchPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SearchListPlaceHolder from "./listPlaceHolder.jsx";
 import Navbar from "../Layout/Navbar";
 import { X } from "lucide-react";
 import { UserPlus } from "lucide-react";
@@ -20,11 +21,17 @@ const SearchPage = () => {
   const [isSent, setSent] = useState(false);
   const [isloadingPreview, setLoadingPreview] = useState(false);
   const [requestedIds, setRequestedIds] = useState(new Set());
+  const navigate = useNavigate();
 
+  const goToProfile = (userId, e) => {
+    e?.stopPropagation();
+    navigate(`/viewuser/${userId}`);
+  };
   useEffect(() => {
+    if (search.trim() === "" || search === null) setSearching(true);
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 300);
+    }, 500);
     return () => clearTimeout(timer);
   }, [search]);
 
@@ -108,56 +115,59 @@ const SearchPage = () => {
             </button>
           )}
         </div>
-        {/* {search.trim() === "" && results.length === 0 && !searching && (
-          <div className="empty-state">
-            <UserPlus size={40} />
-            <p>Search for users to connect with</p>
-          </div>
-        )} */}
-        <div className="resultlist">
-          {results.length === 0 && search.trim() !== "" && (
-            <p className="no-results">
-              {searching ? "Searching..." : "No users found."}
-            </p>
-          )}
-          {results.map((user) => (
-            <div
-              className="srchlistItem"
-              key={user.id}
-              onClick={() => getPreview(user.id)}
-            >
-              <div className="pic_and_name">
-                <img
-                  className="picture"
-                  src={
-                    user.profileImageUrl && user.profileImageUrl.trim() !== ""
-                      ? user.profileImageUrl
-                      : emptyProfilePic
-                  }
-                  alt="Profile pic"
-                />
-                <div className="srch-user-info">
-                  <strong>{user.username}</strong>
-                  <span>{user.name}</span>
-                </div>
-              </div>
 
-              <div>
-                {requestedIds.has(user.id) ? (
-                  <Button disabled className="requested-btn">
-                    Requested
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => sendRequest(user.id)}
-                    className="friend-btn"
-                  >
-                    <UserPlus size={24} />
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="resultlist">
+          {searching ? (
+            <SearchListPlaceHolder />
+          ) : (
+            <>
+              {results.length === 0 && search.trim() !== "" && (
+                <p className="no-results">No users found.</p>
+              )}
+
+              {results.map((user) => (
+                <div
+                  className="srchlistItem"
+                  key={user.id}
+                  onClick={(e) => goToProfile(user.id, e)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="pic_and_name">
+                    <img
+                      className="picture"
+                      src={
+                        user.profileImageUrl &&
+                        user.profileImageUrl.trim() !== ""
+                          ? user.profileImageUrl
+                          : emptyProfilePic
+                      }
+                      alt="Profile pic"
+                    />
+
+                    <div className="srch-user-info">
+                      <strong>{user.username}</strong>
+                      <span>{user.name}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    {requestedIds.has(user.id) ? (
+                      <Button disabled className="requested-btn">
+                        Requested
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => sendRequest(user.id)}
+                        className="friend-btn"
+                      >
+                        <UserPlus size={24} />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     );
