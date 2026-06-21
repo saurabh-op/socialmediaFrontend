@@ -187,7 +187,7 @@ function PostCard({ post }) {
               onClick={goToProfile}
               style={{ cursor: "pointer" }}
             >
-              @{post.name}
+              @{post.username}
             </span>
           </div>
         </div>

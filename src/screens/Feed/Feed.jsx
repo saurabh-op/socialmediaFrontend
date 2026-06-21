@@ -7,7 +7,7 @@ import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
-import { Plus } from "lucide-react";
+import { ArrowBigLeft, Plus } from "lucide-react";
 import PlaceholderPostCard from "./placeholderPostCard";
 
 function Feed() {
@@ -84,7 +84,7 @@ function Feed() {
       <Navbar />
 
       {showPicker ? (
-        <div className="imagePicker">
+        <div className="imagePickerOverlay">
           <button className="back-btn" onClick={() => setShowPicker(false)}>
             Go Back
           </button>

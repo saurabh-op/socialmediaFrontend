@@ -2,6 +2,16 @@ import React, { useState } from "react";
 import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
+import {
+  ArrowBigUp,
+  BalloonIcon,
+  Check,
+  CloudBackup,
+  CloudCheck,
+  ImagePlus,
+  Save,
+  Trash,
+} from "lucide-react";
 export default function ImagePicker() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState();
@@ -93,6 +103,7 @@ export default function ImagePicker() {
 
   const handleClear = () => {
     setSelectedImage(null);
+    setPreviewUrl(null);
   };
   const handleCaptionChange = (e) => {
     setCaption(e.target.value);
@@ -162,13 +173,10 @@ export default function ImagePicker() {
             {previewUrl ? (
               <>
                 <img src={previewUrl} alt="Preview" className="preview-img" />
-
-                <button className="clear-btn" onClick={handleClear}>
-                  Clear
-                </button>
               </>
             ) : (
               <label className="Choose">
+                <ImagePlus size={20} />
                 Choose Image
                 <input
                   type="file"
@@ -185,10 +193,15 @@ export default function ImagePicker() {
             value={caption}
             onChange={handleCaptionChange}
             rows={1}
-          />{" "}
-          <button className="upload" onClick={handleSubmit}>
-            Upload
-          </button>
+          />
+          <div className="actionButtonsimgpicker">
+            <button className="clear-btn" onClick={handleClear}>
+              <Trash fill={"red"} size={20} strokeWidth={1} /> Discard Image
+            </button>
+            <button className="saveImage" onClick={handleSubmit}>
+              <ArrowBigUp fill={"green"} size={20} strokeWidth={1} /> Post
+            </button>
+          </div>
         </div>
       )}
     </>
