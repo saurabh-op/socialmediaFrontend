@@ -1,0 +1,176 @@
+@import url("https://fonts.cdnfonts.com/css/clash-display");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.home-main {
+  position: relative;
+  z-index: 10;
+
+  width: 100%;
+  max-width: 640px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5rem 1.5rem;
+
+  backdrop-filter: blur(20px);
+
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 34px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  animation: entrance 0.8s ease both;
+}
+
+.welcome-card {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  padding: 2.5rem;
+  border-radius: 24px;
+
+  text-align: center;
+}
+
+.logo-box {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, var(--coral), var(--azure));
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  color: rgb(255, 255, 255);
+}
+
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.welcome-text h2 {
+  font-family: "Clash Display", sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: rgb(0, 0, 0);
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.welcome-text p {
+  font-family: "Inter", sans-serif;
+  max-width: 420px;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.action-buttons_welcomepage {
+  display: flex;
+  gap: 12px;
+  padding-top: 0.5rem;
+}
+
+.searchfriendscard,
+.completeprofilecard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 24px;
+
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: 0.3s;
+}
+
+.searchfriendscard {
+  border: 1px solid rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.searchfriendscard:hover {
+  background: rgba(255, 255, 255, 0.786);
+}
+
+.completeprofilecard {
+  border: 1px solid rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.completeprofilecard:hover {
+  background: rgba(255, 255, 255, 0.786);
+}
+
+.steps-list {
+  font-family: "IBM Plex Mono", monospace;
+
+  width: 100%;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  text-align: left;
+  list-style: none;
+}
+
+.steps-list li {
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.steps-list span {
+  font-size: 12px;
+  font-family: "IBM Plex Mono", monospace;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 640px) {
+  .action-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+
+  .welcome-card {
+    padding: 2rem;
+  }
+}

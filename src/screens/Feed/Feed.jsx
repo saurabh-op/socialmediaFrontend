@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import Navbar from "../Layout/Navbar";
+import WelcomeCard from "./welcome";
+
 import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
 import { Plus } from "lucide-react";
+import PlaceholderPostCard from "./placeholderPostCard";
 
 function Feed() {
   const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
@@ -56,7 +59,7 @@ function Feed() {
     return (
       <div>
         {isFeedLoading ? (
-          "Loading ..."
+          <PlaceholderPostCard />
         ) : (
           <div className="feed-list-scrollable">
             {Array.isArray(feedList) && feedList.length > 0 ? (
@@ -66,13 +69,8 @@ function Feed() {
                 </div>
               ))
             ) : (
-              <div className="no-feed-message">
-                <div className="no-feed-title">Nothing here yet</div>
-
-                <div className="no-feed-subtitle">
-                  Follow people, share moments, and your feed will begin to
-                  light up.
-                </div>
+              <div>
+                <WelcomeCard />
               </div>
             )}
           </div>
@@ -82,34 +80,32 @@ function Feed() {
   }
 
   return (
-    <div className="mainpage">
+    <div className="feedpagerightSide">
       <Navbar />
 
-      <div className="feedpagerightSide">
-        {showPicker ? (
-          <div className="imagePicker">
-            <button className="back-btn" onClick={() => setShowPicker(false)}>
-              Go Back
-            </button>
-            <ImagePicker />
-          </div>
-        ) : (
+      {showPicker ? (
+        <div className="imagePicker">
+          <button className="back-btn" onClick={() => setShowPicker(false)}>
+            Go Back
+          </button>
+          <ImagePicker />
+        </div>
+      ) : (
+        <div>
+          {userFeed()}
           <div>
-            {userFeed()}
-            <div>
-              <button
-                onClick={() => setShowPicker(true)}
-                className="upload-btn"
-                aria-label="Upload"
-              >
-                <div className="upload-btn-inner">
-                  <Plus size={20} strokeWidth={2.5} />
-                </div>
-              </button>
-            </div>
+            <button
+              onClick={() => setShowPicker(true)}
+              className="upload-btn"
+              aria-label="Upload"
+            >
+              <div className="upload-btn-inner">
+                <Plus size={20} strokeWidth={2.5} />
+              </div>
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

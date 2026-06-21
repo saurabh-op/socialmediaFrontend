@@ -1,24 +1,21 @@
-.post-card {
-  width: 100%;
-  max-width: 640px;
+@import url("https://fonts.cdnfonts.com/css/clash-display");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-  margin: 22px auto;
+.post-card {
+  margin: 10px auto;
 
   padding: 14px;
-
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 12px;
   border-radius: 38px;
-
-  background: rgba(255, 255, 255, 0.7);
-
+  background: rgba(255, 255, 255, 0.601);
   backdrop-filter: blur(20px);
-
   -webkit-backdrop-filter: blur(20px);
-
   border: 1px solid rgba(255, 255, 255, 0.7);
-
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 
   transition:
     transform 0.35s ease,
@@ -26,84 +23,78 @@
 }
 
 .post-card:hover {
-  transform: translateY(-4px);
-
-  box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.915);
+  transform: translateY(-5px);
 }
 
 .post-top {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
-  padding: 8px 10px 18px 10px;
+  padding: 8px 10px 0px 10px;
 }
+
 .post-user {
   display: flex;
-
   align-items: center;
-
   gap: 14px;
 }
+
 .user-logo {
   width: 48px;
-
   height: 48px;
-
   border-radius: 50%;
-
   object-fit: cover;
-
   border: 2px solid rgba(255, 255, 255, 0.8);
-
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
+
 .user-meta {
   display: flex;
-
   flex-direction: column;
-
   gap: 2px;
 }
+
 .user-name {
-  font-family: "Poppins", sans-serif;
-
-  font-size: 15px;
-
-  font-weight: 700;
-
-  letter-spacing: -0.2px;
-
+  font-family: "Clash Display", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 1px;
   color: #111;
 }
-.post-timestamp {
-  font-size: 11px;
 
-  color: rgba(0, 0, 0, 0.45);
+.user-handle {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #000000a4;
+}
+.post-timestamp {
+  font-size: 12px;
+  font-family: "Inter", sans-serif;
+  color: #000000a4;
 
   font-weight: 600;
 
   letter-spacing: 0.8px;
-
-  text-transform: uppercase;
 }
 .post-middle {
-  width: 100%;
-
+  flex: 1 1 auto;
+  height: 70vh;
+  aspect-ratio: 4/5;
   overflow: hidden;
 
   border-radius: 28px;
 
   background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .post-image {
   width: 100%;
-
-  max-height: 600px;
+  height: 100%;
 
   object-fit: cover;
 
@@ -115,22 +106,26 @@
 .post-card:hover .post-image {
   transform: scale(1.03);
 }
+
 .post-bottom {
-  padding: 22px 12px 12px 12px;
+  padding: 12px 12px 12px 12px;
 
   display: flex;
 
-  flex-direction: column;
+  flex-direction: row;
 
   gap: 18px;
 }
 
 .post-caption {
+  display: flex;
+
+  flex-direction: row;
+  align-items: start;
+  flex: 1;
   font-family: "Poppins", sans-serif;
 
   font-size: 16px;
-
-  line-height: 1.7;
 
   color: rgba(0, 0, 0, 0.78);
 
@@ -153,73 +148,24 @@
   overflow: visible;
 }
 
-/* ACTIONS */
-
-.post-actions {
-  display: flex;
-
-  gap: 12px;
-
-  flex-wrap: wrap;
-}
-
-.reaction-pill {
-  border: 1px solid rgba(255, 255, 255, 0.9);
-
-  background: rgba(255, 255, 255, 0.6);
-
-  backdrop-filter: blur(10px);
-
-  padding: 10px 18px;
-
-  border-radius: 999px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  cursor: pointer;
-
-  transition: all 0.25s ease;
-
-  font-size: 13px;
-
+.like-btn {
+  color: rgb(0, 0, 0);
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
   font-weight: 700;
 
-  color: rgba(0, 0, 0, 0.7);
-}
+  padding: 5px 12px;
 
-.reaction-pill:hover {
-  transform: translateY(-2px);
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.629);
 
-  background: rgba(255, 255, 255, 0.9);
-}
+  background-color: rgba(107, 231, 253, 0.982);
 
-.reaction-dot {
-  width: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
-  height: 10px;
-
-  border-radius: 50%;
-
-  background: #ff4d6d;
-
-  box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
-}
-
-.reaction-dot.neutral {
-  background: #888;
-  box-shadow: none;
-}
-
-.like-btn.liked {
-  color: #ff2e63;
-
-  background: rgba(255, 46, 99, 0.08);
-
-  border: 1px solid rgba(255, 46, 99, 0.18);
+  white-space: nowrap;
 }
 
 @keyframes pop {

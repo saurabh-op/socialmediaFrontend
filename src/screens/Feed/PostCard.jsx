@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./PostCard.css";
-import { Heart, MoreHorizontal } from "lucide-react";
+import { Heart, MoreHorizontal, Paperclip } from "lucide-react";
 import userLogo from "../../assets/man.jpg"; // Replace with actual user logo URL
 
 function PostCard({ post }) {
@@ -27,14 +27,6 @@ function PostCard({ post }) {
 
     const loadOwnerImage = async () => {
       try {
-        // // if the post already includes a profile image url, use it
-        // if (post?.profileImageUrl) {
-        //   setOwnerImage(post.profileImageUrl);
-        //   return;
-        // }
-
-        // if (!ownerId) return;
-
         const res = await fetch(
           `http://localhost:8080/api/editUser/${post.owner}/profilePic`,
         );
@@ -126,17 +118,17 @@ function PostCard({ post }) {
     const time = new Date(timestamp);
     const seconds = Math.floor((now - time) / 1000);
 
-    if (seconds < 60) return `${seconds} secs ago`;
+    if (seconds < 60) return `${seconds} s`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} mins ago`;
+    if (minutes < 60) return `${minutes} m`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hours ago`;
+    if (hours < 24) return `${hours} h`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days} days ago`;
+    if (days < 30) return `${days} d`;
     const months = Math.floor(days / 30);
-    if (months < 12) return `${months} months ago`;
+    if (months < 12) return `${months} month`;
     const years = Math.floor(months / 12);
-    return `${years} year`;
+    return `${years} y`;
   };
 
   const handle_like = async () => {
@@ -210,19 +202,20 @@ function PostCard({ post }) {
           style={{ userSelect: "none" }}
           className={`post-caption ${caption_expanded ? "expanded" : ""}`}
         >
-          {post.caption}{" "}
+          <Paperclip size={12} strokeWidth={1} /> {post.caption}
         </div>
         <div>
-          {" "}
-          <button
+          <div
             className={`like-btn ${liked ? "liked" : ""}`}
             onClick={() => handle_like()}
           >
-            {liked ? "❤️" : "🤍"}
-          </button>{" "}
-          <span className="like-count">
-            {like_count} {like_count === 1 ? "like" : "likes"}
-          </span>
+            <div>{like_count}</div>
+            {liked ? (
+              <Heart size={24} fill="red" strokeWidth={0} />
+            ) : (
+              <Heart size={24} fill="white" strokeWidth={1} />
+            )}
+          </div>
         </div>
       </div>
       {/* {showComments && (
