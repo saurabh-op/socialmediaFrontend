@@ -10,6 +10,7 @@ import emptyProfilePic from "../../assets/Profile.png";
 import imageCompression from "browser-image-compression";
 import { Trash2, ImagePlus, CloudCheck } from "lucide-react";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 function EditProfile() {
   const navigate = useNavigate();
   //related to profile image
@@ -107,7 +108,7 @@ function EditProfile() {
       } else {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/editUser/${userId}/uploadProfilePic`,
+            `${API_BASE_URL}/editUser/${userId}/uploadProfilePic`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } },
           );
@@ -154,7 +155,7 @@ function EditProfile() {
     try {
       // console.log("User details to be updated:", user);
       const response = await axios.put(
-        "http://localhost:8080/api/edituser/editBasicInfo",
+        "${API_BASE_URL}/edituser/editBasicInfo",
         user,
       );
       const data = response.data;
@@ -195,9 +196,7 @@ function EditProfile() {
         // Fetch basic user info
         const userId = localStorage.getItem("userid");
 
-        const userRes = await fetch(
-          `http://localhost:8080/api/users/get/${userId}`,
-        );
+        const userRes = await fetch(`${API_BASE_URL}/users/get/${userId}`);
         const userData = await userRes.json();
         //   console.log("Fetched user for editing is:", userData);
 
@@ -214,7 +213,7 @@ function EditProfile() {
 
           if (userData.profileImageUrl) {
             const imageRes = await fetch(
-              `http://localhost:8080/api/editUser/${userId}/profilePic`,
+              `${API_BASE_URL}/editUser/${userId}/profilePic`,
             );
             if (imageRes.ok) {
               const imageUrl = await imageRes.text();

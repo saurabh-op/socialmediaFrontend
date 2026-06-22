@@ -24,6 +24,7 @@ import NoChatSelected from "./noChatSelected.jsx";
 import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
 import Navbar from "../Layout/Navbar";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);

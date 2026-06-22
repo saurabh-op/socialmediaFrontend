@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import { toast } from "react-toastify";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import { API_BASE_URL } from "../../config";
 // TODO : 3 :Attach a mobile OTP verification service
 
 function SignUp() {
@@ -32,10 +33,7 @@ function SignUp() {
     }
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/users/signup",
-        user,
-      );
+      const response = await axios.post("${API_BASE_URL}/users/signup", user);
       const data = response.data;
       if (data.message === "userAlreadyExists") {
         toast.warning("User with this email already exists!");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { API_BASE_URL } from "../../config";
 import "./PostCard.css";
 import { Heart, MoreHorizontal, Paperclip } from "lucide-react";
 import userLogo from "../../assets/man.jpg"; // Replace with actual user logo URL
@@ -28,7 +28,7 @@ function PostCard({ post }) {
     const loadOwnerImage = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/api/editUser/${post.owner}/profilePic`,
+          `${API_BASE_URL}/editUser/${post.owner}/profilePic`,
         );
 
         if (!res.ok) return;
@@ -54,7 +54,7 @@ function PostCard({ post }) {
   const fetchLikeCount = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/like/likeCount/${post.postId}`,
+        `${API_BASE_URL}/like/likeCount/${post.postId}`,
       );
 
       if (response.ok) {
@@ -71,7 +71,7 @@ function PostCard({ post }) {
   }, []);
   const fetchLikeStatus = async () => {
     const response = await fetch(
-      `http://localhost:8080/api/like/isLiked/${post.postId}/${userId}`,
+      `${API_BASE_URL}/like/isLiked/${post.postId}/${userId}`,
     );
 
     if (response.ok) {
@@ -135,7 +135,7 @@ function PostCard({ post }) {
     try {
       if (!liked) {
         const response = await fetch(
-          `http://localhost:8080/api/like/${userId}/addLike/${post.postId}`,
+          `${API_BASE_URL}/like/${userId}/addLike/${post.postId}`,
           {
             method: "POST",
           },
@@ -147,7 +147,7 @@ function PostCard({ post }) {
         }
       } else {
         const response = await fetch(
-          `http://localhost:8080/api/like/removeLike/${post.postId}/${userId}`,
+          `${API_BASE_URL}/like/removeLike/${post.postId}/${userId}`,
           {
             method: "DELETE",
           },

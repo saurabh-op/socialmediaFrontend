@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { FiEdit2 } from "react-icons/fi";
 import { Circle, CircleX, Heart, Settings, Share2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -48,7 +49,7 @@ function UserInfoPage() {
     try {
       console.log("fetching requests ");
       const id = localStorage.getItem("userid");
-      const res = await fetch(`http://localhost:8080/api/request/${id}`);
+      const res = await fetch(`${API_BASE_URL}/request/${id}`);
 
       if (res.status === 204) {
         console.log("No new requests");
@@ -81,9 +82,7 @@ function UserInfoPage() {
     async function fetchUserDetails() {
       try {
         // Fetch basic user info
-        const userRes = await fetch(
-          `http://localhost:8080/api/users/get/${userId}`,
-        );
+        const userRes = await fetch(`${API_BASE_URL}/users/get/${userId}`);
         const userData = await userRes.json();
         // console.log("Fetched user is:", userData);
 
@@ -97,7 +96,7 @@ function UserInfoPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `http://localhost:8080/api/editUser/${userId}/profilePic`,
+            `${API_BASE_URL}/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
@@ -108,9 +107,9 @@ function UserInfoPage() {
         console.log("profile detilas:", userData);
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/follower/count/${userId}`),
-          fetch(`http://localhost:8080/api/following/count/${userId}`),
-          fetch(`http://localhost:8080/api/posts/count/${userId}`),
+          fetch(`${API_BASE_URL}/follower/count/${userId}`),
+          fetch(`${API_BASE_URL}/following/count/${userId}`),
+          fetch(`${API_BASE_URL}/posts/count/${userId}`),
         ]);
 
         const [followers, following, posts] = await Promise.all([
@@ -155,9 +154,7 @@ function UserInfoPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/posts/allPosts/${userId}`,
-        );
+        const res = await axios.get(`${API_BASE_URL}/posts/allPosts/${userId}`);
         setPosts(res.data.gallery);
         console.log(res.data.gallery);
       } catch (err) {
@@ -172,7 +169,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/request/accept/${receiverId}/${senderId}`,
+        `${API_BASE_URL}/request/accept/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -187,7 +184,7 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/request/delete/${receiverId}/${senderId}`,
+        `${API_BASE_URL}/request/delete/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
@@ -207,8 +204,8 @@ function UserInfoPage() {
     if (!isModalOpen) return;
     const endpoint =
       modalType === "followers"
-        ? `http://localhost:8080/api/follower/${userId}`
-        : `http://localhost:8080/api/following/${userId}`;
+        ? `${API_BASE_URL}/follower/${userId}`
+        : `${API_BASE_URL}/following/${userId}`;
     fetch(endpoint)
       .then((res) => res.json())
       .then((data) =>
@@ -428,9 +425,9 @@ function UserInfoPage() {
 
     try {
       const [likeRes] = await Promise.all([
-        fetch(`http://localhost:8080/api/like/likeDetails/${post.postId}`),
+        fetch(`${API_BASE_URL}/like/likeDetails/${post.postId}`),
         // fetch(
-        //   `http://localhost:8080/api/comment/commentDetails/${post.postId}`
+        //   `${API_BASE_URL}/comment/commentDetails/${post.postId}`
         // ),
       ]);
 

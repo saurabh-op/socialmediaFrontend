@@ -3,6 +3,7 @@ import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 import {
   ArrowBigUp,
   BalloonIcon,
@@ -140,7 +141,7 @@ export default function ImagePicker() {
       } else {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/posts/${userId}/addPost`,
+            `${API_BASE_URL}/posts/${userId}/addPost`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } },
           );

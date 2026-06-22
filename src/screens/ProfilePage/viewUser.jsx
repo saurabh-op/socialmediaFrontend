@@ -14,6 +14,7 @@ import EditProfile from "../edit profile/edit_profile";
 import { useNavigate } from "react-router-dom";
 import { FiEdit2 } from "react-icons/fi";
 import { Circle, Heart, Settings, Share2 } from "lucide-react";
+import { API_BASE_URL } from "../../config";
 // Importing fonts :
 
 function ViewUserPage() {
@@ -53,9 +54,7 @@ function ViewUserPage() {
     async function fetchUserDetails() {
       try {
         // Fetch basic user info
-        const userRes = await fetch(
-          `http://localhost:8080/api/users/get/${userId}`,
-        );
+        const userRes = await fetch(`${API_BASE_URL}/users/get/${userId}`);
         const userData = await userRes.json();
         console.log("Fetched user is:", userData);
 
@@ -69,7 +68,7 @@ function ViewUserPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `http://localhost:8080/api/editUser/${userId}/profilePic`,
+            `${API_BASE_URL}/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
@@ -78,9 +77,9 @@ function ViewUserPage() {
         }
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/follower/count/${userId}`),
-          fetch(`http://localhost:8080/api/following/count/${userId}`),
-          fetch(`http://localhost:8080/api/posts/count/${userId}`),
+          fetch(`${API_BASE_URL}/follower/count/${userId}`),
+          fetch(`${API_BASE_URL}/following/count/${userId}`),
+          fetch(`${API_BASE_URL}/posts/count/${userId}`),
         ]);
 
         const [followers, following, posts] = await Promise.all([
@@ -125,9 +124,7 @@ function ViewUserPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/posts/allPosts/${userId}`,
-        );
+        const res = await axios.get(`${API_BASE_URL}/posts/allPosts/${userId}`);
         setPosts(res.data.gallery);
         console.log(res.data.gallery);
       } catch (err) {
@@ -260,9 +257,9 @@ function ViewUserPage() {
 
     try {
       const [likeRes] = await Promise.all([
-        fetch(`http://localhost:8080/api/like/likeCount/${post.postId}`),
+        fetch(`${API_BASE_URL}/like/likeCount/${post.postId}`),
         // fetch(
-        //   `http://localhost:8080/api/comment/commentDetails/${post.postId}`
+        //   `${API_BASE_URL}/comment/commentDetails/${post.postId}`
         // ),
       ]);
 

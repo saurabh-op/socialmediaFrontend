@@ -9,6 +9,7 @@ import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
 import { ArrowBigLeft, Plus } from "lucide-react";
 import PlaceholderPostCard from "./placeholderPostCard";
+import { API_BASE_URL } from "../../config";
 
 function Feed() {
   const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
@@ -30,7 +31,7 @@ function Feed() {
       try {
         setisFeedLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/feed/feedPosts/${userId}`,
+          `${API_BASE_URL}/feed/feedPosts/${userId}`,
         );
         const data = await response.json();
         console.log("feed data", data);

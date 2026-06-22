@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import lock from "../../assets/lock.png";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
 import EditProfile from "../edit profile/edit_profile";
+import { API_BASE_URL } from "../../config";
 const SearchPage = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
@@ -46,7 +47,7 @@ const SearchPage = () => {
       try {
         setSearching(true);
         const res = await fetch(
-          `http://localhost:8080/api/users/search/${debouncedSearch}`,
+          `${API_BASE_URL}/users/search/${debouncedSearch}`,
         );
         const data = await res.json();
         console.log("the searche result data is : ", data);
@@ -67,21 +68,18 @@ const SearchPage = () => {
       const myid = localStorage.getItem("userid");
       const myProfileurl = localStorage.getItem("user-profile-pic");
       if (myid != id) {
-        const response = await fetch(
-          `http://localhost:8080/api/request/send/${id}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              senderusername: localStorage.getItem("username"),
-              sendername: localStorage.getItem("name"),
-              senderid: myid,
-              senderimage: myProfileurl ? myProfileurl : "",
-            }),
+        const response = await fetch(`${API_BASE_URL}/request/send/${id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            senderusername: localStorage.getItem("username"),
+            sendername: localStorage.getItem("name"),
+            senderid: myid,
+            senderimage: myProfileurl ? myProfileurl : "",
+          }),
+        });
 
         const result = await response.text();
         if (result === "sent") {
