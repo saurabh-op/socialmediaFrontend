@@ -1,0 +1,91 @@
+.sf_resultlist {
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.sf_srchlistItem {
+  margin-bottom: 8px;
+  justify-content: space-between;
+  border-radius: 15px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.sf_pic_and_name {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  gap: 24px;
+  height: 100%;
+}
+
+.sf_picture,
+.sf_username,
+.sf_name,
+.sf_friend-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    #d6d6d6 0%,
+    #c2c2c2 25%,
+    #e6e6e6 50%,
+    #c2c2c2 75%,
+    #d6d6d6 100%
+  );
+  background-size: 300% 100%;
+  animation: sf_shimmer 4s linear infinite;
+}
+
+.sf_picture {
+  height: 50px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+
+.sf_srch-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.sf_username {
+  height: 20px;
+  width: 80px;
+  border-radius: 10px;
+}
+
+.sf_name {
+  height: 16px;
+  width: 120px;
+  border-radius: 10px;
+}
+
+.sf_friend-btn {
+  border-radius: 999px;
+  margin-right: 10px;
+  height: 36px;
+  width: 60px;
+}
+
+@keyframes sf_shimmer {
+  0% {
+    background-position: 300% 0;
+  }
+  100% {
+    background-position: -300% 0;
+  }
+}

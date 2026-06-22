@@ -1,27 +1,13 @@
-.mainpage {
-  width: 100vw;
-  background: blue;
-  height: 100vh;
-  display: flex;
-  justify-content: start;
-  align-items: start;
-  flex-direction: row;
-  overflow: hidden;
-}
-.navbar-container {
-  height: 100vh;
+/* Right side main content */
+.feedpagerightSide {
+  flex: auto;
+  background-color: transparent;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-/* Desktop Navbar (left-middle floating) */
-
-/* Right side main content */
-.rightSide {
-  height: 100%;
-  overflow: auto;
+  min-height: 100vh;
   width: 100%;
+  align-items: center;
+  overflow-y: auto;
 }
 
 /* 📱 Mobile layout adjustments */

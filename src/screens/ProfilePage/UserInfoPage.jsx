@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./UserInfoPage.css";
-import "./posts.css";
+
 import "./Modal.css";
 import "./layout_profile.css";
 import "./post_popup.css";
+import UserProfileSkeleton from "./profilePlaceholder";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
-import { FiEdit2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import EditProfile from "../edit profile/edit_profile";
 import { useNavigate } from "react-router-dom";
+import { FiEdit2 } from "react-icons/fi";
+import { Circle, CircleX, Heart, Settings, Share2 } from "lucide-react";
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 
 function UserInfoPage() {
   const { userId } = useParams();
   const [posts, setPosts] = useState([]);
+  const [showUI, setShowUI] = useState(true);
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +49,7 @@ function UserInfoPage() {
     try {
       console.log("fetching requests ");
       const id = localStorage.getItem("userid");
-      const res = await fetch(`http://localhost:8080/api/request/${id}`);
+      const res = await fetch(`${API_BASE_URL}/request/${id}`);
 
       if (res.status === 204) {
         console.log("No new requests");
@@ -77,11 +82,9 @@ function UserInfoPage() {
     async function fetchUserDetails() {
       try {
         // Fetch basic user info
-        const userRes = await fetch(
-          `https://ziffyconnect.onrender.com/api/users/get/${userId}`,
-        );
+        const userRes = await fetch(`${API_BASE_URL}/users/get/${userId}`);
         const userData = await userRes.json();
-        console.log("Fetched user is:", userData);
+        // console.log("Fetched user is:", userData);
 
         if (userData != null) {
           setUser((prevUser) => ({
@@ -93,18 +96,20 @@ function UserInfoPage() {
         }
         if (userData.profileImageUrl) {
           const imageRes = await fetch(
-            `https://ziffyconnect.onrender.com/api/editUser/${userId}/profilePic`,
+            `${API_BASE_URL}/editUser/${userId}/profilePic`,
           );
           if (imageRes.ok) {
             const imageUrl = await imageRes.text();
             setSavedImageUrl(imageUrl);
           }
         }
+        localStorage.setItem("user-profile-pic", userData.profileImageUrl);
+        console.log("profile detilas:", userData);
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/follower/count/${userId}`),
-          fetch(`http://localhost:8080/api/following/count/${userId}`),
-          fetch(`http://localhost:8080/api/posts/count/${userId}`),
+          fetch(`${API_BASE_URL}/follower/count/${userId}`),
+          fetch(`${API_BASE_URL}/following/count/${userId}`),
+          fetch(`${API_BASE_URL}/posts/count/${userId}`),
         ]);
 
         const [followers, following, posts] = await Promise.all([
@@ -149,10 +154,9 @@ function UserInfoPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get(
-          `https://ziffyconnect.onrender.com/api/posts/allPosts/${userId}`,
-        );
+        const res = await axios.get(`${API_BASE_URL}/posts/allPosts/${userId}`);
         setPosts(res.data.gallery);
+        console.log(res.data.gallery);
       } catch (err) {
         console.error("Error fetching posts:", err);
       }
@@ -165,13 +169,13 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.get(
-        `https://ziffyconnect.onrender.com/api/request/accept/${receiverId}/${senderId}`,
+        `${API_BASE_URL}/request/accept/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
       setRequests((prev) => prev.filter((req) => req.senderid !== senderId));
 
-      alert("accepted");
+      toast.success("Accepted!");
     } catch (error) {
       console.error("Error accepting request:", error);
     }
@@ -180,13 +184,13 @@ function UserInfoPage() {
     const receiverId = localStorage.getItem("userid");
     try {
       const response = await axios.delete(
-        `https://ziffyconnect.onrender.com/api/request/delete/${receiverId}/${senderId}`,
+        `${API_BASE_URL}/request/delete/${receiverId}/${senderId}`,
       );
       console.log("Request accepted:", response.data);
 
       setRequests((prev) => prev.filter((req) => req.senderid !== senderId));
 
-      alert("deleted");
+      toast.error("Rejected");
     } catch (error) {
       console.error("Error accepting request:", error);
     }
@@ -200,8 +204,8 @@ function UserInfoPage() {
     if (!isModalOpen) return;
     const endpoint =
       modalType === "followers"
-        ? `http://localhost:8080/api/follower/${userId}`
-        : `http://localhost:8080/api/following/${userId}`;
+        ? `${API_BASE_URL}/follower/${userId}`
+        : `${API_BASE_URL}/following/${userId}`;
     fetch(endpoint)
       .then((res) => res.json())
       .then((data) =>
@@ -216,38 +220,60 @@ function UserInfoPage() {
 
   function requestModal() {
     return (
-      <div className="rightSide">
-        <div className="modal">
-          <h2 className="modal-title">Friend Requests</h2>
-          {requests.length == 0
-            ? "No New requests "
-            : requests.map((req) => (
-                <div className="modal-item" key={req.senderid ?? "NA"}>
-                  <div className="sender-info">
-                    <span className="username">
-                      {req.senderusername ?? "NA"}
-                    </span>
-                    <span className="name">({req.sendername ?? "NA"})</span>
+      <div className="modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <div className="modal-heading">Friend Requests </div>
+            <button
+              className="modal_close-btn"
+              onClick={() => setShowModal(false)}
+            >
+              <CircleX />
+            </button>
+          </div>
+          <div className="modal-list">
+            {requests.length == 0
+              ? "No New requests "
+              : requests.map((req) => (
+                  <div className="modal-list-item" key={req.senderid ?? "NA"}>
+                    <div className="rqst-user-info">
+                      {" "}
+                      <img
+                        src={
+                          req.senderimage?.trim()
+                            ? req.senderimage
+                            : emptyProfilePic
+                        }
+                        alt="pfp"
+                        onError={(e) => {
+                          e.target.src = emptyProfilePic;
+                        }}
+                      />
+                      <div>
+                        <p>{req.sendername}</p>
+                        <div className="modal_username">
+                          @ {req.senderusername}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rqst-action-buttons">
+                      <button
+                        className="accept-btn"
+                        onClick={() => acceptRequest(req.senderid)}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="reject-btn"
+                        onClick={() => deleteRequest(req.senderid)}
+                      >
+                        Reject
+                      </button>
+                    </div>
                   </div>
-                  <div className="action-buttons">
-                    <button
-                      className="accept-btn"
-                      onClick={() => acceptRequest(req.senderid)}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="reject-btn"
-                      onClick={() => deleteRequest(req.senderid)}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              ))}
-          <button className="close-btn" onClick={() => setShowModal(false)}>
-            Close
-          </button>
+                ))}
+          </div>
         </div>
       </div>
     );
@@ -255,89 +281,115 @@ function UserInfoPage() {
 
   function profileDetails() {
     return (
-      <div className="rightSide_profile">
-        <div className="profile">
-          <div className="idCard">
-            <img
-              className="pic"
-              src={savedImageUrl || emptyProfilePic}
-              alt="Profile"
-            />
-            <div className="profile-info">
-              <div className="top-row">
-                <h2>{user.username}</h2>
+      <div className="profile-container">
+        <section className="profile-card">
+          <div className="profile-details">
+            {/* Avatar */}
+            <div className="avatar-wrapper">
+              <div className="avatar-gradient">
+                <img
+                  className="avatar-img"
+                  src={savedImageUrl || emptyProfilePic}
+                  alt="Profile"
+                />
+              </div>
 
-                <div
-                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
-                >
+              <span className="online-indicator"></span>
+            </div>
+
+            {/* INFO */}
+            <div className="profile-content">
+              <div className="profile-top">
+                <div>
+                  <div className="name-row">
+                    <h1>{user.name}</h1>
+                  </div>
+
+                  <p className="handle">@{user.username}</p>
+                </div>
+                {/* BIO */}
+                <div className="bio">
+                  <p>{user.bio}</p>
+                </div>
+                <div className="profile-actions">
                   <button
+                    className="glass-btn primary-btn"
                     onClick={fetchRequests}
-                    style={{
-                      padding: "8px 12px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                    }}
                   >
                     Requests
                   </button>
-                  <FiEdit2
-                    style={{ fontSize: 20, color: "grey", cursor: "pointer" }}
-                    onClick={() => navigate(`/edit-profile`)}
-                  />
-                </div>
-              </div>
 
-              {!isMobile && (
-                <div className="stats">
-                  <span>
-                    <strong>{formatNumber(user.posts)}</strong> posts
-                  </span>
-                  <span
-                    className="clickable"
-                    onClick={() => openModal("followers")}
+                  <button
+                    className="icon-btn"
+                    onClick={() => navigate("/edit-profile")}
                   >
-                    <strong>{formatNumber(user.followers)}</strong> followers
-                  </span>
-                  <span
-                    className="clickable"
-                    onClick={() => openModal("following")}
-                  >
-                    <strong>{formatNumber(user.following)}</strong> following
-                  </span>
+                    <FiEdit2 size={18} />
+                  </button>
                 </div>
-              )}
-
-              <div className="bio">
-                <p style={{ whiteSpace: "pre-line" }}>{user.bio}</p>
               </div>
             </div>
           </div>
-
-          {isMobile && (
-            <div className="stats_for_mobile_view">
-              <div className="stat-box">
-                <strong>{formatNumber(user.posts)}</strong>
-                <span>posts</span>
-              </div>
-
-              <div className="stat-box" onClick={() => openModal("followers")}>
-                <strong>{formatNumber(user.followers)}</strong>
-                <span>followers</span>
-              </div>
-
-              <div className="stat-box" onClick={() => openModal("following")}>
-                <strong>{formatNumber(user.following)}</strong>
-                <span>following</span>
-              </div>
+          {/*Stats*/}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <strong>{formatNumber(user.posts)}</strong>
+              <span>Posts</span>
             </div>
-          )}
 
-          <div>{gallery()}</div>
+            <div
+              className="stat-card clickables"
+              onClick={() => openModal("followers")}
+            >
+              <strong>{formatNumber(user.followers)}</strong>
+              <span>Followers</span>
+            </div>
+
+            <div
+              className="stat-card clickables"
+              onClick={() => openModal("following")}
+            >
+              <strong>{formatNumber(user.following)}</strong>
+              <span>Following</span>
+            </div>
+          </div>
+        </section>
+
+        {isMobile && (
+          <div className="stats_for_mobile_view">
+            <div className="stat-box">
+              <strong>{formatNumber(user.posts)}</strong>
+              <span>posts</span>
+            </div>
+
+            <div className="stat-box" onClick={() => openModal("followers")}>
+              <strong>{formatNumber(user.followers)}</strong>
+              <span>followers</span>
+            </div>
+
+            <div className="stat-box" onClick={() => openModal("following")}>
+              <strong>{formatNumber(user.following)}</strong>
+              <span>following</span>
+            </div>
+          </div>
+        )}
+
+        {/* GALLERY */}
+        <div className="gallery-grid">
+          {posts?.map((post) => (
+            <div
+              key={post.postId}
+              className="gallery-item"
+              onClick={() => handlePostClick(post)}
+            >
+              <img
+                src={post.imageUrl}
+                alt={post.caption}
+                className="gallery-image"
+              />
+            </div>
+          ))}
         </div>
+
         {isModalOpen && <ModalGenerator />}
         {showPostDetails && <PostDetails />}
       </div>
@@ -369,13 +421,13 @@ function UserInfoPage() {
     setSelectedPostId(post.postId);
     setSelectedPostCaption(post.caption);
     setSelectedPostTimestamp(post.timestamp);
-    setSelectedPostUsername(post.owner);
+    setSelectedPostUsername(post.username);
 
     try {
       const [likeRes] = await Promise.all([
-        fetch(`http://localhost:8080/api/like/likeDetails/${post.postId}`),
+        fetch(`${API_BASE_URL}/like/likeDetails/${post.postId}`),
         // fetch(
-        //   `http://localhost:8080/api/comment/commentDetails/${post.postId}`
+        //   `${API_BASE_URL}/comment/commentDetails/${post.postId}`
         // ),
       ]);
 
@@ -394,67 +446,59 @@ function UserInfoPage() {
 
   function PostDetails() {
     return (
-      <div className="post-details-overlay">
-        <div className="post-details-container">
-          {/* Left - Image */}
-          <div className="post-details-left">
-            {selectedPostImageLink && (
-              <img src={selectedPostImageLink} alt="post" />
-            )}
+      <div
+        className="post-overlay-background"
+        onClick={() => setShowPostDetails(false)}
+      >
+        <div
+          className="post-details-container"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="imgcontainer">
+            {/* IMAGE */}
+            <img
+              src={selectedPostImageLink}
+              alt="post"
+              onClick={() => setShowUI((prev) => !prev)}
+            />
           </div>
 
-          {/* Right - Info */}
-          <div className="post-details-right">
-            <div className="username">{selectedPostUsername}</div>
-            <div className="caption">{selectedPostCaption}</div>
-            <div className="timestamp">
-              {new Date(selectedPostTimestamp).toLocaleString()}
-            </div>
+          {/* BOTTOM OVERLAY */}
+          <div
+            className={`post-bottom-overlay ${
+              showUI ? "overlay-visible" : "overlay-hidden"
+            }`}
+          >
+            <div className="post-user-info">
+              <div className="overlay-username">@{selectedPostUsername}</div>
 
-            <div className="icon-row">
-              <button
-                className={view === "likes" ? "active" : ""}
-                onClick={() => setView("likes")}
-              >
-                ❤️ {selectedPostLikesCount}
-              </button>
-            </div>
+              <div className="post-user-meta">
+                <div className="overlay-time">
+                  {new Date(selectedPostTimestamp).toLocaleString([], {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }) +
+                    " · " +
+                    new Date(selectedPostTimestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                </div>
 
-            <div className="list-container">
-              {view === "likes" ? (
-                <ul>
-                  {(selectedPostLikesList || []).map((like, i) => (
-                    <li key={i}>
-                      <strong>{like.likeby}</strong> —{" "}
-                      <span>{new Date(like.time).toLocaleString()}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <ul>
-                  {(selectedPostCommentsList || []).map((comment, i) => (
-                    <li key={i}>
-                      <strong>{comment.commentBy}</strong> —{" "}
-                      <span>{comment.text}</span>:{" "}
-                      {new Date(comment.timestamp).toLocaleString()}
-                    </li>
-                  ))}
-                </ul>
-              )}
+                <div className="overlay-likes">
+                  <Circle size={8} fill="white" strokeWidth={2} />
+                  <div>Likes {selectedPostLikesCount}</div>
+                </div>
+              </div>
             </div>
-
-            <button
-              onClick={() => setShowPostDetails(false)}
-              className="close-button"
-            >
-              Close
-            </button>
+            <div className="overlay-caption">{selectedPostCaption}</div>
           </div>
         </div>
       </div>
     );
   }
-
   function ModalGenerator() {
     return (
       <>
@@ -466,19 +510,25 @@ function UserInfoPage() {
                   {modalType === "followers" ? "Followers" : "Following"}
                 </h2>
                 <button
-                  className="close-btn"
+                  className="modal_close-btn"
                   onClick={() => setIsModalOpen(false)}
                 >
-                  ×
+                  <CircleX />
                 </button>
               </div>
               <ul className="modal-list">
                 {modalList.map((user) => (
                   <li key={user.userid} className="modal-list-item">
-                    <img src={user.image} alt="pfp" />
+                    <img
+                      src={user.image?.trim() ? user.image : emptyProfilePic}
+                      alt="pfp"
+                      onError={(e) => {
+                        e.target.src = emptyProfilePic;
+                      }}
+                    />
                     <div>
-                      <strong>{user.username}</strong>
                       <p>{user.name}</p>
+                      <div className="modal_username">@ {user.username}</div>
                     </div>
                   </li>
                 ))}
@@ -492,12 +542,10 @@ function UserInfoPage() {
 
   return (
     <div className="profilemainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
+      <Navbar />
 
       {loading ? (
-        <div className="rightSide_profile">Loading...</div>
+        <UserProfileSkeleton />
       ) : user == null ? (
         <div className="rightSide_profile">User not found</div>
       ) : showModal ? (

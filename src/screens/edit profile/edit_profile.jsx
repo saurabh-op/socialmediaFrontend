@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import emptyProfilePic from "../../assets/Profile.png";
 import imageCompression from "browser-image-compression";
+import { Trash2, ImagePlus, CloudCheck } from "lucide-react";
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 function EditProfile() {
   const navigate = useNavigate();
   //related to profile image
@@ -65,10 +68,16 @@ function EditProfile() {
 
         uploadProfilePic(compressedFile);
       } catch (error) {
-        alert("Something went wrong !");
+        toast.warning("Something went wrong !", {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } else {
-      alert("No image selected");
+      toast.error("No new image selected", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
   const uploadProfilePic = async (imageFile) => {
@@ -76,7 +85,10 @@ function EditProfile() {
       const userId = localStorage.getItem("userid");
 
       if (!imageFile) {
-        alert("Please select an image to upload.");
+        toast.error("Please select an image to upload", {
+          position: "top-center",
+          autoClose: 3000,
+        });
         return;
       }
 
@@ -89,16 +101,21 @@ function EditProfile() {
       const maxSize = 1 * 1024 * 1024; // 1 MB
 
       if (image && image.size > maxSize) {
-        alert("File size limit exceeds 1MB");
+        toast.error("File size exceeded", {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } else {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/editUser/${userId}/uploadProfilePic`,
+            `${API_BASE_URL}/editUser/${userId}/uploadProfilePic`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } },
           );
 
-          alert("Uploaded");
+          toast.success("Successfully Updated", {
+            autoClose: 2000,
+          });
         } catch (error) {}
       }
 
@@ -121,12 +138,16 @@ function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!/^\d{10}$/.test(user.phone)) {
-      alert("Phone number must be exactly 10 digits.");
+      toast.warning("Phone number should be of 10 digits", {
+        autoClose: 3000,
+      });
       setUploading(false);
       return;
     }
     if (user.username == "" || user.username == null) {
-      alert("Username cannot be empty.");
+      toast.warning("Username cannot be empty", {
+        autoClose: 3000,
+      });
       setUploading(false);
       return;
     }
@@ -134,21 +155,21 @@ function EditProfile() {
     try {
       // console.log("User details to be updated:", user);
       const response = await axios.put(
-        "http://localhost:8080/api/edituser/editBasicInfo",
+        "${API_BASE_URL}/edituser/editBasicInfo",
         user,
       );
       const data = response.data;
       if (data.message === "emailAlreadyExists") {
-        alert("Email already exists!");
+        toast.error("Email already exists!");
       }
       if (data.message === "usernameAlreadyExists") {
-        alert("Username already taken!");
+        toast.error("Username already taken!");
       }
       if (data.message === "userUpdated") {
         setUser(data.user);
         // console.log("User created:", response.data);
         // console.log(response.data.user);
-        alert("Updated successfully");
+        toast.success("Successfully Updated");
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("userid", data.user.id);
@@ -159,11 +180,11 @@ function EditProfile() {
       }
       if (data.message === "userNotFound") {
         //  console.error("Error creating userrrrrr:", error);
-        alert("Something went wrong.");
+        toast.error("Something went wrong.");
       }
     } catch (error) {
       //  console.error("Error creating user:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
     } finally {
       setUploading(false);
     }
@@ -175,9 +196,7 @@ function EditProfile() {
         // Fetch basic user info
         const userId = localStorage.getItem("userid");
 
-        const userRes = await fetch(
-          `http://localhost:8080/api/users/get/${userId}`,
-        );
+        const userRes = await fetch(`${API_BASE_URL}/users/get/${userId}`);
         const userData = await userRes.json();
         //   console.log("Fetched user for editing is:", userData);
 
@@ -194,7 +213,7 @@ function EditProfile() {
 
           if (userData.profileImageUrl) {
             const imageRes = await fetch(
-              `http://localhost:8080/api/editUser/${userId}/profilePic`,
+              `${API_BASE_URL}/editUser/${userId}/profilePic`,
             );
             if (imageRes.ok) {
               const imageUrl = await imageRes.text();
@@ -214,96 +233,73 @@ function EditProfile() {
   function basicdetails() {
     return (
       <div className="basicdetail_outlinebox">
-        <div className="edit_fields">
-          <div className="input-wrapper">
+        <div className="form-grid">
+          <div className="edit_fields">
+            <label>Name</label>
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Enter your name"
               value={user.name}
               onChange={handleChange}
-              required
             />
           </div>
-        </div>
-        <div className="edit_fields">
-          {" "}
-          <div className="input-wrapper">
+
+          <div className="edit_fields">
+            <label>Username</label>
             <input
               type="text"
               name="username"
-              placeholder="Username"
+              placeholder="@username"
               value={user.username}
               onChange={handleChange}
-              required
+              disabled
             />
           </div>
-        </div>
-        <div className="edit_fields">
-          {" "}
-          <div className="input-wrapper">
+
+          <div className="edit_fields">
+            <label>Phone</label>
             <input
               type="tel"
               name="phone"
-              placeholder="Phone"
+              placeholder="+91 XXXXX XXXXX"
               value={user.phone}
               onChange={handleChange}
-              required
             />
           </div>
-        </div>
-        <div className="edit_fields">
-          {" "}
-          <div className="input-wrapper">
+
+          <div className="edit_fields">
+            <label>Email</label>
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="your@email.com"
               value={user.email}
               onChange={handleChange}
-              required
             />
           </div>
-        </div>{" "}
-        <div className="edit_fields_bio" style={{ position: "relative" }}>
+        </div>
+
+        <div className="edit_fields_bio">
+          <label>Bio</label>
+
           <textarea
             name="bio"
-            placeholder="Bio"
+            placeholder="Tell people about yourself..."
             value={user.bio}
             onChange={handleBioChange}
             rows={4}
-            style={{ resize: "none" }}
-            required
           />
+
           <span className="word-count">{alphabetCount}/50</span>
         </div>
-        {/* <div className="fields password-field">
-        <div className="input-wrapper">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={user.password}
-            onChange={handleChange}
-            required
-          />
-          <span
-            className="toggle-password"
-            onClick={() => setShowPassword((prev) => !prev)}
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-      </div> */}
-        <div>
-          <button onClick={handleSubmit} className="edit_actions_save">
-            {uploading ? "Saving..." : "Save"}
-          </button>
-        </div>
+
+        <button onClick={handleSubmit} className="edit_actions_save">
+          {uploading ? "Saving..." : "Save Changes"}
+        </button>
       </div>
     );
   }
-
   function profileImage() {
     return (
       <>
@@ -330,55 +326,57 @@ function EditProfile() {
                 />
               )}
             </div>
-            <div className="edit_image-actions">
-              <div>
-                <button
-                  type="button"
-                  className="edit_Choose"
-                  onClick={() => document.getElementById("imageInput").click()}
-                >
-                  Choose
-                </button>
-                <input
-                  id="imageInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-              </div>
+            <div className="img_button_container">
+              <button
+                type="button"
+                className="edit_action_button"
+                onClick={() => document.getElementById("imageInput").click()}
+              >
+                <ImagePlus size={18} />
+                Select image
+              </button>
 
-              <button className="edit_clear-btn" onClick={handleClear}>
-                Clear
+              <input
+                id="imageInput"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+
+              <button className="edit_action_button" onClick={handleClear}>
+                <Trash2 size={18} />
+                Remove image
+              </button>
+
+              <button
+                className="edit_action_button"
+                onClick={handleImageSubmit}
+              >
+                <CloudCheck size={18} />
+                Save image
               </button>
             </div>
-            <button className="edit_upload" onClick={handleImageSubmit}>
-              Upload
-            </button>{" "}
           </div>
         )}
       </>
     );
   }
   return (
-    <div className="mainpage_editProfile">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
-      <div className="editProfilemainpage">
-        <FiArrowLeft
-          onClick={() => navigate(`/profile/${user.id}`)} // <-- Use navigate to go to profile page
-          style={{
-            position: "fixed",
-            top: "16px",
-            left: "10vw",
-            fontSize: "24px",
-            cursor: "pointer",
-            color: "black",
-            zIndex: 1000,
-          }}
-        />
+    <div className="editprofile_bg">
+      <Navbar />
+
+      <div className="editprofile_container">
+        <div
+          className="back_button"
+          onClick={() => navigate(`/profile/${user.id}`)}
+        >
+          <FiArrowLeft size={22} />
+        </div>
+
+        <div className="instructions">Edit Profile Image</div>
         <div> {profileImage()}</div>
+        <div className="instructions">Edit Personal Details</div>
         <div>{basicdetails()}</div>
       </div>
     </div>

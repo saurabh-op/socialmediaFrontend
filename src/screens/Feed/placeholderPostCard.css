@@ -1,0 +1,122 @@
+@import url("https://fonts.cdnfonts.com/css/clash-display");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* ===========================
+   Shimmer Animation
+=========================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -300% 0;
+  }
+  100% {
+    background-position: 300% 0;
+  }
+}
+
+.ph_post-card {
+  margin: 10px auto;
+  padding: 14px;
+  height: fit-content;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 12px;
+
+  border-radius: 38px;
+
+  background: rgba(246, 246, 246, 0.404);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 3px solid rgba(255, 255, 255, 0.7);
+}
+
+.ph_post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px 0px 10px;
+}
+
+.ph_post-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ph_user-logo,
+.ph_user-name,
+.ph_user-handle,
+.ph_post-middle {
+  background: linear-gradient(
+    90deg,
+    rgba(220, 220, 220, 0.25) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(220, 220, 220, 0.25) 100%
+  );
+
+  background-size: 300% 100%;
+  animation: shimmer 4s infinite linear;
+}
+
+.ph_user-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.ph_user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ph_user-name {
+  width: 200px;
+  height: 20px;
+  border-radius: 30px;
+}
+
+.ph_user-handle {
+  width: 100px;
+  height: 16px;
+  border-radius: 30px;
+}
+
+.ph_post-middle {
+  flex: 1 1 auto;
+  height: 70vh;
+  aspect-ratio: 4/5;
+
+  overflow: hidden;
+  border-radius: 28px;
+}
+
+.ph_post-bottom {
+  padding: 12px;
+
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+}
+
+/* Optional skeleton buttons/icons */
+
+.ph_action {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(220, 220, 220, 0.25) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(220, 220, 220, 0.25) 100%
+  );
+
+  background-size: 300% 100%;
+  animation: shimmer 4s infinite linear;
+}

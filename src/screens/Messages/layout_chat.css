@@ -1,38 +1,12 @@
-.mainpage {
-  width: 100vw;
-  background: blue;
-  height: 100vh;
+.chat_mainpage {
+  padding: 20px;
   display: flex;
-  justify-content: start;
-  align-items: start;
-  flex-direction: row;
-  overflow: hidden;
-}
-.navbar-container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-}
-/* Desktop Navbar (left-middle floating) */
-.navbar {
-  border-radius: 0 20px 20px 0;
-  height: auto;
-  display: flex;
-  align-items: center;
-  padding: 10px 5px;
-  justify-content: center;
-  flex-direction: column;
-  background-color: #ffffff;
-  border: 1px solid #0000004c;
-}
-
-/* Right side main content */
-.rightSide {
-  height: 100%;
-  overflow: auto;
+  height: 100vh;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 20px;
 }
 
 /* 📱 Mobile layout adjustments */

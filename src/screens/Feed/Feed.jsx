@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import Navbar from "../Layout/Navbar";
+import WelcomeCard from "./welcome";
+
 import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
+import { ArrowBigLeft, Plus } from "lucide-react";
+import PlaceholderPostCard from "./placeholderPostCard";
+import { API_BASE_URL } from "../../config";
 
 function Feed() {
   const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
@@ -15,8 +20,8 @@ function Feed() {
   //Related to feed :
   const [isFeedLoading, setisFeedLoading] = useState(false);
   const [feedList, setFeedList] = useState([]);
-  const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
-  const [selectedPostLikeList, setSelectedPostLikeList] = useState([]);
+  // const [selectedPostCommentsList, setSelectedPostCommentsList] = useState([]);
+  // const [selectedPostLikeList, setSelectedPostLikeList] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userid");
@@ -26,7 +31,7 @@ function Feed() {
       try {
         setisFeedLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/feed/feedPosts/${userId}`,
+          `${API_BASE_URL}/feed/feedPosts/${userId}`,
         );
         const data = await response.json();
         console.log("feed data", data);
@@ -55,7 +60,7 @@ function Feed() {
     return (
       <div>
         {isFeedLoading ? (
-          "Loading ..."
+          <PlaceholderPostCard />
         ) : (
           <div className="feed-list-scrollable">
             {Array.isArray(feedList) && feedList.length > 0 ? (
@@ -65,7 +70,9 @@ function Feed() {
                 </div>
               ))
             ) : (
-              <div className="no-feed-message">No posts to show.</div>
+              <div>
+                <WelcomeCard />
+              </div>
             )}
           </div>
         )}
@@ -74,32 +81,32 @@ function Feed() {
   }
 
   return (
-    <div className="mainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
-      <div className="rightSide">
-        {showPicker ? (
-          <div className="imagePicker">
-            <button className="back-btn" onClick={() => setShowPicker(false)}>
-              Go Back
-            </button>
-            <ImagePicker />
-          </div>
-        ) : (
+    <div className="feedpagerightSide">
+      <Navbar />
+
+      {showPicker ? (
+        <div className="imagePickerOverlay">
+          <button className="back-btn" onClick={() => setShowPicker(false)}>
+            Go Back
+          </button>
+          <ImagePicker />
+        </div>
+      ) : (
+        <div>
+          {userFeed()}
           <div>
-            {userFeed()}
-            <div>
-              <button
-                onClick={() => setShowPicker(true)}
-                className="upload-btn"
-              >
-                Upload
-              </button>
-            </div>
+            <button
+              onClick={() => setShowPicker(true)}
+              className="upload-btn"
+              aria-label="Upload"
+            >
+              <div className="upload-btn-inner">
+                <Plus size={20} strokeWidth={2.5} />
+              </div>
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,96 +1,224 @@
 import React, { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config";
 import "./PostCard.css";
+import { Heart, MoreHorizontal, Paperclip } from "lucide-react";
 import userLogo from "../../assets/man.jpg"; // Replace with actual user logo URL
 
 function PostCard({ post }) {
-  const [showComments, setDisplayComments] = useState(false);
-  const [isCommentLoading, setisCommentLoading] = useState(false);
-  const [comment, setComment] = useState("");
-  const [commentsList, setCommentsList] = useState([]);
+  //const [showComments, setDisplayComments] = useState(false);
+  //const [isCommentLoading, setisCommentLoading] = useState(false);
+  //const [comment, setComment] = useState("");
+  //const [commentsList, setCommentsList] = useState([]);
   const [liked, setLike] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [caption_expanded, setExpanded] = useState(false);
+  const [like_count, setLikeCount] = useState(0);
+  const userId = localStorage.getItem("userId");
+  const [ownerImage, setOwnerImage] = useState(userLogo);
+  const navigate = useNavigate();
 
-  const toggleCaption = () => {
-    setExpanded(!expanded);
+  const goToProfile = (e) => {
+    e?.stopPropagation();
+    navigate(`/viewuser/${post.owner}`);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadOwnerImage = async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/editUser/${post.owner}/profilePic`,
+        );
+
+        if (!res.ok) return;
+
+        const url = await res.text();
+        if (!cancelled && url) setOwnerImage(url);
+      } catch (err) {
+        console.error("Error fetching owner profile pic:", err);
+      }
+    };
+
+    loadOwnerImage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [post]);
+
+  useEffect(() => {
+    fetchLikeCount();
+  }, []);
+
+  const fetchLikeCount = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/like/likeCount/${post.postId}`,
+      );
+
+      if (response.ok) {
+        const count = await response.json();
+        setLikeCount(count);
+      }
+    } catch (err) {
+      console.error("Error fetching likes:", err);
+    }
   };
   useEffect(() => {
-    const textarea = document.querySelector(".comment-textarea");
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = textarea.scrollHeight + "px";
-    }
-  }, [comment]);
+    fetchLikeCount();
+    fetchLikeStatus();
+  }, []);
+  const fetchLikeStatus = async () => {
+    const response = await fetch(
+      `${API_BASE_URL}/like/isLiked/${post.postId}/${userId}`,
+    );
 
-  const LoadComments = async () => {
-    setDisplayComments(true);
-    setisCommentLoading(true);
-    try {
-      // const response = await fetch(`/api/posts/${post.id}/comments`);
-      // const data = await response.json();
-      setCommentsList([]);
-    } catch (err) {
-      console.error("Failed to fetch comments:", err);
-    } finally {
-      setisCommentLoading(false);
+    if (response.ok) {
+      const status = await response.json();
+      setLike(status);
     }
   };
-  const handleClose = () => {
-    setDisplayComments(false);
-  };
 
-  const handleCommentSubmit = () => {
-    if (comment.trim() === "") return;
-    setCommentsList((prev) => [...prev, comment]);
-    setComment("");
+  const toggleCaption = () => {
+    setExpanded(!caption_expanded);
   };
+  // useEffect(() => {
+  //   const textarea = document.querySelector(".comment-textarea");
+  //   if (textarea) {
+  //     textarea.style.height = "auto";
+  //     textarea.style.height = textarea.scrollHeight + "px";
+  //   }
+  // }, [comment]);
+
+  // const LoadComments = async () => {
+  //   setDisplayComments(true);
+  //   setisCommentLoading(true);
+  //   try {
+  //     // const response = await fetch(`/api/posts/${post.id}/comments`);
+  //     // const data = await res  ponse.json();
+  //     setCommentsList([]);
+  //   } catch (err) {
+  //     console.error("Failed to fetch comments:", err);
+  //   } finally {
+  //     setisCommentLoading(false);
+  //   }
+  // };
+  // const handleClose = () => {
+  //   setDisplayComments(false);
+  // };
+
+  // const handleCommentSubmit = () => {
+  //   if (comment.trim() === "") return;
+  //   setCommentsList((prev) => [...prev, comment]);
+  //   setComment("");
+  // };
   const getTimeAgo = (timestamp) => {
     const now = new Date();
     const time = new Date(timestamp);
     const seconds = Math.floor((now - time) / 1000);
 
-    if (seconds < 60) return `${seconds} secs ago`;
+    if (seconds < 60) return `${seconds} s`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} mins ago`;
+    if (minutes < 60) return `${minutes} m`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hours ago`;
+    if (hours < 24) return `${hours} h`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days} days ago`;
+    if (days < 30) return `${days} d`;
     const months = Math.floor(days / 30);
-    if (months < 12) return `${months} months ago`;
+    if (months < 12) return `${months} month`;
     const years = Math.floor(months / 12);
-    return `${years} year`;
+    return `${years} y`;
   };
 
+  const handle_like = async () => {
+    try {
+      if (!liked) {
+        const response = await fetch(
+          `${API_BASE_URL}/like/${userId}/addLike/${post.postId}`,
+          {
+            method: "POST",
+          },
+        );
+
+        if (response.ok) {
+          setLike(true);
+          setLikeCount((prev) => prev + 1);
+        }
+      } else {
+        const response = await fetch(
+          `${API_BASE_URL}/like/removeLike/${post.postId}/${userId}`,
+          {
+            method: "DELETE",
+          },
+        );
+
+        if (response.ok) {
+          setLike(false);
+          setLikeCount((prev) => Math.max(prev - 1, 0));
+        }
+      }
+    } catch (err) {
+      console.error("Error updating like:", err);
+    }
+  };
   return (
     <div className="post-card">
       <div className="post-top">
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img src={userLogo} alt="User" className="user-logo" />
-          <span className="user-name">{post.owner}</span>
+        <div className="post-user">
+          <img
+            src={ownerImage || userLogo}
+            alt="User"
+            className="user-logo"
+            onClick={goToProfile}
+            style={{ cursor: "pointer" }}
+          />
+
+          <div className="user-meta">
+            <span
+              className="user-name"
+              onClick={goToProfile}
+              style={{ cursor: "pointer" }}
+            >
+              {post.name}
+            </span>{" "}
+            <span
+              className="user-handle"
+              onClick={goToProfile}
+              style={{ cursor: "pointer" }}
+            >
+              @{post.username}
+            </span>
+          </div>
         </div>
-        <div className="post-timestamp">{getTimeAgo(post.timestamp)}</div>
+        <span className="post-timestamp">{getTimeAgo(post.timestamp)}</span>
       </div>
       <div className="post-middle">
         <img src={post.imageUrl} alt="Post" className="post-image" />
       </div>
-
       <div className="post-bottom">
         <div
           onClick={toggleCaption}
           style={{ userSelect: "none" }}
-          className={`post-caption ${expanded ? "expanded" : ""}`}
+          className={`post-caption ${caption_expanded ? "expanded" : ""}`}
         >
-          {post.caption}{" "}
+          <Paperclip size={12} strokeWidth={1} /> {post.caption}
         </div>
-        <button
-          className={`like-btn ${liked ? "liked" : ""}`}
-          onClick={() => setLike(!liked)}
-        >
-          {liked ? "❤️" : "🤍"}
-        </button>
+        <div>
+          <div
+            className={`like-btn ${liked ? "liked" : ""}`}
+            onClick={() => handle_like()}
+          >
+            <div>{like_count}</div>
+            {liked ? (
+              <Heart size={24} fill="red" strokeWidth={0} />
+            ) : (
+              <Heart size={24} fill="white" strokeWidth={1} />
+            )}
+          </div>
+        </div>
       </div>
-      {showComments && (
+      {/* {showComments && (
         <div className="comment-section">
           {isCommentLoading ? (
             <div className="loading-text">Loading comments...</div>
@@ -123,7 +251,7 @@ function PostCard({ post }) {
             </>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

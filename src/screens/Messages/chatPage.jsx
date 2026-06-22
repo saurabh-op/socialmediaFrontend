@@ -1,15 +1,30 @@
 import React, { useEffect, useState, useRef } from "react";
+
+//Web socket Services
 import { useWebSocket } from "../../services/webSocketContext";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import "./chatPage.css";
-import "./layout_chat.css";
-import Navbar from "../Layout/Navbar";
+
+//Axios
+import api from "../../config/axios";
 import axios from "axios";
-import "./chatRightPart.css";
+
+//Css files
 import "./chatList.css";
 import "./chatViewPort.css";
-import "./newChatPopUp.css";
+import "./search_bar.css";
+import "./layout_chat.css";
+
+//jsx files
+import ChatPlaceholder from "./openedChatPlaceholder.jsx";
+import ChatListSkeleton from "./chatListPlaceholder.jsx";
+import NoChatSelected from "./noChatSelected.jsx";
+
+//Components
+import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
+import Navbar from "../Layout/Navbar";
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
 
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);
@@ -25,9 +40,10 @@ function ChatPage() {
 
   const [newchatid, setNewChatId] = useState("");
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [chatList, setChatList] = useState([]);
-  const [showNewChatPopUp, setNewSearchPopUp] = useState(false);
+  const [searchNewChat, setSearchNewChat] = useState(false);
   const [isLoadingChatList, setisLoadingChatlist] = useState(true);
   const [message, setMessage] = useState("");
   const [results, setResults] = useState([]);
@@ -39,7 +55,8 @@ function ChatPage() {
   const [isloadingChatHistory, setIsLoadingChatHistory] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [currentChatid, setCurrentChatId] = useState("");
-  const [currentOtherUser, setcurrentOtherUser] = useState("");
+  const [currentReceiver_username, setcurrentReceiver_username] = useState("");
+  const [currentReceiver_id, setCurrentReceiver_Id] = useState("");
 
   // Initialize WebSocket connection on component mount
   useEffect(() => {
@@ -51,8 +68,8 @@ function ChatPage() {
   }, [connect, stompClient]);
 
   useEffect(() => {
-    currentOtherUserRef.current = currentOtherUser;
-  }, [currentOtherUser]);
+    currentOtherUserRef.current = currentReceiver_username;
+  }, [currentReceiver_username]);
 
   useEffect(() => {
     const messageHandler = (newMessage) => {
@@ -61,9 +78,9 @@ function ChatPage() {
 
       // Reconstruct the chat ID from sender and current user if not provided
       let messageChatId = newMessage.chatId || newMessage.cid;
-      if (!messageChatId && newMessage.sid) {
+      if (!messageChatId && newMessage.sender_id) {
         const currentUserId = localStorage.getItem("userid");
-        messageChatId = [currentUserId, newMessage.sid].sort().join("_");
+        messageChatId = [currentUserId, newMessage.sender_id].sort().join("_");
         console.log("Reconstructed chat ID:", messageChatId);
       }
 
@@ -73,13 +90,15 @@ function ChatPage() {
       if (messageChatId === currentChatid) {
         console.log("Message is for current chat, adding to history");
         setChatHistory((prev) => {
-          // Deduplicate by `mid` to avoid inserting the same message twice
-          if (!newMessage || !newMessage.mid) {
+          // Deduplicate by `message_id` to avoid inserting the same message twice
+          if (!newMessage || !newMessage.message_id) {
             return [newMessage, ...prev];
           }
-          const exists = prev.some((m) => m && m.mid === newMessage.mid);
+          const exists = prev.some(
+            (m) => m && m.message_id === newMessage.message_id,
+          );
           if (exists) {
-            console.log("Duplicate message ignored:", newMessage.mid);
+            console.log("Duplicate message ignored:", newMessage.message_id);
             return prev;
           }
           return [newMessage, ...prev];
@@ -98,13 +117,12 @@ function ChatPage() {
   }, [currentChatid, currentPage]);
   useEffect(() => {
     const userid = localStorage.getItem("userid");
-
+    console.log(userid);
     const fetchChatList = async () => {
       try {
-        const res = await axios.get(
-          `https://ziffyconnect.onrender.com/api/chatBook/${userid}`,
-        );
+        const res = await api.get(`/chatBook/${userid}`);
         setChatList(res.data);
+        console.log(res.data);
         setChatListFetched(true);
       } catch (error) {
         console.error("Error fetching chat list:", error);
@@ -128,12 +146,10 @@ function ChatPage() {
           setResults([]);
         } else {
           setSearching(true);
-          const res = await fetch(
-            `https://ziffyconnect.onrender.com/api/following/${userid}/${search}`,
-          );
-          const data = await res.json();
-          console.log(data);
-          setResults(data);
+          const res = await api.get(`/following/${userid}/${search}`);
+          const data = res.data;
+          console.log("Search response:", data);
+          setResults(data || []);
         }
       } catch (err) {
         console.error("Search error:", err);
@@ -151,102 +167,69 @@ function ChatPage() {
   }, [search]);
 
   const beginNewChat = async (userid, username) => {
-    const user1 = localStorage.getItem("userid");
-    const user2 = userid;
+    const my_local_id = localStorage.getItem("userid");
+    const my_local_username = localStorage.getItem("username");
+    const friends_id = userid;
+    const friends_username = username;
 
-    const sortedChatId = [user1, user2].sort().join("_");
+    const sortedChatId = [my_local_id, friends_id].sort().join("_");
 
     const existingChat = chatList.find((chat) => chat.chatId === sortedChatId);
 
     if (existingChat) {
       setCurrentChatId(existingChat.chatId);
-      setcurrentOtherUser(existingChat.otherPersonUserName);
-      setNewSearchPopUp(false);
+      setcurrentReceiver_username(existingChat.friends_username);
+      setSearchNewChat(false);
       return;
     }
 
     try {
-      const response = await axios.get(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/new/${user1}/${user2}`,
+      const response = await api.get(
+        `/chatKeeper/new/${my_local_id}/${my_local_username}/${friends_id}/${friends_username}`,
       );
       console.log("New chat created:", response.data);
       setCurrentChatId(response.data);
-      setcurrentOtherUser(username);
+      setcurrentReceiver_username(friends_username);
+      setCurrentReceiver_Id(friends_id);
       const newChat = {
         chatId: response.data,
         timeStamp: new Date().toISOString(),
-        otherPersonUserName: username,
+        friends_username: username,
       };
       setChatList((chatList) => [newChat, ...chatList]);
-      setNewSearchPopUp(false);
+      setSearchNewChat(false);
     } catch (error) {
       console.error("Error creating chat:", error);
     }
   };
 
-  function searchPopUp() {
+  function main_page() {
     return (
-      <div className="popupContainer">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search username"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="list">
-          {results.length === 0 && search.trim() !== "" && (
-            <p className="no-results">
-              {searching ? "Searching..." : "No users found."}
-            </p>
-          )}
-
-          {results && (
-            <div
-              className="listItem"
-              onClick={() => beginNewChat(results.userid, results.username)}
-            >
-              <img
-                className="profilePic"
-                src={results.image}
-                alt="User Profile"
-              />
-
-              <div className="user-info">
-                <span>
-                  <strong>{results.username}</strong>
-                </span>
-                <span>{results.name}</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div>
-          <button className="backbtn" onClick={() => setNewSearchPopUp(false)}>
-            Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-  function renderChatRightPart() {
-    return (
-      <div className="boxer">
-        {renderChatList()}
+      <div className="chat_mainpage">
+        {chat_list()}
         {currentChatid ? (
-          viewChat()
+          opened_chat()
         ) : (
-          <div className="select_a_chat">Select a chat</div>
+          <div className="select_a_chat">
+            <NoChatSelected />
+          </div>
         )}
       </div>
     );
   }
-  function setChatInfo(chatId, userName) {
+  function placeholder_main_page() {
+    return (
+      <div className="chat_mainpage">
+        <ChatListSkeleton />
+        <ChatPlaceholder />
+      </div>
+    );
+  }
+  function setChatInfo(chatId, friend_username, friend_id) {
     setChatHistory([]);
     setCurrentChatId(chatId);
-    setcurrentOtherUser(userName);
-    console.log("Other user set to:", userName);
+    setcurrentReceiver_username(friend_username);
+    setCurrentReceiver_Id(friend_id);
     setCurrentPage(0);
   }
 
@@ -254,65 +237,173 @@ function ChatPage() {
     const now = new Date();
     const date = new Date(timestamp);
 
-    const isToday = date.toDateString() === now.toDateString();
+    const diffMs = now - date;
 
-    const yesterday = new Date();
-    yesterday.setDate(now.getDate() - 1);
-    const isYesterday = date.toDateString() === yesterday.toDateString();
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    const timeString = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
+    // less than 1 hour
+    if (minutes < 60) {
+      return `${minutes}m`;
+    }
+
+    // less than 24 hours
+    if (hours < 24) {
+      return `${hours}h`;
+    }
+
+    // days
+    if (days < 7) {
+      return `${days}d`;
+    }
+
+    // fallback date
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
     });
-
-    if (isToday) return `Today ${timeString}`;
-    if (isYesterday) return `Yesterday ${timeString}`;
-
-    return `${date.toLocaleDateString("en-GB")}`;
   }
 
-  function renderChatList() {
+  function chat_list() {
     return (
       <div className="chatListContainer">
-        {showNewChatPopUp ? (
-          <div>{searchPopUp()}</div>
-        ) : (
-          <>
-            <div className="List">
-              {chatList.map((chat) => (
+        <div className="chat_list">
+          <h2 className="Message_header">
+            {searchNewChat ? "New Chat" : "Messages"}
+          </h2>
+          <div className="searchContainer">
+            <Search className="searchIcon" />
+            <input
+              value={searchNewChat ? search : query}
+              onChange={(e) =>
+                searchNewChat
+                  ? setSearch(e.target.value)
+                  : setQuery(e.target.value)
+              }
+              placeholder={searchNewChat ? "Enter username" : "Search"}
+              className="searchInput"
+            />
+            {(searchNewChat ? search : query) && (
+              <button
+                onClick={() => (searchNewChat ? setSearch("") : setQuery(""))}
+                className="clearBtn"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          {searchNewChat ? (
+            <>
+              {results.length === 0 && search.trim() !== "" && (
+                <p className="no-results">
+                  {searching ? "Searching..." : "No users found."}
+                </p>
+              )}
+
+              {Array.isArray(results) ? (
+                results.map((r) => (
+                  <div
+                    key={r.userid}
+                    className="list-item"
+                    onClick={() => beginNewChat(r.userid, r.username)}
+                  >
+                    <div className="chat_card">
+                      <div className="avatarWrapper">
+                        <div className="avatar">
+                          {r.name?.charAt(0).toUpperCase()}
+                        </div>
+                      </div>
+
+                      <div className="chatInfo">
+                        <div className="topRow">
+                          <span className="chatUsername">{r.username}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : results ? (
+                <div
+                  className="list-Item"
+                  onClick={() => beginNewChat(results.userid, results.username)}
+                >
+                  <div className="chat_card">
+                    <div className="avatarWrapper">
+                      <div className="avatar">
+                        {results.name?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+
+                    <div className="chatInfo">
+                      <div className="topRow">
+                        <span className="chatUsername">{results.username}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            (() => {
+              const filtered = query.trim()
+                ? chatList.filter((chat) =>
+                    (chat.friends_username || "")
+                      .toLowerCase()
+                      .includes(query.toLowerCase()),
+                  )
+                : chatList;
+
+              return filtered.map((chat) => (
                 <div
                   key={chat.chatId}
                   className="list-item"
                   onClick={() =>
-                    setChatInfo(chat.chatId, chat.otherPersonUserName)
+                    setChatInfo(
+                      chat.chatId,
+                      chat.friends_username,
+                      chat.friends_id,
+                    )
                   }
                 >
-                  <div className="chatListItem">
-                    <p className="chl-username">{chat.otherPersonUserName}</p>
-                    <p className="time">{formatChatTime(chat.timeStamp)}</p>
+                  <div className="chat_card">
+                    <div className="avatarWrapper">
+                      <div className="avatar">
+                        {chat.friends_username?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+
+                    <div className="chatInfo">
+                      <div className="topRow">
+                        <span className="chatUsername">
+                          {chat.friends_username}
+                        </span>
+
+                        <span className="chatTime">
+                          {formatChatTime(chat.timeStamp)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-            <button
-              className="newChatBtn"
-              onClick={() => setNewSearchPopUp(true)}
-            >
-              New chat
-            </button>
-          </>
-        )}
+              ));
+            })()
+          )}
+        </div>
+        <button
+          className="floatingActionBtns"
+          onClick={() => setSearchNewChat(!searchNewChat)}
+        >
+          {searchNewChat ? <ArrowLeft size={20} /> : <Plus size={20} />}
+        </button>
       </div>
     );
   }
 
   function loadChat() {
     setIsLoadingChatHistory(true);
-    axios
-      .get(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}?page=${currentPage}`,
-      )
+    api
+      .get(`/chatKeeper/${currentChatid}?page=${currentPage}`)
       .then((response) => {
         console.log("Chat history loaded:", response.data);
         if (response.data.length === 0) {
@@ -334,16 +425,16 @@ function ChatPage() {
     const senderId = localStorage.getItem("userid");
 
     // First, send message via HTTP to save to database
-    axios
+    api
       .post(
-        `https://ziffyconnect.onrender.com/api/chatKeeper/${currentChatid}`,
+        `/chatKeeper/${currentChatid}`,
         {
-          sid: senderId,
-          tex: message,
+          sender_id: senderId,
+          text: message,
         },
         {
           headers: {
-            rid: currentOtherUser,
+            send_to: currentReceiver_id,
           },
         },
       )
@@ -352,7 +443,9 @@ function ChatPage() {
 
         // Add sent message to chat history immediately
         setChatHistory((prev) => {
-          const exists = prev.some((m) => m && m.mid === response.data.mid);
+          const exists = prev.some(
+            (m) => m && m.message_id === response.data.message_id,
+          );
 
           if (exists) {
             return prev;
@@ -368,7 +461,7 @@ function ChatPage() {
             chatId: currentChatid,
           };
           stompClient.current.publish({
-            destination: `/app/chat/${currentOtherUser}`,
+            destination: `/app/chat/${currentReceiver_username}`,
             body: JSON.stringify(messagePayload),
           });
           console.log("Message published to WebSocket:", messagePayload);
@@ -378,11 +471,11 @@ function ChatPage() {
       })
       .catch((error) => {
         console.error("Error sending message:", error);
-        alert("Failed to send the message. Please try again.");
+        toast.error("Failed to send. Please try again.");
       });
   }
 
-  const viewChat = () => {
+  const opened_chat = () => {
     const myUserId = localStorage.getItem("userid");
     const handleSend = () => {
       if (message.trim() === "") return;
@@ -391,62 +484,86 @@ function ChatPage() {
 
     return (
       <>
-        {isloadingChatHistory && <div>Loading chat...</div>}
-        <div>
+        {isloadingChatHistory ? (
+          <ChatPlaceholder />
+        ) : (
           <div className="chat-window">
-            <div className="chat-header">{currentOtherUser}</div>
+            <div className="chat-header">
+              {" "}
+              <div className="avatarWrapper">
+                <div className="avatar">
+                  {currentReceiver_username.charAt(0).toUpperCase()}
+                </div>
+              </div>
+              {currentReceiver_username}
+            </div>
 
             <div className="chat-history">
               {chatHistory && chatHistory.length > 0 ? (
-                chatHistory.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`chat-message ${
-                      msg.sid === myUserId ? "my-message" : "their-message"
-                    }`}
-                  >
-                    <div className="message-text">{msg.tex}</div>
-                    <div className="timestamp">
-                      {new Date(msg.tim).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                chatHistory.map((msg, index) => {
+                  const mine = msg.sender_id === myUserId;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`message-row ${mine ? "me" : "them"}`}
+                    >
+                      <div
+                        className={`chat-message ${
+                          mine ? "my-message" : "their-message"
+                        }`}
+                      >
+                        <div className="message-text">{msg.text}</div>
+
+                        <div className="msgtimestamp">
+                          {new Date(msg.time).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          })}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
-                <div>No messages yet.</div>
+                <div className="no-user-selected">No messages yet</div>
               )}
             </div>
-
-            <div className="chat-input-area">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSend();
-                  }
-                }}
-                placeholder="Type a message"
-              />
-              <button onClick={handleSend}>Send</button>
+            <div className="chat-bottom">
+              <div className="chat-input-area">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSend();
+                    }
+                  }}
+                  placeholder={`Message ${currentReceiver_username}`}
+                />
+                <button onClick={handleSend}>
+                  <Send size={16} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </>
     );
   };
 
   return (
-    <div className="mainpage">
-      <div className="navbar-container">
-        <Navbar />
-      </div>
+    <div>
+      <Navbar />
 
-      <div className="rightSide">
-        {isLoadingChatList ? "Loading..." : <div>{renderChatRightPart()}</div>}
+      <div>
+        {isLoadingChatList ? (
+          <div>{placeholder_main_page()}</div>
+        ) : (
+          <div>{main_page()}</div>
+        )}
       </div>
     </div>
   );

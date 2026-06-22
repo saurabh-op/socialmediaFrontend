@@ -2,6 +2,18 @@ import React, { useState } from "react";
 import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
+import { toast } from "react-toastify";
+import { API_BASE_URL } from "../../config";
+import {
+  ArrowBigUp,
+  BalloonIcon,
+  Check,
+  CloudBackup,
+  CloudCheck,
+  ImagePlus,
+  Save,
+  Trash,
+} from "lucide-react";
 export default function ImagePicker() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState();
@@ -35,10 +47,10 @@ export default function ImagePicker() {
         uploadPost(compressedFile, caption);
       } catch (error) {
         console.error("Error processing image:", error);
-        alert("Error compressing image, please try again.");
+        toast.error("Error compressing image, please try again.");
       }
     } else {
-      alert("Please select an image and enter a caption.");
+      toast.warning("Please select an image and enter a caption.");
     }
   };
 
@@ -93,6 +105,7 @@ export default function ImagePicker() {
 
   const handleClear = () => {
     setSelectedImage(null);
+    setPreviewUrl(null);
   };
   const handleCaptionChange = (e) => {
     setCaption(e.target.value);
@@ -103,9 +116,11 @@ export default function ImagePicker() {
   const uploadPost = async (imageFile, caption) => {
     try {
       const userId = localStorage.getItem("userid");
+      const username = localStorage.getItem("username");
+      const name = localStorage.getItem("name");
 
       if (!imageFile || !caption || !userId) {
-        alert("Missing data");
+        toast.error("Missing data");
         return;
       }
 
@@ -114,17 +129,19 @@ export default function ImagePicker() {
       const formData = new FormData();
       formData.append("image", imageFile);
       formData.append("caption", caption);
+      formData.append("username", username);
+      formData.append("name", name);
 
       const image = formData.get("image");
       const maxSize = 1 * 1024 * 1024;
 
       console.log(image.size);
       if (image && image.size > maxSize) {
-        alert("File size exceeds the limit (1 MB).");
+        toast.error("File size exceeded");
       } else {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/posts/${userId}/addPost`,
+            `${API_BASE_URL}/posts/${userId}/addPost`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } },
           );
@@ -138,11 +155,11 @@ export default function ImagePicker() {
       setPreviewUrl();
       setSelectedImage();
       setCaption();
-      alert("Uploaded Successfully");
+      toast.success("Uploaded Successfully");
     } catch (error) {
       setUploading(false);
       console.error(error);
-      alert("Upload failed: " + error.message);
+      toast.error("Upload failed");
     }
   };
 
@@ -158,13 +175,10 @@ export default function ImagePicker() {
             {previewUrl ? (
               <>
                 <img src={previewUrl} alt="Preview" className="preview-img" />
-
-                <button className="clear-btn" onClick={handleClear}>
-                  Clear
-                </button>
               </>
             ) : (
               <label className="Choose">
+                <ImagePlus size={20} />
                 Choose Image
                 <input
                   type="file"
@@ -181,10 +195,15 @@ export default function ImagePicker() {
             value={caption}
             onChange={handleCaptionChange}
             rows={1}
-          />{" "}
-          <button className="upload" onClick={handleSubmit}>
-            Upload
-          </button>
+          />
+          <div className="actionButtonsimgpicker">
+            <button className="clear-btn" onClick={handleClear}>
+              <Trash fill={"red"} size={20} strokeWidth={1} /> Discard Image
+            </button>
+            <button className="saveImage" onClick={handleSubmit}>
+              <ArrowBigUp fill={"green"} size={20} strokeWidth={1} /> Post
+            </button>
+          </div>
         </div>
       )}
     </>

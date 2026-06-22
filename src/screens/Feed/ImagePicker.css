@@ -1,81 +1,135 @@
+.imagePickerOverlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.156);
+
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding-top: 20px;
+  z-index: 0;
+  gap: 20px;
+}
+
 .image-picker-container {
-  background-color: rgb(60, 208, 107);
+  border: 2px solid #ffffff;
+  padding: 10px;
+  border-radius: 44px;
+  background-color: rgba(255, 255, 255, 0.578);
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
-  width: 100%;
-  height: 100%; /* Full viewport height */
-  box-sizing: border-box;
+  max-width: 700px;
+  aspect-ratio: 4/6;
+  height: 94vh;
+  z-index: 3;
+  justify-content: start;
 }
 
 .image-box {
+  flex: 5;
+  margin: auto;
   background-color: rgba(255, 255, 255, 0.342);
-  height: 60vh;
+  height: 80vh;
   aspect-ratio: 4/5;
-  border: 2px dashed #aaa;
+  border: 2px solid #ffffff;
   display: flex;
+  border-radius: 24px;
   align-items: center;
   justify-content: center;
 }
 .preview-img {
   width: 100%;
   height: 100%;
+  border-radius: 24px;
   object-fit: cover;
   object-position: center;
   aspect-ratio: 4 / 5;
   display: block;
 }
 
-.upload {
-  background-color: white;
-  position: absolute;
-  bottom: 10px;
-  right: 30px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
 .Choose {
-  background-color: #007bff;
+  display: flex;
+  background-color: #0091ff;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 16px;
+  gap: 5px;
 }
 
-.clear-btn {
-  position: absolute;
-  top: 10px;
-  right: 30px;
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 10px;
+.actionButtonsimgpicker {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+}
+.saveImage {
+  font-size: 18px;
+  display: flex;
+  gap: 5px;
+  flex-direction: row;
+  background-color: rgba(255, 255, 255, 0.66);
+  position: relative;
+  bottom: 2px;
+  width: fit-content;
+  padding: 12px 20px;
+  border-radius: 30px;
   cursor: pointer;
   font-weight: bold;
+  border: 2px solid white;
+}
+
+.saveImage:hover {
+  background-color: black;
+  color: white;
+}
+.clear-btn {
+  font-size: 18px;
+  display: flex;
+  gap: 5px;
+  flex-direction: row;
+  background-color: rgba(255, 255, 255, 0.66);
+  position: relative;
+  bottom: 2px;
+  width: fit-content;
+  padding: 12px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid white;
 }
 
 .clear-btn:hover {
-  background-color: darkred;
+  background-color: black;
+  color: white;
 }
 .caption-textarea {
-  margin-top: 10px;
+  background-color: rgba(255, 255, 255, 0.804);
+  flex: 1;
+  margin: 10px auto;
+  height: 100%;
+  width: 90%;
   padding: 10px;
-  width: 80vh;
-  min-height: 40px;
-  resize: none;
-  overflow: hidden;
-  padding: 10px;
+  overflow-y: scroll;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-  line-height: 1.4;
+  color: black;
+  font-family: "Roboto", sans-serif;
+  border: 1px solid #4d4b4b9c;
+  border-radius: 16px;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.caption-textarea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 .spinner-overlay {
   position: absolute;

@@ -1,66 +1,98 @@
-.icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  height: 50px;
-  width: 50px;
-  padding: 6px;
-  cursor: pointer;
-  transform: scale(1);
-  color: #ffffff; /* light gray for inactive */
-}
-
-.icon:hover {
-  transform: scale(1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  height: 50px;
-  width: 50px;
-}
-
-.iconactive {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  height: 50px;
-  width: 50px;
-  padding: 5px;
-  transform: scale(1);
-  background-color: rgb(255, 255, 255);
-  color: #000000; /* dark black for active */
-}
 .navbar_left {
-  height: 100vh;
-  width: 70px;
+  position: fixed;
+
+  left: 24px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 64px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 32px;
+
+  padding: 24px 0;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.22);
+
+  backdrop-filter: blur(22px) saturate(180%);
+
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+
+  box-shadow:
+    0 8px 32px rgba(15, 23, 42, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+
+  z-index: 1000;
+}
+
+.nav_button {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  outline: none;
+
+  border-radius: 50%;
+
   display: flex;
   align-items: center;
-  padding: 10px 5px;
   justify-content: center;
-  flex-direction: column;
-  background-color: #000000;
-}
-.navbar_top {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
+
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  color: rgba(0, 0, 0, 0.45);
+
+  transition: all 0.25s ease;
 }
 
-.navbar_bottom {
-  margin-bottom: 20px;
+/* Hover */
+.nav_button:hover {
+  transform: scale(1.08);
+
+  background: rgba(255, 255, 255, 0.28);
+
+  color: rgba(0, 0, 0, 0.85);
 }
 
-@media (max-width: 600px) {
-  .navicon {
-    cursor: pointer;
-    padding: 0px;
+/* Active */
+.nav_button.active {
+  background: linear-gradient(135deg, #ff6b81, #ff8e53);
+
+  color: white;
+
+  box-shadow: 0 8px 24px rgba(255, 107, 129, 0.35);
+}
+
+/* Icon animation */
+.nav_icon {
+  transition: all 0.25s ease;
+}
+
+.active_icon {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .navbar_left {
+    left: 12px;
+
+    width: 64px;
+
+    gap: 18px;
   }
-  .navicon.active {
-    transform: scale(1.2);
-    cursor: pointer;
+
+  .nav_button {
+    width: 42px;
+    height: 42px;
   }
 }

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { toast } from "react-toastify";
 import { FaArrowRight, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useWebSocket } from "../../services/webSocketContext";
+import { API_BASE_URL } from "../../config";
 function Login() {
   const { connect, disconnect } = useWebSocket();
   const navigate = useNavigate();
@@ -24,26 +27,23 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      // console.log("Calling login api ");
-      const response = await axios.post(
-        "http://localhost:8080/api/users/login",
-        details,
-      );
+      const response = await api.post("/users/login", details);
       const data = response.data;
-      // console.log(data);
+
       if (data.mes === "match") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("name", data.name);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userid", data.id);
-        localStorage.setItem("password", data.password);
+        localStorage.removeItem("password");
+        localStorage.removeItem("email");
         disconnect();
         connect(data.id);
         setLoading(false);
         navigate("/feed");
       }
       if (data.mes === "invalid") {
-        alert("Invalid Credentials");
+        toast.error("Invalid Credentials");
         setUser({
           username: "",
           password: "",
@@ -51,7 +51,7 @@ function Login() {
       }
     } catch (error) {
       console.error("Error during loging the user:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
       setUser({
         username: "",
         password: "",
