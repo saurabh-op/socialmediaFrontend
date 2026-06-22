@@ -3,6 +3,7 @@ import axios from "axios";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { toast } from "react-toastify";
 import { FaArrowRight, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useWebSocket } from "../../services/webSocketContext";
 function Login() {
@@ -41,7 +42,7 @@ function Login() {
         navigate("/feed");
       }
       if (data.mes === "invalid") {
-        alert("Invalid Credentials");
+        toast.error("Invalid Credentials");
         setUser({
           username: "",
           password: "",
@@ -49,7 +50,7 @@ function Login() {
       }
     } catch (error) {
       console.error("Error during loging the user:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
       setUser({
         username: "",
         password: "",

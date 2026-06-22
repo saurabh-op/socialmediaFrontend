@@ -13,6 +13,7 @@ import axios from "axios";
 import "./chatList.css";
 import "./chatViewPort.css";
 import "./newChatPopUp.css";
+import { toast } from "react-toastify";
 
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);
@@ -514,7 +515,7 @@ function ChatPage() {
       })
       .catch((error) => {
         console.error("Error sending message:", error);
-        alert("Failed to send the message. Please try again.");
+        toast.error("Failed to send the message. Please try again.");
       });
   }
 

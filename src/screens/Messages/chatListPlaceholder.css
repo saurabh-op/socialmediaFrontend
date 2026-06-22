@@ -1,0 +1,89 @@
+@keyframes cph_shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.clph_chatListContainer {
+  position: relative;
+  width: 320px;
+  flex-shrink: 0;
+  height: 94vh;
+  border: 2px solid white;
+  display: flex;
+  flex-direction: column;
+
+  padding: 20px 16px;
+  border-radius: 32px;
+}
+
+.clph_chat_list {
+  flex: 1;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clph_chatCard {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+  border-radius: 22px;
+}
+
+.clph_searchBar,
+.clph_avatar,
+.clph_username {
+  background: linear-gradient(90deg, #d6d6d6 0%, #f0f0f0 50%, #d6d6d6 100%);
+  background-size: 300% 100%;
+  animation: cph_shimmer 4s linear infinite;
+}
+
+.clph_searchBar {
+  width: 100%;
+  height: 48px;
+
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.clph_avatar {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.clph_username {
+  height: 18px;
+  width: 65%;
+
+  border-radius: 999px;
+}
+
+/* Optional variation so every row doesn't look identical */
+.clph_chatCard:nth-child(2) .clph_username {
+  width: 50%;
+}
+
+.clph_chatCard:nth-child(3) .clph_username {
+  width: 75%;
+}
+
+.clph_chatCard:nth-child(4) .clph_username {
+  width: 60%;
+}
+
+.clph_chatCard:nth-child(5) .clph_username {
+  width: 80%;
+}

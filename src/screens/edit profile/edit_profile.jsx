@@ -9,6 +9,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import emptyProfilePic from "../../assets/Profile.png";
 import imageCompression from "browser-image-compression";
 import { Trash2, ImagePlus, CloudCheck } from "lucide-react";
+import { toast } from "react-toastify";
 function EditProfile() {
   const navigate = useNavigate();
   //related to profile image
@@ -66,10 +67,16 @@ function EditProfile() {
 
         uploadProfilePic(compressedFile);
       } catch (error) {
-        alert("Something went wrong !");
+        toast.warning("Something went wrong !", {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } else {
-      alert("No image selected");
+      toast.error("No new image selected", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
   const uploadProfilePic = async (imageFile) => {
@@ -77,7 +84,10 @@ function EditProfile() {
       const userId = localStorage.getItem("userid");
 
       if (!imageFile) {
-        alert("Please select an image to upload.");
+        toast.error("Please select an image to upload", {
+          position: "top-center",
+          autoClose: 3000,
+        });
         return;
       }
 
@@ -90,7 +100,10 @@ function EditProfile() {
       const maxSize = 1 * 1024 * 1024; // 1 MB
 
       if (image && image.size > maxSize) {
-        alert("File size limit exceeds 1MB");
+        toast.error("File size exceeded", {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } else {
         try {
           const response = await axios.post(
@@ -99,7 +112,9 @@ function EditProfile() {
             { headers: { "Content-Type": "multipart/form-data" } },
           );
 
-          alert("Uploaded");
+          toast.success("Successfully Updated", {
+            autoClose: 2000,
+          });
         } catch (error) {}
       }
 
@@ -122,12 +137,16 @@ function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!/^\d{10}$/.test(user.phone)) {
-      alert("Phone number must be exactly 10 digits.");
+      toast.warning("Phone number should be of 10 digits", {
+        autoClose: 3000,
+      });
       setUploading(false);
       return;
     }
     if (user.username == "" || user.username == null) {
-      alert("Username cannot be empty.");
+      toast.warning("Username cannot be empty", {
+        autoClose: 3000,
+      });
       setUploading(false);
       return;
     }
@@ -140,16 +159,16 @@ function EditProfile() {
       );
       const data = response.data;
       if (data.message === "emailAlreadyExists") {
-        alert("Email already exists!");
+        toast.error("Email already exists!");
       }
       if (data.message === "usernameAlreadyExists") {
-        alert("Username already taken!");
+        toast.error("Username already taken!");
       }
       if (data.message === "userUpdated") {
         setUser(data.user);
         // console.log("User created:", response.data);
         // console.log(response.data.user);
-        alert("Updated successfully");
+        toast.success("Successfully Updated");
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("userid", data.user.id);
@@ -160,11 +179,11 @@ function EditProfile() {
       }
       if (data.message === "userNotFound") {
         //  console.error("Error creating userrrrrr:", error);
-        alert("Something went wrong.");
+        toast.error("Something went wrong.");
       }
     } catch (error) {
       //  console.error("Error creating user:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
     } finally {
       setUploading(false);
     }

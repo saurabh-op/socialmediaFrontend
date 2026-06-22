@@ -1,0 +1,144 @@
+.uph_container {
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* CARD */
+
+.uph_profileCard {
+  border-radius: 40px;
+
+  padding: 24px 40px;
+
+  border: 2px solid rgba(255, 255, 255, 0.559);
+}
+
+.uph_profileDetails {
+  background-color: transparent;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.uph_avatarWrapper {
+  width: 160px;
+  height: 160px;
+
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.uph_profileContent {
+  flex: 1;
+}
+
+.uph_name {
+  border-radius: 50px;
+  height: 40px;
+  width: 100px;
+}
+
+.uph_handle {
+  border-radius: 50px;
+  margin-top: 5px;
+  height: 20px;
+  width: 80px;
+}
+
+.uph_bio {
+  border-radius: 50px;
+  margin-top: 10px;
+  width: 200px;
+  height: 40px;
+}
+
+.uph_statsGrid {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+}
+
+.uph_statCard {
+  border-radius: 30px;
+  height: 30px;
+  width: 80px;
+}
+
+/* GALLERY */
+
+.uph_galleryGrid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+.uph_galleryItem {
+  aspect-ratio: 4/5;
+
+  overflow: hidden;
+
+  border-radius: 28px;
+
+  background: rgba(255, 255, 255, 0.35);
+
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  cursor: pointer;
+
+  transition: 0.1s;
+}
+
+/* SKELETON SHIMMER */
+
+.uph_avatarWrapper,
+.uph_name,
+.uph_handle,
+.uph_bio,
+.uph_statCard,
+.uph_galleryItem {
+  position: relative;
+  overflow: hidden;
+  background: #ececec;
+}
+
+.uph_avatarWrapper::before,
+.uph_name::before,
+.uph_handle::before,
+.uph_bio::before,
+.uph_statCard::before,
+.uph_galleryItem::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  transform: translateX(-100%);
+  animation: uph_shimmer 4s linear infinite;
+}
+
+@keyframes uph_shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(250%);
+  }
+}

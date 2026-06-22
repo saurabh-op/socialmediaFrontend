@@ -1,0 +1,195 @@
+.ncs_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+/* =======================
+   Glass Card
+======================= */
+
+.ncs_container {
+  position: relative;
+  z-index: 2;
+
+  width: 420px;
+  padding: 48px 36px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  border-radius: 38px;
+
+  background: rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+/* =======================
+   Icon
+======================= */
+
+.ncs_icon {
+  width: 165px;
+  height: 165px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    #ff8a65 0%,
+    #ff6f91 30%,
+    #9b6bff 65%,
+    #35b8ff 100%
+  );
+
+  box-shadow:
+    0 15px 35px rgba(155, 107, 255, 0.25),
+    0 10px 20px rgba(255, 111, 145, 0.2);
+
+  margin-bottom: 28px;
+}
+
+/* =======================
+   Text
+======================= */
+
+.ncs_heading {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.ncs_instruction {
+  margin-top: 18px;
+  max-width: 280px;
+
+  font-size: 1.05rem;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+/* =======================
+   Floating Blobs
+======================= */
+
+.ncs_blob1 {
+  border-radius: 100px;
+
+  width: 140px;
+  height: 140px;
+  position: absolute;
+  background: #ff9b82;
+  top: 18%;
+  left: 18%;
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+.ncs_bolb2 {
+  border-radius: 100px;
+  width: 170px;
+  position: absolute;
+  height: 170px;
+  background: #cfe6ff;
+  top: 28%;
+  filter: blur(8px);
+  opacity: 0.8;
+  right: 12%;
+}
+
+.ncs_bolb3 {
+  border-radius: 100px;
+  width: 35px;
+  position: absolute;
+  height: 35px;
+  background: #4aa3ff;
+  left: 14%;
+  filter: blur(8px);
+  opacity: 0.8;
+  top: 48%;
+}
+
+.ncs_blob4 {
+  border-radius: 100px;
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  background: #ffb19d;
+  bottom: 18%;
+  filter: blur(8px);
+  opacity: 0.8;
+  left: 14%;
+}
+
+.ncs_blob5 {
+  border-radius: 100px;
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  background: #d9b6ff;
+  bottom: 8%;
+  right: 18%;
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+.ncs_blob6 {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+
+  right: 18%;
+  top: 58%;
+
+  border-radius: 50%;
+
+  background: #b576ff;
+
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+/* =======================
+   Responsive
+======================= */
+
+@media (max-width: 600px) {
+  .ncs_container {
+    width: 90%;
+    padding: 40px 24px;
+  }
+
+  .ncs_icon {
+    width: 130px;
+    height: 130px;
+  }
+
+  .ncs_heading {
+    font-size: 1.6rem;
+  }
+}

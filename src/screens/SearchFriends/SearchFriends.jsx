@@ -8,6 +8,7 @@ import { UserPlus } from "lucide-react";
 import "./searchList.css";
 import "./UserPreview.css";
 import "./pagelayout.css";
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import lock from "../../assets/lock.png";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
@@ -64,6 +65,7 @@ const SearchPage = () => {
   const sendRequest = async (id) => {
     try {
       const myid = localStorage.getItem("userid");
+      const myProfileurl = localStorage.getItem("user-profile-pic");
       if (myid != id) {
         const response = await fetch(
           `http://localhost:8080/api/request/send/${id}`,
@@ -76,7 +78,7 @@ const SearchPage = () => {
               senderusername: localStorage.getItem("username"),
               sendername: localStorage.getItem("name"),
               senderid: myid,
-              senderimage: "https://randomuser.me/api/portraits/men/75.jpg",
+              senderimage: myProfileurl ? myProfileurl : "",
             }),
           },
         );
@@ -86,7 +88,7 @@ const SearchPage = () => {
           setRequestedIds((prev) => new Set(prev).add(id));
         }
       } else {
-        alert("Can't sent requests to youself");
+        toast.warning("Can't sent requests to youself");
       }
     } catch (error) {
       console.error("Error sending request:", error);
@@ -126,13 +128,12 @@ const SearchPage = () => {
               )}
 
               {results.map((user) => (
-                <div
-                  className="srchlistItem"
-                  key={user.id}
-                  onClick={(e) => goToProfile(user.id, e)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="pic_and_name">
+                <div className="srchlistItem" key={user.id}>
+                  <div
+                    className="pic_and_name"
+                    onClick={(e) => goToProfile(user.id, e)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <img
                       className="picture"
                       src={

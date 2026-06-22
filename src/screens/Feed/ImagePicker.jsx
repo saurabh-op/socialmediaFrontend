@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./ImagePicker.css";
 import axios from "axios";
 import imageCompression from "browser-image-compression";
+import { toast } from "react-toastify";
 import {
   ArrowBigUp,
   BalloonIcon,
@@ -45,10 +46,10 @@ export default function ImagePicker() {
         uploadPost(compressedFile, caption);
       } catch (error) {
         console.error("Error processing image:", error);
-        alert("Error compressing image, please try again.");
+        toast.error("Error compressing image, please try again.");
       }
     } else {
-      alert("Please select an image and enter a caption.");
+      toast.warning("Please select an image and enter a caption.");
     }
   };
 
@@ -118,7 +119,7 @@ export default function ImagePicker() {
       const name = localStorage.getItem("name");
 
       if (!imageFile || !caption || !userId) {
-        alert("Missing data");
+        toast.error("Missing data");
         return;
       }
 
@@ -135,7 +136,7 @@ export default function ImagePicker() {
 
       console.log(image.size);
       if (image && image.size > maxSize) {
-        alert("File size exceeds the limit (1 MB).");
+        toast.error("File size exceeded");
       } else {
         try {
           const response = await axios.post(
@@ -153,11 +154,11 @@ export default function ImagePicker() {
       setPreviewUrl();
       setSelectedImage();
       setCaption();
-      alert("Uploaded Successfully");
+      toast.success("Uploaded Successfully");
     } catch (error) {
       setUploading(false);
       console.error(error);
-      alert("Upload failed: " + error.message);
+      toast.error("Upload failed");
     }
   };
 

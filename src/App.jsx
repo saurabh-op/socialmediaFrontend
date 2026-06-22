@@ -12,6 +12,8 @@ import ViewUserPage from "./screens/ProfilePage/viewUser.jsx";
 import Notification from "./screens/Notifications/notification.jsx";
 import EditProfile from "./screens/edit profile/edit_profile.jsx";
 import BackgroundBlobs from "./BackgroundBlobs.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
           <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer position="top-center" autoClose={3000} theme="light" />
     </WebSocketProvider>
   );
 }

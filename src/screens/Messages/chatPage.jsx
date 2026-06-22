@@ -12,13 +12,18 @@ import axios from "axios";
 //Css files
 import "./chatList.css";
 import "./chatViewPort.css";
-import "./newChatPopUp.css";
 import "./search_bar.css";
 import "./layout_chat.css";
+
+//jsx files
+import ChatPlaceholder from "./openedChatPlaceholder.jsx";
+import ChatListSkeleton from "./chatListPlaceholder.jsx";
+import NoChatSelected from "./noChatSelected.jsx";
 
 //Components
 import { ArrowLeft, Plus, Search, X, Send } from "lucide-react";
 import Navbar from "../Layout/Navbar";
+import { toast } from "react-toastify";
 
 function ChatPage() {
   const [hasMore, setHasMore] = useState(true);
@@ -204,8 +209,18 @@ function ChatPage() {
         {currentChatid ? (
           opened_chat()
         ) : (
-          <div className="select_a_chat">Say Hi to a friend.</div>
+          <div className="select_a_chat">
+            <NoChatSelected />
+          </div>
         )}
+      </div>
+    );
+  }
+  function placeholder_main_page() {
+    return (
+      <div className="chat_mainpage">
+        <ChatListSkeleton />
+        <ChatPlaceholder />
       </div>
     );
   }
@@ -455,7 +470,7 @@ function ChatPage() {
       })
       .catch((error) => {
         console.error("Error sending message:", error);
-        alert("Failed to send the message. Please try again.");
+        toast.error("Failed to send. Please try again.");
       });
   }
 
@@ -468,8 +483,9 @@ function ChatPage() {
 
     return (
       <>
-        {isloadingChatHistory && <div>Hang on a moment ...</div>}
-        <div>
+        {isloadingChatHistory ? (
+          <ChatPlaceholder />
+        ) : (
           <div className="chat-window">
             <div className="chat-header">
               {" "}
@@ -532,7 +548,7 @@ function ChatPage() {
               </div>
             </div>
           </div>
-        </div>
+        )}
       </>
     );
   };
@@ -541,7 +557,13 @@ function ChatPage() {
     <div>
       <Navbar />
 
-      <div>{isLoadingChatList ? "Loading..." : <div>{main_page()}</div>}</div>
+      <div>
+        {isLoadingChatList ? (
+          <div>{placeholder_main_page()}</div>
+        ) : (
+          <div>{main_page()}</div>
+        )}
+      </div>
     </div>
   );
 }

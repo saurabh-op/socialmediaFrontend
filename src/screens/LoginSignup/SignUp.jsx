@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
+import { toast } from "react-toastify";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 // TODO : 3 :Attach a mobile OTP verification service
 
@@ -25,7 +26,7 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!/^\d{10}$/.test(user.phone)) {
-      alert("Phone number must be exactly 10 digits.");
+      toast.warning("Phone number must be exactly 10 digits.");
       setLoading(false);
       return;
     }
@@ -37,13 +38,13 @@ function SignUp() {
       );
       const data = response.data;
       if (data.message === "userAlreadyExists") {
-        alert("User with this email already exists!");
+        toast.warning("User with this email already exists!");
       }
       if (data.message === "usernameTaken") {
-        alert("Username is taken, try other username !");
+        toast.warning("Username is taken, try other username !");
       }
       if (data.message === "userCreated") {
-        alert("User registered successfully!");
+        toast.success("User registered successfully!");
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
@@ -56,11 +57,11 @@ function SignUp() {
       }
       if (data.message === "error") {
         //  console.error("Error creating user:", error);
-        alert("Something went wrong.");
+        toast.error("Something went wrong.");
       }
     } catch (error) {
       // console.error("Error creating user:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }

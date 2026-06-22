@@ -5,16 +5,16 @@ import "./UserInfoPage.css";
 import "./Modal.css";
 import "./layout_profile.css";
 import "./post_popup.css";
+import UserProfileSkeleton from "./profilePlaceholder";
 import emptyProfilePic from "../../assets/no_profile_pic.png";
 import Navbar from "../Layout/Navbar";
 import axios from "axios";
-
 import { Link } from "react-router-dom";
 import EditProfile from "../edit profile/edit_profile";
 import { useNavigate } from "react-router-dom";
 import { FiEdit2 } from "react-icons/fi";
-import { Circle, Heart, Settings, Share2 } from "lucide-react";
-// Importing fonts :
+import { Circle, CircleX, Heart, Settings, Share2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function UserInfoPage() {
   const { userId } = useParams();
@@ -104,6 +104,8 @@ function UserInfoPage() {
             setSavedImageUrl(imageUrl);
           }
         }
+        localStorage.setItem("user-profile-pic", userData.profileImageUrl);
+        console.log("profile detilas:", userData);
         // Parallel fetches for counts
         const [followersRes, followingRes, postsRes] = await Promise.all([
           fetch(`http://localhost:8080/api/follower/count/${userId}`),
@@ -176,7 +178,7 @@ function UserInfoPage() {
 
       setRequests((prev) => prev.filter((req) => req.senderid !== senderId));
 
-      alert("accepted");
+      toast.success("Accepted!");
     } catch (error) {
       console.error("Error accepting request:", error);
     }
@@ -191,7 +193,7 @@ function UserInfoPage() {
 
       setRequests((prev) => prev.filter((req) => req.senderid !== senderId));
 
-      alert("deleted");
+      toast.error("Rejected");
     } catch (error) {
       console.error("Error accepting request:", error);
     }
@@ -221,38 +223,60 @@ function UserInfoPage() {
 
   function requestModal() {
     return (
-      <div className="rightSide">
-        <div className="modal">
-          <h2 className="modal-title">Friend Requests</h2>
-          {requests.length == 0
-            ? "No New requests "
-            : requests.map((req) => (
-                <div className="modal-item" key={req.senderid ?? "NA"}>
-                  <div className="sender-info">
-                    <span className="username">
-                      {req.senderusername ?? "NA"}
-                    </span>
-                    <span className="name">({req.sendername ?? "NA"})</span>
+      <div className="modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <div className="modal-heading">Friend Requests </div>
+            <button
+              className="modal_close-btn"
+              onClick={() => setShowModal(false)}
+            >
+              <CircleX />
+            </button>
+          </div>
+          <div className="modal-list">
+            {requests.length == 0
+              ? "No New requests "
+              : requests.map((req) => (
+                  <div className="modal-list-item" key={req.senderid ?? "NA"}>
+                    <div className="rqst-user-info">
+                      {" "}
+                      <img
+                        src={
+                          req.senderimage?.trim()
+                            ? req.senderimage
+                            : emptyProfilePic
+                        }
+                        alt="pfp"
+                        onError={(e) => {
+                          e.target.src = emptyProfilePic;
+                        }}
+                      />
+                      <div>
+                        <p>{req.sendername}</p>
+                        <div className="modal_username">
+                          @ {req.senderusername}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rqst-action-buttons">
+                      <button
+                        className="accept-btn"
+                        onClick={() => acceptRequest(req.senderid)}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="reject-btn"
+                        onClick={() => deleteRequest(req.senderid)}
+                      >
+                        Reject
+                      </button>
+                    </div>
                   </div>
-                  <div className="action-buttons">
-                    <button
-                      className="accept-btn"
-                      onClick={() => acceptRequest(req.senderid)}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="reject-btn"
-                      onClick={() => deleteRequest(req.senderid)}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              ))}
-          <button className="close-btn" onClick={() => setShowModal(false)}>
-            Close
-          </button>
+                ))}
+          </div>
         </div>
       </div>
     );
@@ -489,19 +513,25 @@ function UserInfoPage() {
                   {modalType === "followers" ? "Followers" : "Following"}
                 </h2>
                 <button
-                  className="close-btn"
+                  className="modal_close-btn"
                   onClick={() => setIsModalOpen(false)}
                 >
-                  ×
+                  <CircleX />
                 </button>
               </div>
               <ul className="modal-list">
                 {modalList.map((user) => (
                   <li key={user.userid} className="modal-list-item">
-                    <img src={user.image} alt="pfp" />
+                    <img
+                      src={user.image?.trim() ? user.image : emptyProfilePic}
+                      alt="pfp"
+                      onError={(e) => {
+                        e.target.src = emptyProfilePic;
+                      }}
+                    />
                     <div>
-                      <strong>{user.username}</strong>
                       <p>{user.name}</p>
+                      <div className="modal_username">@ {user.username}</div>
                     </div>
                   </li>
                 ))}
@@ -518,7 +548,7 @@ function UserInfoPage() {
       <Navbar />
 
       {loading ? (
-        <div className="rightSide_profile">Loading...</div>
+        <UserProfileSkeleton />
       ) : user == null ? (
         <div className="rightSide_profile">User not found</div>
       ) : showModal ? (

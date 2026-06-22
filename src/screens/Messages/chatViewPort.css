@@ -1,12 +1,18 @@
 .select_a_chat {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 200px;
-  height: 100%;
+  flex-direction: column;
+  height: 94vh;
+  min-width: 300px;
+  max-width: 640px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 32px;
+  border: 2px solid #e5e5e5;
   font-size: 20px;
   color: grey;
   padding: 10px;
+  align-items: center;
+  justify-content: center;
 }
 .no-user-selected {
   display: flex;
@@ -20,6 +26,7 @@
 }
 
 .chat-window {
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: 94vh;
@@ -73,14 +80,14 @@
 }
 
 .chat-history::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.399);
+  background: rgba(112, 112, 112, 0.399);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 .chat-history::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.636);
+  background: rgba(41, 40, 40, 0.636);
 }
 /* EACH MESSAGE ROW */
 
