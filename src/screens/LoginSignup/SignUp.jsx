@@ -33,7 +33,7 @@ function SignUp() {
     }
     setLoading(true);
     try {
-      const response = await axios.post("${API_BASE_URL}/users/signup", user);
+      const response = await axios.post(`${API_BASE_URL}/users/signup`, user);
       const data = response.data;
       if (data.message === "userAlreadyExists") {
         toast.warning("User with this email already exists!");
