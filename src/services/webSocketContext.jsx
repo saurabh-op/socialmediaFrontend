@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { WS_BASE_URL } from "../config";
 
 const WebSocketContext = createContext(null);
 
@@ -22,7 +23,7 @@ export const WebSocketProvider = ({ children }) => {
     }
 
     console.log("🔌 Attempting WebSocket connection for user:", userId);
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${WS_BASE_URL}`);
 
     const client = new Client({
       webSocketFactory: () => socket,
