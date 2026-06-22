@@ -155,7 +155,7 @@ function EditProfile() {
     try {
       // console.log("User details to be updated:", user);
       const response = await axios.put(
-        "${API_BASE_URL}/edituser/editBasicInfo",
+        `${API_BASE_URL}/edituser/editBasicInfo`,
         user,
       );
       const data = response.data;
