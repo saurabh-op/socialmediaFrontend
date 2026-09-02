@@ -38,7 +38,6 @@ The application follows a client-server architecture with separate frontend and 
 | **Spring Boot Backend** | Business logic, authentication, REST APIs, WebSocket server |
 | **MongoDB Atlas** | Stores users, posts, chats, notifications, and metadata |
 | **AWS S3** | Stores profile images and post media |
-| **JWT Authentication** | Secures protected API endpoints |
 | **WebSocket (STOMP + SockJS)** | Enables real-time chat and instant message delivery |
 
 ### General Request Flow
