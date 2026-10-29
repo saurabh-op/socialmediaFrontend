@@ -24,13 +24,17 @@ const SearchPage = () => {
   const [isloadingPreview, setLoadingPreview] = useState(false);
   const [requestedIds, setRequestedIds] = useState(new Set());
   const navigate = useNavigate();
+  const isSearchPending =
+    search.trim() !== "" && search.trim() !== debouncedSearch.trim();
 
   const goToProfile = (userId, e) => {
     e?.stopPropagation();
     navigate(`/viewuser/${userId}`);
   };
   useEffect(() => {
-    if (search.trim() === "" || search === null) setSearching(true);
+    if (search.trim() === "" || search === null) {
+      setSearching(false);
+    }
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
     }, 500);
@@ -117,11 +121,11 @@ const SearchPage = () => {
         </div>
 
         <div className="resultlist">
-          {searching ? (
+          {searching || isSearchPending ? (
             <SearchListPlaceHolder />
           ) : (
             <>
-              {results.length === 0 && search.trim() !== "" && (
+              {results.length === 0 && debouncedSearch.trim() !== "" && (
                 <p className="no-results">No users found.</p>
               )}
 

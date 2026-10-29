@@ -89,3 +89,55 @@
     background-position: -300% 0;
   }
 }
+
+@media (max-width: 768px) {
+  .sf_resultlist {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    margin-top: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .sf_srchlistItem {
+    width: 100%;
+    height: 64px;
+    min-height: 64px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+  }
+
+  .sf_pic_and_name {
+    min-width: 0;
+    padding-left: 8px;
+    gap: 12px;
+  }
+
+  .sf_picture {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+
+  .sf_srch-user-info {
+    gap: 4px;
+  }
+
+  .sf_username {
+    width: 84px;
+    height: 16px;
+  }
+
+  .sf_name {
+    width: 116px;
+    height: 13px;
+  }
+
+  .sf_friend-btn {
+    width: 38px;
+    height: 38px;
+    margin-right: 7px;
+  }
+}

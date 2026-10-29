@@ -71,7 +71,7 @@
   flex-direction: column-reverse;
   height: auto;
   max-height: none;
-  width: fit-content;
+  width: min(100%, 760px);
   overflow: visible;
 }
 
@@ -126,7 +126,8 @@
   }
 
   .feed-list-scrollable {
-    padding: 8px;
+    width: 100%;
+    padding: 0;
     max-height: none;
     overflow: visible;
   }
@@ -134,5 +135,12 @@
   .back-btn {
     padding: 6px 10px;
     font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 768px) {
+  .upload-btn {
+    bottom: 80px;
+    right: 24px;
   }
 }

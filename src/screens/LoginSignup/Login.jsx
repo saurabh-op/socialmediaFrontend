@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
@@ -10,7 +9,7 @@ import { API_BASE_URL } from "../../config";
 function Login() {
   const { connect, disconnect } = useWebSocket();
   const navigate = useNavigate();
-  const [isAuthenticating, setAuthenticating] = useState(false);
+  const [isAuthenticating] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [details, setUser] = useState({
@@ -62,56 +61,65 @@ function Login() {
   };
 
   return (
-    <div className="page-wrapper">
+    <div className="login-page">
       {isAuthenticating ? (
         "Authenticating ..."
       ) : (
-        <div className="grp1">
-          <div className="heading">Log in</div>
-          <div className="fields">
-            <div className="input-wrapper">
+        <div className="login-card">
+          <div className="login-heading">
+            <span className="login-eyebrow">Welcome back</span>
+            <h1>Log in to your account</h1>
+            <p>Pick up where you left off and stay connected with your people.</p>
+          </div>
+          <div className="login-fields">
+            <div className="login-field">
+              <label htmlFor="login-username">Username</label>
               <input
+                id="login-username"
                 type="text"
                 name="username"
-                placeholder="Username"
+                placeholder="Enter your username"
                 value={details.username}
                 onChange={handleChange}
                 required
               />
             </div>
-          </div>
-          <div className="fields password-field">
-            <div className="input-wrapper">
+            <div className="login-field login-password-field">
+              <label htmlFor="login-password">Password</label>
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Password"
+                placeholder="Enter your password"
                 value={details.password}
                 onChange={handleChange}
                 required
               />
+              <span
+                className="login-toggle-password"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
-            <span
-              className="toggle-password"
-              onClick={() => setShowPassword((prev) => !prev)}
+          </div>
+          <div className="login-actions">
+            <button
+              onClick={handleSubmit}
+              className="login-action-button verify-button"
+              disabled={isLoading}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>{" "}
-          <div className="actions">
-            {" "}
-            <button onClick={handleSubmit} className="actions-btn">
-              {isLoading ? "Processing..." : "Verify"}
+              {isLoading ? "Processing..." : "Log in"}
             </button>
             <button
               onClick={() => navigate("/signup")}
-              className="actions-btn"
+              className="login-action-button create-button"
               disabled={isLoading}
             >
-              Create Account
+              Create account
               <FaArrowRight />
             </button>
-          </div>{" "}
+          </div>
         </div>
       )}
     </div>

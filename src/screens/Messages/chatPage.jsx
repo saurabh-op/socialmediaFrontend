@@ -205,7 +205,7 @@ function ChatPage() {
 
   function main_page() {
     return (
-      <div className="chat_mainpage">
+      <div className={`chat_mainpage ${currentChatid ? "chat-open" : ""}`}>
         {chat_list()}
         {currentChatid ? (
           opened_chat()
@@ -489,7 +489,13 @@ function ChatPage() {
         ) : (
           <div className="chat-window">
             <div className="chat-header">
-              {" "}
+              <button
+                className="mobile-chat-back"
+                onClick={() => setCurrentChatId("")}
+                aria-label="Back to messages"
+              >
+                <ArrowLeft size={18} />
+              </button>
               <div className="avatarWrapper">
                 <div className="avatar">
                   {currentReceiver_username.charAt(0).toUpperCase()}
@@ -555,7 +561,7 @@ function ChatPage() {
   };
 
   return (
-    <div>
+    <div className="chat-page">
       <Navbar />
 
       <div>
