@@ -10,3 +10,11 @@
   align-items: center;
   padding-top: 2rem;
 }
+
+@media (max-width: 768px) {
+  .sfcontent {
+    min-height: 100svh;
+    box-sizing: border-box;
+    padding: 20px 14px 88px;
+  }
+}

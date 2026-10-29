@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Search, User } from "lucide-react";
@@ -15,11 +15,12 @@ function WelcomeCard() {
         </div>
 
         <div className="welcome-text">
-          <h2>Welcome Onboard!</h2>
+          <span className="welcome-eyebrow">Your feed starts here</span>
+          <h1>Welcome onboard</h1>
 
           <p>
-            Your feed is quiet for now. Find people you know and follow them to
-            fill it with signals worth seeing.
+            Your feed is quiet for now. Find people you know, complete your
+            profile, and make this space yours.
           </p>
         </div>
 

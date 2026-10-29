@@ -161,3 +161,97 @@
   text-align: center;
   gap: 10px;
 }
+
+@media (max-width: 768px) {
+  .search-box {
+    width: 100%;
+    box-sizing: border-box;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 16px;
+  }
+
+  .finduser {
+    margin-left: 4px;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .clear-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+  }
+
+  .resultlist {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .srchlistItem {
+    min-height: 64px;
+    height: 64px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+  }
+
+  .pic_and_name {
+    min-width: 0;
+    padding-left: 8px;
+    gap: 12px;
+  }
+
+  .picture {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+  }
+
+  .srch-user-info {
+    min-width: 0;
+    gap: 3px;
+  }
+
+  .srch-user-info strong,
+  .srch-user-info span {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .srch-user-info strong {
+    font-size: 14px;
+  }
+
+  .srch-user-info span {
+    font-size: 12px;
+    color: #667085;
+  }
+
+  .friend-btn {
+    width: 38px;
+    height: 38px;
+    margin-right: 7px;
+    padding: 7px;
+  }
+
+  .friend-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .requested-btn {
+    margin-right: 7px;
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .no-results {
+    margin: 12px 0;
+    font-size: 14px;
+  }
+}

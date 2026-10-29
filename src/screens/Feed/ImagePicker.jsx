@@ -13,8 +13,9 @@ import {
   ImagePlus,
   Save,
   Trash,
+  X,
 } from "lucide-react";
-export default function ImagePicker() {
+export default function ImagePicker({ onClose }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState();
   const [uploading, setUploading] = useState(false);
@@ -166,11 +167,19 @@ export default function ImagePicker() {
   return (
     <>
       {uploading ? (
-        <div className="spinner-overlay">
+        <div className="uploading-state">
           <div className="spinner"></div>
         </div>
       ) : (
         <div className="image-picker-container">
+          <button
+            type="button"
+            className="modal-close-button"
+            onClick={onClose}
+            aria-label="Close upload modal"
+          >
+            <X size={18} />
+          </button>
           <div className="image-box">
             {previewUrl ? (
               <>
@@ -198,10 +207,10 @@ export default function ImagePicker() {
           />
           <div className="actionButtonsimgpicker">
             <button className="clear-btn" onClick={handleClear}>
-              <Trash fill={"red"} size={20} strokeWidth={1} /> Discard Image
+              <Trash size={17} strokeWidth={2} /> Discard image
             </button>
             <button className="saveImage" onClick={handleSubmit}>
-              <ArrowBigUp fill={"green"} size={20} strokeWidth={1} /> Post
+              <ArrowBigUp size={17} strokeWidth={2} /> Upload
             </button>
           </div>
         </div>

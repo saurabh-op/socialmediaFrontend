@@ -374,10 +374,26 @@ function EditProfile() {
           <FiArrowLeft size={22} />
         </div>
 
-        <div className="instructions">Edit Profile Image</div>
-        <div> {profileImage()}</div>
-        <div className="instructions">Edit Personal Details</div>
-        <div>{basicdetails()}</div>
+        <section className="edit-section">
+          <div className="edit-section-heading">
+            <span className="edit-section-kicker">Step 1</span>
+            <div>
+              <h1>Profile photo</h1>
+              <p>Update your picture separately from your account details.</p>
+            </div>
+          </div>
+          {profileImage()}
+        </section>
+        <section className="edit-section edit-details-section">
+          <div className="edit-section-heading">
+            <span className="edit-section-kicker">Step 2</span>
+            <div>
+              <h2>Personal details</h2>
+              <p>Manage the information shown on your profile.</p>
+            </div>
+          </div>
+          {basicdetails()}
+        </section>
       </div>
     </div>
   );

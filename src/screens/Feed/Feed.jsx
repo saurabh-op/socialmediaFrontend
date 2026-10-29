@@ -7,14 +7,13 @@ import "./layout_feed.css";
 import "./Feed.css";
 import ImagePicker from "./ImagePicker";
 import { useWebSocket } from "../../services/webSocketContext";
-import { ArrowBigLeft, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import PlaceholderPostCard from "./placeholderPostCard";
 import { API_BASE_URL } from "../../config";
 
 function Feed() {
   const { registerFeedHandler, unregisterFeedHandler } = useWebSocket();
 
-  const [userid, setUserid] = useState();
   const [showPicker, setShowPicker] = useState(false);
 
   //Related to feed :
@@ -86,10 +85,9 @@ function Feed() {
 
       {showPicker ? (
         <div className="imagePickerOverlay">
-          <button className="back-btn" onClick={() => setShowPicker(false)}>
-            Go Back
-          </button>
-          <ImagePicker />
+          <div className="image-picker-modal">
+            <ImagePicker onClose={() => setShowPicker(false)} />
+          </div>
         </div>
       ) : (
         <div>
